@@ -1,6 +1,6 @@
-#include "list.h"
-#include "debug.h"
-
+#include <linux/list.h>
+#include <debug.h>
+#include <linux/stddef.h>
 #define MAX_DEV 25
 
 typedef enum{CPU,RAM,NOR,NAND}class_t;
