@@ -4,7 +4,6 @@
 #define MAX_DEV 25
 
 typedef enum{CPU,RAM,NOR,NAND}class_t;
-typedef struct __board board_t;
 
 typedef struct{
    int (*open)(void *arg1, void arg2);
@@ -21,7 +20,7 @@ typedef struct{
     void  *pri;
 }device_t;
 
-struct __board{
+typedef struct{
     struct list_head  CPU_list;
     struct list_head  RAM_list;
     struct list_head  NOR_list;
@@ -29,7 +28,7 @@ struct __board{
     device_t     *open[MAX_DEV];
     int (*show)(void *,void *);
     void *	pri;
-};
+}board_t;
 
 static device_t device_pool[MAX_DEV];
 
