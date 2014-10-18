@@ -4,3 +4,24 @@
 4 编写驱动
 5 编写shell
 
+
+
+
+现在需要实现的：
+1 内存管理：分配好内存，建立一个堆区（0-0x33f8000之间截取），实现malloc函数
+
+设计原理：
+	在lds中分配一个堆段用于malloc，在源码中显示定义char mem_pool[heap_size] __arrtibute__((section(".heap")))
+	维护一个内存池。
+	typedef struct{
+	    char index;
+	    char size;
+	};
+	typedef struct{
+	   mem_head tag[255];
+	   char mem[heap_size];
+	}mem_pool;
+	
+	mem_poll heap;
+
+每当申请一块内存的时候，就将其

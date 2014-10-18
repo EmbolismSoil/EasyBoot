@@ -1,5 +1,7 @@
 #include "list.h"
-typedef enum{CPU，RAM，NOR，NAND}class_t;
+#define MAX_DEV
+
+typedef enum{CPU,RAM,NOR,NAND}class_t;
 typedef struct __board board_t;
 
 typedef struct{
@@ -13,19 +15,16 @@ typedef struct{
 typedef struct{
     const char *name;
     d_ops	ops;
-}driver_node;
-
-typedef struct{
-    driver_node node;
-    head_list	d_list;
-}driver_list;
+    void     *pri;
+}device_node;
 
 struct __board{
-    driver_list  *CPU;
-    driver_list  *RAM;
-    driver_list	 *NOR;
-    driver_list	 *NAND;
-    driver_node  *device;
+    list_head	 CPU;
+    list_head    RAM;
+    list_head    NOR;
+    list_head	 NAND;
+    driver_list  device[MAX_DEV];
+    int (*show)(void *,void *);
     void *	pri;
 }; 
 
