@@ -1,0 +1,38 @@
+驱动框架
+在boards/board.c中维护一个全局board对象线性表。
+在driver/driver.c中维护一个全局driver线性表。
+
+board对象：
+	1 板上资源（包含CPU） 2 设备链表 3 已经打开的硬件设备 4私有数据（比如板上资源说明）
+	其中CPU是一个内嵌的子集，它有自己的片内集成外设。
+
+	注：设备抽象是设备名和设备方法的封装。
+
+CPU对象：
+	1 片上资源（各种寄存器） 2 片内设备链表 3 已经打开的设备 4私有数据
+
+通过board和CPU对象屏蔽底层细节，向上提供一个最小化的接口集：open write read close ioctl
+
+原理：
+	1 、上层用户首先执行board_type *get_board(type)
+	获取board对象，这个函数会从全局board线性表当中获取对应type型号的板子。
+	如果没有找到type型号的板子，则获取到一个名为type的空板子，用户需要自己搭建空板子，也就是添加硬件。
+	想一下自己怎么往空的PCB上面悍硬件的？现在这是个板子抽象，我们可以往上添加硬件。
+	
+以下是添加硬件的方法：
+	
+添加硬件驱动的方法1：
+	调用get_drivers(type)从driver线性表中获取一个对应型号的硬件驱动。
+	调用driver_register("board/driverclass/", driver)进行驱动注册。
+	这个函数将type型号的驱动注册在board板子型号下的driverclass中，名为type
+	比如driver_register("board/CPU/",s3c2440);
+
+添加硬件驱动的方法2：
+	使用宏DECLARE_DRIVER（_name）显示获取一个名为_name的空驱动。
+	使用自己实现的open,write,read，ioctl填充驱动
+	调用driver_regster注册
+
+注：CPU做为一个特殊的板载硬件在驱动注册上并无区别，在底层实现中有细微差别
+
+
+	2、添加硬件完成之后即可使用。调用open("board/driverclass/type",FLAG);	
