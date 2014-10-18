@@ -15,7 +15,7 @@ typedef struct{
 }d_ops;
 
 typedef struct{
-    char *name;
+    char *type;
     d_ops  ops;
     struct list_head list;
     void  *pri;
@@ -26,7 +26,7 @@ struct __board{
     struct list_head  RAM_list;
     struct list_head  NOR_list;
     struct list_head  NAND_list;
-    device_t     open[MAX_DEV];
+    device_t     *open[MAX_DEV];
     int (*show)(void *,void *);
     void *	pri;
 };
@@ -40,20 +40,20 @@ static device_t device_pool[MAX_DEV];
 */
 device_t get_device(char *type)
 {
-    DEBUG_CHECK(!type);
+    //DEBUG_CHECK(!type);
     char cnt;
     for (cnt = 0;cnt < MAX_DEV && 
-		device_pool[cnt].name != NULL; cnt++)
-        if(strcmp(type,device_pool[cnt].name))
+		device_pool[cnt].type != NULL; cnt++)
+        if(strcmp(type,device_pool[cnt].type))
 	    return device_pool[cnt];
     
-    device_pool[cnt].name = type;
-    INIT_LIST_HEAD(&device[cnt].list);
+    device_pool[cnt].type = type;
+    INIT_LIST_HEAD(&device_pool[cnt].list);
     return device_pool[cnt];
 }
 
 #define foreach_class(pos ,board, class) \
-	list_for_each_entry(pos, &board->class##_list, list) \
+	list_for_each_entry(pos, &(board->class##_list), list) 
 	 
 /*
 * @add_device : 往板子上添加一个class类型的设备device
@@ -61,6 +61,7 @@ device_t get_device(char *type)
 int add_device(board_t *board, class_t class, device_t *device)
 {
 	DEBUG_CHECK(!board && !device);
+	device_t *pos;
     switch (class){
     case CPU :  
       foreach_class(pos, board, CPU)
@@ -84,10 +85,10 @@ int add_device(board_t *board, class_t class, device_t *device)
       break;
 	
     case NAND : 
-      foreach_class(poss, board, NAND)
+      foreach_class(pos, board, NAND)
 	if (strcmp(pos->type, device->type))
 	    return -1;
-      list_add(&device->list, &board->NAN_list);
+      list_add(&device->list, &board->NAND_list);
       break;
     }
 	return 0;
@@ -103,9 +104,9 @@ int device_open(board_t *board, class_t class, char *type)
     int fd;
     device_t  *pos;
     for (cnt = 0; cnt < MAX_DEV; cnt++){
-       if (strcmp(board->open[cnt].type, type))
+       if (strcmp(board->open[cnt]->type, type))
 		return cnt;
-       if (!board->open[cnt].type)
+       if (!board->open[cnt]->type)
 		fd = cnt;
     }
 
@@ -154,7 +155,7 @@ int device_open(board_t *board, class_t class, char *type)
 int device_read(board_t *board, int fd, unsigned int addr, 
 			     void *buf ,unsigned int len)
 {
-    return board->open[fd].read(addr, buf, len);
+    return board->open[fd]->ops.read(addr, buf, len);
 }
 
 /*
@@ -164,7 +165,7 @@ int device_read(board_t *board, int fd, unsigned int addr,
 int device_read(board_t *board, int fd, unsigned int addr,
                              void *buf ,unsigned int len)
 {
-    return board->open[fd].read(addr, buf, len);
+    return board->open[fd]->ops.read(addr, buf, len);
 }
 
 /*
@@ -173,7 +174,7 @@ int device_read(board_t *board, int fd, unsigned int addr,
 
 int device_read(board_t *board, int fd)
 {
-    return board->open[fd].close(board);
+    return board->open[fd]->ops.close(board);
 }
 
 /*
@@ -181,5 +182,5 @@ int device_read(board_t *board, int fd)
 */
 int device_ioctl(board_t *board, int fd, int cmd)
 {
-    return board->open[fd].ioctl(board,cmd);
+    return board->open[fd]->ops.ioctl(board,cmd);
 }
