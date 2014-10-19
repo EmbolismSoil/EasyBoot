@@ -47,7 +47,7 @@ device_t *get_device(char *type)
     char cnt;
     for (cnt = 0;cnt < MAX_DEV && 
 		device_pool[cnt].type != NULL; cnt++)
-        if(strcmp(type,device_pool[cnt].type))
+        if(!strcmp(type,device_pool[cnt].type))
 	    return &device_pool[cnt];
     
     device_pool[cnt].type = type;
@@ -65,7 +65,7 @@ board_t *get_board(char *type)
     char cnt;
     for (cnt = 0; cnt < MAX_BOARD && 
 	board_pool[cnt].type != NULL; cnt++)
-	if (strcmp(board_pool[cnt].type, type))
+	if (!strcmp(board_pool[cnt].type, type))
 	    return &board_pool[cnt];
 
     board_pool[cnt].type = type;
@@ -90,28 +90,28 @@ int add_device(board_t *board, class_t class, device_t *device)
     switch (class){
     case CPU :  
       foreach_class(pos, board, CPU)
-        if (strcmp(pos->type, device->type))
+        if (!strcmp(pos->type, device->type))
 	    return -1;
       list_add(&device->list, &board->CPU_list);
       break;
 	
     case RAM :  
       foreach_class(pos, board, RAM)
-        if (strcmp(pos->type, device->type))
+        if (!strcmp(pos->type, device->type))
 	    return -1;
       list_add(&device->list, &board->RAM_list);
       break;
 
     case NOR :  
       foreach_class(pos, board, NOR)
-        if(strcmp(pos->type, device->type))
+        if(!strcmp(pos->type, device->type))
             return -1;
       list_add(&device->list, &board->NOR_list);
       break;
 	
     case NAND : 
       foreach_class(pos, board, NAND)
-	if (strcmp(pos->type, device->type))
+	if (!strcmp(pos->type, device->type))
 	    return -1;
       list_add(&device->list, &board->NAND_list);
       break;
@@ -129,7 +129,7 @@ int device_open(board_t *board, class_t class, char *type)
     int fd;
     device_t  *pos;
     for (cnt = 0; cnt < MAX_DEV; cnt++){
-       if (strcmp(board->open[cnt]->type, type))
+       if (!strcmp(board->open[cnt]->type, type))
 		return cnt;
        if (!board->open[cnt]->type)
 		fd = cnt;
@@ -138,7 +138,7 @@ int device_open(board_t *board, class_t class, char *type)
     switch (class){
     case CPU : 
       foreach_class(pos, board, CPU)
-        if (strcmp(pos->type, type)){
+        if (!strcmp(pos->type, type)){
            board->open[fd] = pos;
 	   pos->ops.open(board,pos);
            return fd;
@@ -146,7 +146,7 @@ int device_open(board_t *board, class_t class, char *type)
 
     case RAM :
       foreach_class(pos, board, RAM)
-	if (strcmp(pos->type, type)){
+	if (!strcmp(pos->type, type)){
 	   board->open[fd] = pos;
 	   pos->ops.open(board,pos);
 	   return fd;
@@ -154,7 +154,7 @@ int device_open(board_t *board, class_t class, char *type)
 
     case NOR : 
       foreach_class(pos, board, RAM)
-        if (strcmp(pos->type, type)){
+        if (!strcmp(pos->type, type)){
            board->open[fd] = pos;
 	   pos->ops.open(board,pos);
            return fd;
@@ -162,7 +162,7 @@ int device_open(board_t *board, class_t class, char *type)
 
     case NAND : 
       foreach_class(pos, board, RAM)
-        if (strcmp(pos->type, type)){
+        if (!strcmp(pos->type, type)){
            board->open[fd] = pos;
 	   pos->ops.open(board,pos);
            return fd;
@@ -174,7 +174,7 @@ int device_open(board_t *board, class_t class, char *type)
 }
 
 /*
-* @device_read :设备读函数
+* @device_rea/ :设备读函数
 */
 
 int device_read(board_t *board, int fd, unsigned int addr, 
