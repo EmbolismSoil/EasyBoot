@@ -1,12 +1,14 @@
 #include <linux/list.h>
 #include <debug.h>
 #include <linux/stddef.h>
+
 #define MAX_DEV 25
+#define MAX_BOARD 10
 
 typedef enum{CPU,RAM,NOR,NAND}class_t;
 
 typedef struct{
-   int (*open)(void *arg1, void arg2);
+   int (*open)(void *arg1, void *arg2);
    int (*write)(unsigned int addr ,void *buf, unsigned int len);
    int (*read)(unsigned int addr,void *buf, unsigned int len);
    int (*ioctl)(void *arg, int cmd);
@@ -17,10 +19,12 @@ typedef struct{
     char *type;
     d_ops  ops;
     struct list_head list;
-    void  *pri;
+    int _flag;
+    void  *_pri;
 }device_t;
 
 typedef struct{
+    char *type;
     struct list_head  CPU_list;
     struct list_head  RAM_list;
     struct list_head  NOR_list;
@@ -31,24 +35,46 @@ typedef struct{
 }board_t;
 
 static device_t device_pool[MAX_DEV];
-
+static board_t board_pool[MAX_BOARD];
 /*
 * @get_device: 获取一个型号为type的设备，
 * 如果没有在设备池内发现对应型号的设备则
 * 返回一个空设备，用户需要自行初始化
 */
-device_t get_device(char *type)
+device_t *get_device(char *type)
 {
-    //DEBUG_CHECK(!type);
+    DEBUG_CHECK(!type,NULL);
     char cnt;
     for (cnt = 0;cnt < MAX_DEV && 
 		device_pool[cnt].type != NULL; cnt++)
         if(strcmp(type,device_pool[cnt].type))
-	    return device_pool[cnt];
+	    return &device_pool[cnt];
     
     device_pool[cnt].type = type;
     INIT_LIST_HEAD(&device_pool[cnt].list);
-    return device_pool[cnt];
+    return &device_pool[cnt];
+}
+
+/*
+*@ get_board : 获取一个型号为type的board,如果没有在boar_pool
+* 中找到对应型号的设备则返回一个空设备，用户需要自行初始化
+*/
+board_t *get_board(char *type)
+{
+    DEBUG_CHECK(!type, NULL);
+    char cnt;
+    for (cnt = 0; cnt < MAX_BOARD && 
+	board_pool[cnt].type != NULL; cnt++)
+	if (strcmp(board_pool[cnt].type, type))
+	    return &board_pool[cnt];
+
+    board_pool[cnt].type = type;
+    INIT_LIST_HEAD(&board_pool[cnt].CPU_list);
+    INIT_LIST_HEAD(&board_pool[cnt].RAM_list);
+    INIT_LIST_HEAD(&board_pool[cnt].NOR_list);
+    INIT_LIST_HEAD(&board_pool[cnt].NAND_list);
+
+    return &board_pool[cnt];
 }
 
 #define foreach_class(pos ,board, class) \
@@ -59,7 +85,7 @@ device_t get_device(char *type)
 */
 int add_device(board_t *board, class_t class, device_t *device)
 {
-	DEBUG_CHECK(!board && !device);
+	DEBUG_CHECK(!board && !device, -1);
 	device_t *pos;
     switch (class){
     case CPU :  
@@ -114,7 +140,7 @@ int device_open(board_t *board, class_t class, char *type)
       foreach_class(pos, board, CPU)
         if (strcmp(pos->type, type)){
            board->open[fd] = pos;
-	   pos->open(board,pos);
+	   pos->ops.open(board,pos);
            return fd;
 	}
 
@@ -122,7 +148,7 @@ int device_open(board_t *board, class_t class, char *type)
       foreach_class(pos, board, RAM)
 	if (strcmp(pos->type, type)){
 	   board->open[fd] = pos;
-	   pos->open(board,pos);
+	   pos->ops.open(board,pos);
 	   return fd;
 	}
 
@@ -130,7 +156,7 @@ int device_open(board_t *board, class_t class, char *type)
       foreach_class(pos, board, RAM)
         if (strcmp(pos->type, type)){
            board->open[fd] = pos;
-	   pos->open(board,pos);
+	   pos->ops.open(board,pos);
            return fd;
         }
 
@@ -138,7 +164,7 @@ int device_open(board_t *board, class_t class, char *type)
       foreach_class(pos, board, RAM)
         if (strcmp(pos->type, type)){
            board->open[fd] = pos;
-	   pos->open(board,pos);
+	   pos->ops.open(board,pos);
            return fd;
         }
 
@@ -161,7 +187,7 @@ int device_read(board_t *board, int fd, unsigned int addr,
 * @device_write : 设备写函数
 */
 
-int device_read(board_t *board, int fd, unsigned int addr,
+int device_write(board_t *board, int fd, unsigned int addr,
                              void *buf ,unsigned int len)
 {
     return board->open[fd]->ops.read(addr, buf, len);
@@ -171,7 +197,7 @@ int device_read(board_t *board, int fd, unsigned int addr,
 * @device_close : 关闭设备
 */
 
-int device_read(board_t *board, int fd)
+int device_close(board_t *board, int fd)
 {
     return board->open[fd]->ops.close(board);
 }

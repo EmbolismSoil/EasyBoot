@@ -1,7 +1,7 @@
 #ifndef __DEBUG_H
 #define __DEBUG_H
 
-#define DEBUG_CHECK(__condiction)\
-	if ((__condiction)) return -1
+#define DEBUG_CHECK(__condiction,ret)\
+	if ((__condiction)) return (ret)
 
 #endif
