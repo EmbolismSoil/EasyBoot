@@ -123,10 +123,14 @@ int add_device(board_t *board, class_t class, device_t *device)
 * @device_open : 设备打开函数，
 */
 
-int device_open(board_t *board, class_t class, char *type)
+int device_open(char *path)
 {
     int cnt;
     int fd;
+    char *board_type;
+    char *class;
+    char *device_type;
+
     device_t  *pos;
     for (cnt = 0; cnt < MAX_DEV; cnt++){
        if (!strcmp(board->open[cnt]->type, type))
@@ -174,7 +178,11 @@ int device_open(board_t *board, class_t class, char *type)
 }
 
 /*
-* @device_rea/ :设备读函数
+* @device_open
+*/
+
+/*
+* @device_read :设备读函数
 */
 
 int device_read(board_t *board, int fd, unsigned int addr, 

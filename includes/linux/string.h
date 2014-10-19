@@ -66,6 +66,9 @@ extern char * strdup(const char *);
 #ifndef __HAVE_ARCH_STRSWAB
 extern char * strswab(const char *);
 #endif
+#ifndef __HAVA_ARCH_STRNCHR
+extern char * strnchr(const char *, int, int);
+#endif
 
 #ifndef __HAVE_ARCH_MEMSET
 extern void * memset(void *,int,__kernel_size_t);

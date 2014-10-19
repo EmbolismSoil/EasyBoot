@@ -400,6 +400,26 @@ char *strswab(const char *s)
 }
 #endif
 
+#ifndef __HAVA_ARCH_STRNCHR
+/**
+ * strnchr - find the nth chr int the string and 
+ * return this chr's address base
+ */
+
+char * strnchr(const char *src, int chr, int n)
+{
+    const char *dest = src;
+    int len = strlen(src);
+    int cnt, count = 0;
+
+    for (cnt = 0; cnt < len && count < n; dest++,cnt++)
+        if ('/' == src[cnt])
+           count++;
+
+    return count ? (char *)dest : NULL;
+}
+
+#endif
 #ifndef __HAVE_ARCH_MEMSET
 /**
  * memset - Fill a region of memory with the given value
