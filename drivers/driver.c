@@ -12,7 +12,7 @@ typedef struct{
    int (*open)(void *arg1, void *arg2);
    int (*write)(unsigned int addr ,void *buf, unsigned int len);
    int (*read)(unsigned int addr,void *buf, unsigned int len);
-   int (*ioctl)(void *arg, int cmd);
+   int (*ioctl)(void *arg, int cmd, int cmdarg);
    int (*close)(void *arg);
 }d_ops;
 
@@ -125,8 +125,19 @@ int add_device(board_t *board, class_t class, device_t *device)
   str_split(__path,__class,'/',2,3);\
   strdel_head(__path,__board,'/',3);}while(0)
 
+#define FIND_DEVICE(__nb, __nd, __device_path, __class) \
+do{\
+       foreach_class(pos, &board_pool[__nb], __class) \
+         if (!strcmp(pos->type, __device_path)){ \
+           board_pool[__nb].open[__nd] = pos; \
+           pos->ops.open(&board_pool[__nb],pos); \
+        } \
+}while(0)
+
 #define BOARD_MASK 8
 #define GET_FD(__nb,__nd) (((__nb) << BOARD_MASK) | (__nd & 0x00ff))
+
+
 /*
 * @device_open : 设备打开函数，
 */
@@ -153,41 +164,23 @@ int device_open(char *path)
        if (!board_pool[nb].open[cnt]->type)
 		nd = cnt;
     }
-
-    if (!strcmp(class,"CPU"))
-      foreach_class(pos, &board_pool[nb], CPU)
-        if (!strcmp(pos->type, device)){
-           board_pool[nb].open[nd] = pos;
-	   pos->ops.open(&board_pool[nb],pos);
-           return GET_FD(nb,nd);
-	}
-  
-     if (!strcmp(class,"RAM"))
-      foreach_class(pos, &board_pool[nb], RAM)
-        if (!strcmp(pos->type, device)){
-           board_pool[nb].open[nd] = pos;
-           pos->ops.open(&board_pool[nb],pos);
-           return GET_FD(nb,nd);
-        }
-
-    if (!strcmp(class,"NOR"))
-      foreach_class(pos, &board_pool[nb], NOR)
-        if (!strcmp(pos->type, device)){
-           board_pool[nb].open[nd] = pos;
-           pos->ops.open(&board_pool[nb],pos);
-           return GET_FD(nb,nd);
-        }
-
-   if (!strcmp(class,"NAND"))
-      foreach_class(pos, &board_pool[nb], NAND)
-        if (!strcmp(pos->type, device)){
-           board_pool[nb].open[nd] = pos;
-           pos->ops.open(&board_pool[nb],pos);
-           return GET_FD(nb,nd);
-        }
- 
    
-   return -1;
+  if (strcmp(class,"CPU")){  
+     FIND_DEVICE(nb, nd, device, CPU);
+     return GET_FD(nb,nd);
+  }else if (strcmp(class, "RAM")){
+     FIND_DEVICE(nb, nd, device, RAM);
+     return GET_FD(nb,nd);
+  }else if (strcmp(class, "NOR")){
+     FIND_DEVICE(nb, nd, device, NOR);
+     return GET_FD(nb,nd);
+  }else if (strcmp(class, "NAND")){
+     FIND_DEVICE(nb, nd, device, NAND); 
+     return GET_FD(nb,nd);
+  }else{
+     return -1;
+  }
+
 }
 
 /*
@@ -198,20 +191,22 @@ int device_open(char *path)
 * @device_read :设备读函数
 */
 
-int device_read(board_t *board, int fd, unsigned int addr, 
-			     void *buf ,unsigned int len)
+int device_read(int fd, unsigned int addr, void *buf ,unsigned int len)
 {
-    return board->open[fd]->ops.read(addr, buf, len);
+    int nb = (fd >> 8) & 0x00ff;
+    int nd = fd & 0x00ff;
+    return board_pool[nb].open[nd]->ops.read(addr, buf, len);
 }
 
 /*
 * @device_write : 设备写函数
 */
 
-int device_write(board_t *board, int fd, unsigned int addr,
-                             void *buf ,unsigned int len)
+int device_write(int fd, unsigned int addr,void *buf ,unsigned int len)
 {
-    return board->open[fd]->ops.read(addr, buf, len);
+    int nb = (fd >> 8) & 0x00ff;
+    int nd = fd & 0x00ff;
+    return board_pool[nb].open[nd]->ops.write(addr, buf, len);
 }
 
 /*
@@ -220,13 +215,17 @@ int device_write(board_t *board, int fd, unsigned int addr,
 
 int device_close(board_t *board, int fd)
 {
-    return board->open[fd]->ops.close(board);
+    int nb = (fd >> 8) & 0x00ff;
+    int nd = fd & 0x00ff;
+    return board_pool[nb].open[nd]->ops.close(&board_pool[nb]);
 }
 
 /*
 * @device_ioctl : 设备控制 
 */
-int device_ioctl(board_t *board, int fd, int cmd)
+int device_ioctl(board_t *board, int fd, int cmd, int arg)
 {
-    return board->open[fd]->ops.ioctl(board,cmd);
+    int nb = (fd >> 8) & 0x00ff;
+    int nd = fd & 0x00ff;
+    return board_pool[nb].open[nd]->ops.ioctl(board,cmd,arg);
 }
