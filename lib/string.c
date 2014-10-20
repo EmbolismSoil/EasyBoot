@@ -408,6 +408,9 @@ char *strswab(const char *s)
 
 char * strnchr(const char *src, int chr, int n)
 {
+    if (!src && !n)
+	return NULL;
+
     const char *dest = src;
     int len = strlen(src);
     int cnt, count = 0;
