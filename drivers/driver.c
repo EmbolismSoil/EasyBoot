@@ -1,6 +1,7 @@
 #include <linux/list.h>
 #include <debug.h>
 #include <linux/stddef.h>
+#include <advstr.h>
 
 #define MAX_DEV 25
 #define MAX_BOARD 10
@@ -78,7 +79,7 @@ board_t *get_board(char *type)
 }
 
 #define foreach_class(pos ,board, class) \
-	list_for_each_entry(pos, &(board->class##_list), list) 
+	list_for_each_entry(pos, &((board)->class##_list), list) 
 	 
 /*
 * @add_device : 往板子上添加一个class类型的设备device
@@ -119,6 +120,13 @@ int add_device(board_t *board, class_t class, device_t *device)
 	return 0;
 }
 
+#define split_path(__path,__board,__class,__device) do{\
+  str_split(__path,__board,'/',1,2); \
+  str_split(__path,__class,'/',2,3);\
+  strdel_head(__path,__board,'/',3);}while(0)
+
+#define BOARD_MASK 8
+#define GET_FD(__nb,__nd) (((__nb) << BOARD_MASK) | (__nd & 0x00ff))
 /*
 * @device_open : 设备打开函数，
 */
@@ -126,54 +134,59 @@ int add_device(board_t *board, class_t class, device_t *device)
 int device_open(char *path)
 {
     int cnt;
-    int fd;
-    char *board_type;
-    char *class;
-    char *device_type;
+    int nb = -1;
+    int nd = -1;
 
     device_t  *pos;
+    char board[20] , class[20], device[20];
+    split_path(path,board,class,device);
+   
+    for (cnt = 0; cnt < MAX_BOARD; cnt++){
+       if (!strcmp(board_pool[cnt].type, board))
+	   nb = cnt;
+    }
+    if (nb < 0) return -1;
+
     for (cnt = 0; cnt < MAX_DEV; cnt++){
-       if (!strcmp(board->open[cnt]->type, type))
-		return cnt;
-       if (!board->open[cnt]->type)
-		fd = cnt;
+       if (!strcmp(board_pool[nb].open[cnt]->type, device))
+		return GET_FD(nb,nd);
+       if (!board_pool[nb].open[cnt]->type)
+		nd = cnt;
     }
 
-    switch (class){
-    case CPU : 
-      foreach_class(pos, board, CPU)
-        if (!strcmp(pos->type, type)){
-           board->open[fd] = pos;
-	   pos->ops.open(board,pos);
-           return fd;
+    if (!strcmp(class,"CPU"))
+      foreach_class(pos, &board_pool[nb], CPU)
+        if (!strcmp(pos->type, device)){
+           board_pool[nb].open[nd] = pos;
+	   pos->ops.open(&board_pool[nb],pos);
+           return GET_FD(nb,nd);
 	}
-
-    case RAM :
-      foreach_class(pos, board, RAM)
-	if (!strcmp(pos->type, type)){
-	   board->open[fd] = pos;
-	   pos->ops.open(board,pos);
-	   return fd;
-	}
-
-    case NOR : 
-      foreach_class(pos, board, RAM)
-        if (!strcmp(pos->type, type)){
-           board->open[fd] = pos;
-	   pos->ops.open(board,pos);
-           return fd;
+  
+     if (!strcmp(class,"RAM"))
+      foreach_class(pos, &board_pool[nb], RAM)
+        if (!strcmp(pos->type, device)){
+           board_pool[nb].open[nd] = pos;
+           pos->ops.open(&board_pool[nb],pos);
+           return GET_FD(nb,nd);
         }
 
-    case NAND : 
-      foreach_class(pos, board, RAM)
-        if (!strcmp(pos->type, type)){
-           board->open[fd] = pos;
-	   pos->ops.open(board,pos);
-           return fd;
+    if (!strcmp(class,"NOR"))
+      foreach_class(pos, &board_pool[nb], NOR)
+        if (!strcmp(pos->type, device)){
+           board_pool[nb].open[nd] = pos;
+           pos->ops.open(&board_pool[nb],pos);
+           return GET_FD(nb,nd);
         }
 
-    }
-
+   if (!strcmp(class,"NAND"))
+      foreach_class(pos, &board_pool[nb], NAND)
+        if (!strcmp(pos->type, device)){
+           board_pool[nb].open[nd] = pos;
+           pos->ops.open(&board_pool[nb],pos);
+           return GET_FD(nb,nd);
+        }
+ 
+   
    return -1;
 }
 
