@@ -86,7 +86,7 @@ board_t *get_board(char *type)
 */
 int add_device(board_t *board, class_t class, device_t *device)
 {
-	DEBUG_CHECK(!board && !device, -1);
+	DEBUG_CHECK(!board || !device, -1);
 	device_t *pos;
     switch (class){
     case CPU :  
