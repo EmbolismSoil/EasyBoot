@@ -7,6 +7,11 @@
 #define MAX_BOARD 10
 
 typedef enum{CPU,RAM,NOR,NAND}class_t;
+typedef struct __device device_t;
+extern device_t __device_start;
+extern device_t __device_end;
+
+
 
 typedef struct{
    int (*open)(void *arg1, void *arg2);
@@ -16,16 +21,19 @@ typedef struct{
    int (*close)(void *arg);
 }d_ops;
 
-typedef struct{
+struct __device{
     char *type;
+    char *info;
+    class_t class;
     d_ops  ops;
-    struct list_head list;
     int _flag;
+    struct list_head list;
     void  *_pri;
-}device_t;
+};
 
 typedef struct{
     char *type;
+    char *info;
     struct list_head  CPU_list;
     struct list_head  RAM_list;
     struct list_head  NOR_list;
@@ -35,26 +43,7 @@ typedef struct{
     void *	pri;
 }board_t;
 
-static device_t device_pool[MAX_DEV];
 static board_t board_pool[MAX_BOARD];
-/*
-* @get_device: 获取一个型号为type的设备，
-* 如果没有在设备池内发现对应型号的设备则
-* 返回一个空设备，用户需要自行初始化
-*/
-device_t *get_device(char *type)
-{
-    DEBUG_CHECK(!type,NULL);
-    char cnt;
-    for (cnt = 0;cnt < MAX_DEV && 
-		device_pool[cnt].type != NULL; cnt++)
-        if(!strcmp(type,device_pool[cnt].type))
-	    return &device_pool[cnt];
-    
-    device_pool[cnt].type = type;
-    INIT_LIST_HEAD(&device_pool[cnt].list);
-    return &device_pool[cnt];
-}
 
 /*
 *@ get_board : 获取一个型号为type的board,如果没有在boar_pool
@@ -84,11 +73,11 @@ board_t *get_board(char *type)
 /*
 * @add_device : 往板子上添加一个class类型的设备device
 */
-int add_device(board_t *board, class_t class, device_t *device)
+int add_device(board_t *board,  device_t *device)
 {
 	DEBUG_CHECK(!board || !device, -1);
 	device_t *pos;
-    switch (class){
+    switch (device->class){
     case CPU :  
       foreach_class(pos, board, CPU)
         if (!strcmp(pos->type, device->type))
@@ -120,6 +109,27 @@ int add_device(board_t *board, class_t class, device_t *device)
 	return 0;
 }
 
+
+/*
+ * @function : register an device on board
+ *   we get the device object by foreach the .__easy_boot_device section
+ *  the symbol '__device_start' just declare here "extern __device_start" 
+ */
+ 
+ int register_device(board_t *board, char device_type[])
+ {
+    device_t *devp;
+    
+	for (devp = &__device_start; devp != &__device_end; devp++) {
+		if (!strcmp(devp->type, device_type))
+		    if (!add_device(board, devp)){
+		    	return 0;
+		    }else{
+		    	return -1;
+		    }
+	}
+ }
+ 
 #define split_path(__path,__board,__class,__device) do{\
   str_split(__path,__board,'/',1,2); \
   str_split(__path,__class,'/',2,3);\
@@ -128,7 +138,7 @@ int add_device(board_t *board, class_t class, device_t *device)
 #define FIND_DEVICE(__nb, __nd, __device_path, __class) \
 do{\
        foreach_class(pos, &board_pool[__nb], __class) \
-         if (!strcmp(pos->type, __device_path)){ \
+         if (!strcmp(pos->type, __device_path) && pos->class == __class){ \
            board_pool[__nb].open[__nd] = pos; \
            pos->ops.open(&board_pool[__nb],pos); \
         } \
@@ -193,7 +203,7 @@ int device_open(char *path)
 
 int device_read(int fd, unsigned int addr, void *buf ,unsigned int len)
 {
-    int nb = (fd >> 8) & 0x00ff;
+    int nb = (fd >>  BOARD_MASK) & 0x00ff;
     int nd = fd & 0x00ff;
     return board_pool[nb].open[nd]->ops.read(addr, buf, len);
 }
@@ -204,7 +214,7 @@ int device_read(int fd, unsigned int addr, void *buf ,unsigned int len)
 
 int device_write(int fd, unsigned int addr,void *buf ,unsigned int len)
 {
-    int nb = (fd >> 8) & 0x00ff;
+    int nb = (fd >>  BOARD_MASK) & 0x00ff;
     int nd = fd & 0x00ff;
     return board_pool[nb].open[nd]->ops.write(addr, buf, len);
 }
@@ -215,7 +225,7 @@ int device_write(int fd, unsigned int addr,void *buf ,unsigned int len)
 
 int device_close(board_t *board, int fd)
 {
-    int nb = (fd >> 8) & 0x00ff;
+    int nb = (fd >> BOARD_MASK) & 0x00ff;
     int nd = fd & 0x00ff;
     return board_pool[nb].open[nd]->ops.close(&board_pool[nb]);
 }
@@ -225,7 +235,7 @@ int device_close(board_t *board, int fd)
 */
 int device_ioctl(board_t *board, int fd, int cmd, int arg)
 {
-    int nb = (fd >> 8) & 0x00ff;
+    int nb = (fd >>  BOARD_MASK) & 0x00ff;
     int nd = fd & 0x00ff;
     return board_pool[nb].open[nd]->ops.ioctl(board,cmd,arg);
 }
