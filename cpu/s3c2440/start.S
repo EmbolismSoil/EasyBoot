@@ -8,7 +8,6 @@
 #define WTREG_BASE	0x53000000
 #define SDRAM_BASE	0x30000000
 
-#include "config.h"
 .global _start
 _start:
 	ldr	 r0,=WTREG_BASE

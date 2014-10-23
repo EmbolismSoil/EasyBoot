@@ -1,55 +1,51 @@
+/*
+ *  EasyBoot driver system
+ *
+ *  Copyright (c) 2014	Lee <TofuleeSoil@163.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ * MA 02111-1307 USA
+ */
+
 #include <linux/list.h>
 #include <debug.h>
 #include <linux/stddef.h>
 #include <advstr.h>
-
-#define MAX_DEV 25
-#define MAX_BOARD 10
-
-typedef enum{CPU,RAM,NOR,NAND}class_t;
-typedef struct __device device_t;
-extern device_t __device_start;
-extern device_t __device_end;
+#include <driver.h>
 
 
-
-typedef struct{
-   int (*open)(void *arg1, void *arg2);
-   int (*write)(unsigned int addr ,void *buf, unsigned int len);
-   int (*read)(unsigned int addr,void *buf, unsigned int len);
-   int (*ioctl)(void *arg, int cmd, int cmdarg);
-   int (*close)(void *arg);
-}d_ops;
-
-struct __device{
-    char *type;
-    char *info;
-    class_t class;
-    d_ops  ops;
-    int _flag;
-    struct list_head list;
-    void  *_pri;
-};
-
-typedef struct{
-    char *type;
-    char *info;
-    struct list_head  CPU_list;
-    struct list_head  RAM_list;
-    struct list_head  NOR_list;
-    struct list_head  NAND_list;
-    device_t     *open[MAX_DEV];
-    int (*show)(void *,void *);
-    void *	pri;
-}board_t;
 
 static board_t board_pool[MAX_BOARD];
 
 /*
-*@ get_board : 获取一个型号为type的board,如果没有在boar_pool
-* 中找到对应型号的设备则返回一个空设备，用户需要自行初始化
+ * @function : use as an default_show meber of atr.show
+ *  copy the atr.info to r_buf and return the r_buf
 */
-board_t *get_board(char *type)
+static char *default_show(void *atr,void *r_buf,int len)
+{
+   DEBUG_CHECK(!r_buf, NULL);
+    r_buf = (void *)(((attribute *)atr)->info);
+	return (char *)r_buf;
+}
+/*
+ * @function : request an board from boards pool.
+ * System will alloc an blank board if it can not find this type the blank board which 
+  * user have been given should be  initialised.his blank board use the function 
+  *'defaule_show' as an default member : boaard.show
+ */
+board_t *board_req(char *type)
 {
     DEBUG_CHECK(!type, NULL);
     char cnt;
@@ -59,6 +55,8 @@ board_t *get_board(char *type)
 	    return &board_pool[cnt];
 
     board_pool[cnt].type = type;
+    board_pool[cnt].atr.show = default_show;
+    
     INIT_LIST_HEAD(&board_pool[cnt].CPU_list);
     INIT_LIST_HEAD(&board_pool[cnt].RAM_list);
     INIT_LIST_HEAD(&board_pool[cnt].NOR_list);
@@ -71,9 +69,9 @@ board_t *get_board(char *type)
 	list_for_each_entry(pos, &((board)->class##_list), list) 
 	 
 /*
-* @add_device : 往板子上添加一个class类型的设备device
+* @add_device : add device to  board.
 */
-int add_device(board_t *board,  device_t *device)
+static int add_device(board_t *board,  device_t *device)
 {
 	DEBUG_CHECK(!board || !device, -1);
 	device_t *pos;
@@ -149,9 +147,8 @@ do{\
 
 
 /*
-* @device_open : 设备打开函数，
+* @device_open 
 */
-
 int device_open(char *path)
 {
     int cnt;
@@ -193,12 +190,9 @@ int device_open(char *path)
 
 }
 
-/*
-* @device_open
-*/
 
 /*
-* @device_read :设备读函数
+* @device_read 
 */
 
 int device_read(int fd, unsigned int addr, void *buf ,unsigned int len)
@@ -209,7 +203,7 @@ int device_read(int fd, unsigned int addr, void *buf ,unsigned int len)
 }
 
 /*
-* @device_write : 设备写函数
+* @device_write 
 */
 
 int device_write(int fd, unsigned int addr,void *buf ,unsigned int len)
@@ -220,7 +214,7 @@ int device_write(int fd, unsigned int addr,void *buf ,unsigned int len)
 }
 
 /*
-* @device_close : 关闭设备
+* @device_close 
 */
 
 int device_close(board_t *board, int fd)
@@ -231,7 +225,7 @@ int device_close(board_t *board, int fd)
 }
 
 /*
-* @device_ioctl : 设备控制 
+* @device_ioctl  
 */
 int device_ioctl(board_t *board, int fd, int cmd, int arg)
 {
