@@ -22,7 +22,6 @@ __device_start = .;
 __device_end = .;                     
 __img_end = .;
  
-. = _start + 0x100000;                       
 . = ALIGN(32);                                 
 __bss_start = .;                                  
 .bss1 (NOLOAD) : {*(.bss)}
