@@ -120,7 +120,7 @@ static int add_device(board_t *board,  device_t *device)
  {
     device_t *devp;
     
-	for (devp = &__device_start; devp != &__device_end; devp++) {
+	for (devp = &__driver_start; devp != &__driver_end; devp++) {
 		if (!strcmp(devp->drv, driver_type)){
 			devp->type = device_type;
 		    if (!add_device(board, devp)){

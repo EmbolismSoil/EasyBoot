@@ -7,8 +7,8 @@
 
 开发驱动的流程：
 
-1 在自己驱动的.c文件中实现自己的ops结构体，使用ADD_DEVICE(__type,__ops)添加一个设备，这个设备会被添加到.device这个section内，设备对象名为__device_##__type,其型号就是并且自动初始化：__device_##__type = {.type = #__type, .ops = __ops};
+1 在自己驱动的.c文件中实现自己的ops结构体，使用EXPORT_DRIVER(__type,__ops)添加一个驱动，这个驱动会被添加到.driver这个section内，设备对象名为__driver_##__type,其型号就是并且自动初始化：__driver_##__type = {.type = #__type, .ops = __ops};
 
-2 接下来，用户就在device_main函数内，调用get_board()函数，获取一个板子，然后调用register_device(board,class_t，type)往板子上注册驱动,这个函数会遍历.device section，找到相对应的型号，然后添加到板子上对应的链表上。
+2 接下来，用户就在device_main函数内，调用get_board()函数，获取一个板子，然后调用register_device(board,drv_type,device_type)注册一个设备，这个设备使用驱动drv_type,以后在系统中以device_type代表着驱动的存在，这个函数会遍历.driver section，找到相对应的型号，然后添加到板子上对应的链表上。
 
 3 在第二版中加入总线（仿照LINUX设备驱动模型和IIC总线）

@@ -29,8 +29,8 @@
 
 typedef enum{CPU,RAM,NOR,NAND}class_t;
 typedef struct __device device_t;
-extern device_t __device_start;
-extern device_t __device_end;
+extern device_t __driver_start;
+extern device_t __driver_end;
 
 typedef struct{
 	 char* (*show)(void *,void *,int );
