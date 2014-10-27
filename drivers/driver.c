@@ -111,20 +111,24 @@ static int add_device(board_t *board,  device_t *device)
 /*
  * @function : register an device on board
  *   we get the device object by foreach the .__easy_boot_device section
- *  the symbol '__device_start' just declare here "extern __device_start" 
+ *  the symbol '__device_start' just declare here "extern __device_start"
+ *  driver_type : the driver which will be register as device_type 
  */
  
- int register_device(board_t *board, char device_type[])
+ int register_device(board_t *board,char driver_type[],
+				 char device_type[])
  {
     device_t *devp;
     
 	for (devp = &__device_start; devp != &__device_end; devp++) {
-		if (!strcmp(devp->type, device_type))
+		if (!strcmp(devp->drv, driver_type)){
+			devp->type = device_type;
 		    if (!add_device(board, devp)){
 		    	return 0;
 		    }else{
 		    	return -1;
 		    }
+		}
 	}
  }
  
