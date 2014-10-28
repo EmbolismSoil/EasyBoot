@@ -18,7 +18,7 @@ SECTIONS
 . = ALIGN(4);
 . = .;                                                        
 __driver_start = .;                          
-.u_boot_cmd : { *(.__easy_boot_device) }             
+.u_boot_cmd : { *(.__easy_boot_driver) }             
 __driver_end = .;                     
 __img_end = .;
  

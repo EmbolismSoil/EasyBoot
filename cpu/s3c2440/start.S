@@ -105,16 +105,20 @@ reset:
  * use bad_save_user_regs for abort/prefetch/undef/swi ...
  * use irq_save_user_regs / irq_restore_user_regs for IRQ/FIQ handling
  */
-
+/*all of the interrupt mode share the same stack : IRQ_STACK*/
 	.macro	bad_save_user_regs
+	/*save r0~r12 = 4 * 13 = 52 = S_FRAME_SIZE - 20*/
 	sub	sp, sp, #S_FRAME_SIZE
 	stmia	sp, {r0 - r12}			@ Calling r0-r12
 	ldr	r2, IRQ_STACK_START
+	/*restore the pc cpsr to r2,r3*/
 	ldmia	r2, {r2 - r3}			@ get pc, cpsr
+	/*now, store sp ,lr, pc , cpsr : {r0 - r3}*/
 	add	r0, sp, #S_FRAME_SIZE		@ restore sp_SVC
-
+	/*r5 = 52*/
 	add	r5, sp, #S_SP
 	mov	r1, lr
+	/*r0 = sp@52, r1 = lr@56, r2 = pc@60,r3 = cpsr@64*/
 	stmia	r5, {r0 - r3}			@ save sp_SVC, lr_SVC, pc, cpsr
 	mov	r0, sp
 	.endm
@@ -140,12 +144,13 @@ reset:
 	.endm
 
 	.macro get_bad_stack
+	
 	ldr	r13, IRQ_STACK_START		@ setup our mode stack
 
 	str	lr, [r13]			@ save caller lr / spsr
 	mrs	lr, spsr
-	str	lr, [r13, #4]
-
+	str	lr, [r13, #4]			@ save spsr
+	
 	mov	r13, #MODE_SVC			@ prepare SVC-Mode
 	@ msr	spsr_c, r13
 	msr	spsr, r13
@@ -166,6 +171,7 @@ reset:
  */
 	.align  5
 undefined_instruction:
+	/*get our satck pointer*/
 	get_bad_stack
 	bad_save_user_regs
 	bl	do_undefined_instruction
