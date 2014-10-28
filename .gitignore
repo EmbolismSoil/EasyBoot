@@ -4,5 +4,6 @@
 *.out
 *.txt
 *.doc
+*.docx
 *.pdf
 doc/
