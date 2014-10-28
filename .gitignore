@@ -2,4 +2,7 @@
 *.[oa]
 *.test
 *.out
+*.txt
+*.doc
+*.pdf
 doc/
