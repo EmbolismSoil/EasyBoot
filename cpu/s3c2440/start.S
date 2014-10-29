@@ -16,6 +16,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  * MA 02111-1307 USA
  */
+
+/*
+ *  mod by sc.suh@samsung.com
+ *
+ *  Our U-Boot Memory Map
+ *                                      (offset)
+ *       --------------------------     
+ *       |     Stack     (215KB)  |
+ *       --------------------------          
+ *       |     IRQ Stack  (4KB)   | <------------------------ CONFIG
+ *       --------------------------     
+ *       |     FIQ Stack  (4KB)   | <------------------------ CONFIG
+ *       --------------------------     
+ *       |     BAD STACK  (4KB)   |
+ *       --------------------------     
+ *       |     BSS and Reserved   |
+ *       --------------------------     
+ *       |         U-Boot         |
+ *       --------------------------     0x30000000
+ */
+
 #define MPLL_400MHZ     ((0x5c<<12)|(0x01<<4)|(0x01))
 #define WTREG_BASE	0x53000000
 #define SDRAM_BASE	0x30000000
@@ -42,18 +63,18 @@ _fiq:                   .word fiq
 
 .global SVC_STACK_START
 SVC_STACK_START:
-	.word __stack + 0x800
+	.word __stack + 0x35c00/*215KB*/
 
 .globl IRQ_STACK_START
 IRQ_STACK_START:
-        .word SVC_STACK_START + 0x100
+        .word SVC_STACK_START + 0x4000/*4KB*/
 
 .globl FIQ_STACK_START
 FIQ_STACK_START:
-        .word IRQ_STACK_START + 0x100
+        .word IRQ_STACK_START + 0x4000/*4KB*/
 .global BAD_STACK_START
 BAD_STACK_START:
-	.word FIQ_STACK_START + 0x50
+	.word FIQ_STACK_START + 0x4000/*4KB*/
 
 reset:
     ldr	    r0,=WTREG_BASE
@@ -108,20 +129,20 @@ reset:
  * use bad_save_user_regs for abort/prefetch/undef/swi ...
  * use irq_save_user_regs / irq_restore_user_regs for IRQ/FIQ handling
  */
-/*all of the interrupt mode share the same stack : IRQ_STACK*/
+
 	.macro	bad_save_user_regs
-	/*save r0~r12 = 4 * 13 = 52 = S_FRAME_SIZE - 20*/
+
 	sub	sp, sp, #S_FRAME_SIZE
 	stmia	sp, {r0 - r12}			@ Calling r0-r12
 	ldr	r2, IRQ_STACK_START
-	/*restore the pc cpsr to r2,r3*/
+
 	ldmia	r2, {r2 - r3}			@ get pc, cpsr
-	/*now, store sp ,lr, pc , cpsr : {r0 - r3}*/
+
 	add	r0, sp, #S_FRAME_SIZE		@ restore sp_SVC
-	/*r5 = 52*/
+
 	add	r5, sp, #S_SP
 	mov	r1, lr
-	/*r0 = sp@52, r1 = lr@56, r2 = pc@60,r3 = cpsr@64*/
+
 	stmia	r5, {r0 - r3}			@ save sp_SVC, lr_SVC, pc, cpsr
 	mov	r0, sp
 	.endm
@@ -148,7 +169,7 @@ reset:
 
 	.macro get_bad_stack
 	
-	ldr	r13, IRQ_STACK_START		@ setup our mode stack
+	ldr	r13, BAD_STACK_START		@ setup our mode stack
 
 	str	lr, [r13]			@ save caller lr / spsr
 	mrs	lr, spsr
