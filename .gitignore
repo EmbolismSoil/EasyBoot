@@ -6,5 +6,6 @@
 *.doc
 *.docx
 *.pdf
+*.swp
 doc/
 test/

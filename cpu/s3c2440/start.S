@@ -51,6 +51,9 @@ IRQ_STACK_START:
 .globl FIQ_STACK_START
 FIQ_STACK_START:
         .word IRQ_STACK_START + 0x100
+.global BAD_STACK_START
+BAD_STACK_START:
+	.word FIQ_STACK_START + 0x50
 
 reset:
     ldr	    r0,=WTREG_BASE
