@@ -61,7 +61,7 @@ _fiq:                   .word fiq
 
         .balignl 16,0xdeadbeef
 
-.global SVC_STACK_START
+.globl SVC_STACK_START
 SVC_STACK_START:
 	.word __stack + 0x35c00/*215KB*/
 
@@ -72,7 +72,7 @@ IRQ_STACK_START:
 .globl FIQ_STACK_START
 FIQ_STACK_START:
         .word IRQ_STACK_START + 0x4000/*4KB*/
-.global BAD_STACK_START
+.globl BAD_STACK_START
 BAD_STACK_START:
 	.word FIQ_STACK_START + 0x4000/*4KB*/
 
@@ -92,10 +92,10 @@ reset:
     bl     clock_init
     bl     copy2ram
     
-    ldr    pc,=clear_bss
-    bl	   user_device_main
-    bl	   main
-
+    bl     clear_bss
+//    ldr	   pc,=user_device_main
+    ldr	   pc,=main @we will register all of the device we wanna use and open them
+		    @then....run the shell
 
 @
 @ IRQ stack frame.
@@ -148,7 +148,7 @@ reset:
 	.endm
 
 	.macro	irq_save_user_regs
-	sub	sp, sp, IRQ_STACK_START
+	sub	sp, sp,#S_FRAME_SIZE
 	stmia	sp, {r0 - r12}			@ Calling r0-r12
 	add	r7, sp, #S_PC
 	stmdb	r7, {sp, lr}^			@ Calling SP, LR
