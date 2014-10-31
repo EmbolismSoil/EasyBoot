@@ -1,7 +1,6 @@
-
-LIB     = lib.a
-SOBJS   = start.o
-COBJS= interrupt.o
+LIB     = libdrivers.a
+SOBJS   = 
+COBJS   = driver.o
 
 SRCS    := $(SOBJS:.o=.S) $(COBJS:.o=.c)
 OBJS:=$(COBJS) $(SOBJS)

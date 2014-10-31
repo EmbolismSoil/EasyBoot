@@ -25,7 +25,7 @@ __img_end = .;
 . = ALIGN(32);                                 
 __bss_start = .;                                  
 .bss1 (NOLOAD) : {*(.bss)}
-_bss_end = .;
+__bss_end = .;
 . = ALIGN(4);
 __stack = .;
 }

@@ -4,7 +4,7 @@ export  TOPDIR SRCTREE
 
 
 OBJCFLAGS=--gap-fill=0xff 
-CFLAGS=-g -I $(TOPDIR)/include
+CFLAGS=-g -I $(TOPDIR)/includes
 export OBJCFLAGS CFLAGS
 
 ARCH=arm
@@ -12,7 +12,7 @@ CPU=s3c2440
 BOARD=mini2440
 export	ARCH CPU BOARD
 
-LDSCRIPT=$(TOPDIR)/$(BOARD)/easy-boot.lds
+LDSCRIPT:=$(TOPDIR)/boards/$(BOARD)/easy-boot.lds
 LDFLAGS=-Bstatic -T $(LDSCRIPT)
 export LDSCRIPT LDFLAGS
 
@@ -64,7 +64,7 @@ OBJS += cpu/$(CPU)/interrupt.o
 
 LIBS = lib/libcommon.a
 LIBS += drivers/libdrivers.a
-
+LIBS += boards/$(BOARD)/lib$(BOARD).a
 LIBS := $(addprefix $(SRCTREE)/,$(LIBS))
 .PHONY : $(LIBS)
 
@@ -94,4 +94,4 @@ $(LIBS):
 .PHONY:clean
 clean:
 #	'find /home/lee/project/EasyBoot/ -type f -name "*.o" -o -name "*.a"';
-	@rm -f $(shell find /home/lee/project/EasyBoot/ -type f -name "*.o" -o -name "*.a")
+	rm -f $(shell find /home/lee/project/EasyBoot/ -type f -name "*.o" -o -name "*.a")

@@ -20,8 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  * MA 02111-1307 USA
  */
- #define 	MEM_REG_BASE		 (*(volatile unsigned long *)0x48000000)
-#define CLK_REG_BASE         (*(volatile unsigned long *)0x4c000000)
+#define MEM_REG_BASE  ((volatile unsigned long *)0x48000000)
+#define CLK_REG_BASE  ((volatile unsigned long *)0x4c000000)
 /*clock registers*/
 #define LOCKTIME      0
 #define MPLLCON       1
@@ -65,10 +65,10 @@
  
 static int is_boot_nor()
 {
-	int *p = (volatile int *)0;
-	*p = 0x00abcdef;
+	#define TEST (*(volatile int *)0)
+	TEST = 0xabcdef;
 	
-	if (*p == 0x00abcdef)
+	if (TEST == 0xabcdef)
 		return 0;
 	else
 		return 1;
