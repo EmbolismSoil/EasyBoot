@@ -76,9 +76,9 @@ extern int device_write(int fd, unsigned int addr,void *buf ,unsigned int len);
 extern int device_close(board_t *board, int fd);
 extern int device_ioctl(board_t *board, int fd, int cmd, int arg);
 
-#define IN_SECTION_DEVICE  __attribute__ ((unused,section (".__easy_boot_driver")))
+#define IN_SECTION_DEVICE  __attribute__ ((unused,section (".easy_boot_driver")))
 #define DRIVER_EXPORT(__type, __class, __atr, __ops, __pri ) \
-	device_t driver_##__type   IN_SECTION_DEVICE = { \
+	device_t __easy_boot_driver_##__type   IN_SECTION_DEVICE = { \
 		.drv = #__type, \
 		.class = __class, \
 		.atr = __atr,  \
