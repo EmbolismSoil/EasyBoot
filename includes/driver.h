@@ -49,7 +49,7 @@ struct __device{
     char *type;
     char *drv;/*这个设备使用的驱动名称*/
     class_t class;
-    d_ops  ops;
+    d_ops  *ops;
     attribute atr;
     struct list_head list;
     int _flag;
@@ -69,7 +69,7 @@ typedef struct{
 }board_t;
 
 extern board_t *board_req(char *type);
-extern  int register_device(board_t *board,char driver_type[], char device_type[]);
+extern  int register_device(board_t *board,class_t class,char driver_type[], char device_type[]);
 extern int device_open(char *path);
 extern int device_read(int fd, unsigned int addr, void *buf ,unsigned int len);
 extern int device_write(int fd, unsigned int addr,void *buf ,unsigned int len);
@@ -80,9 +80,8 @@ extern int device_ioctl(board_t *board, int fd, int cmd, int arg);
 #define DRIVER_EXPORT(__type, __class, __atr, __ops, __pri ) \
 	device_t __easy_boot_driver_##__type   IN_SECTION_DEVICE = { \
 		.drv = #__type, \
-		.class = __class, \
 		.atr = __atr,  \
 		.ops = __ops, \
-		.pri = __pri, \
+		._pri = NULL,\
 	}
 #endif

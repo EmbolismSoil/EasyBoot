@@ -18,9 +18,6 @@
  */
 
 /*
- *  mod by sc.suh@samsung.com
- *
- *  Our U-Boot Memory Map
  *                                      (offset)
  *       --------------------------     
  *       |     Stack     (215KB)  |
@@ -106,7 +103,7 @@ reset:
     
     bl     clear_bss
 //    ldr	   pc,=user_device_main
-//    ldr	   pc,=main @we will register all of the device we wanna use and open them
+    ldr	   pc,=main @we will register all of the device we wanna use and open them
 		    @then....run the shell
 
 @

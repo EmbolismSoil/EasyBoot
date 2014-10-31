@@ -1,6 +1,6 @@
 LIB     = libdrivers.a
 SOBJS   = 
-COBJS   = driver.o
+COBJS   = driver.o leds.o
 
 SRCS    := $(SOBJS:.o=.S) $(COBJS:.o=.c)
 OBJS:=$(COBJS) $(SOBJS)

@@ -4,7 +4,7 @@ export  TOPDIR SRCTREE
 
 
 OBJCFLAGS=--gap-fill=0xff 
-CFLAGS=-g -I $(TOPDIR)/includes
+CFLAGS=-I $(TOPDIR)/includes
 export OBJCFLAGS CFLAGS
 
 ARCH=arm
@@ -61,7 +61,6 @@ export	CROSS_COMPILE AS LD CC CPP AR NM STRIP OBJCOPY OBJDUMP RANLIB
 
 OBJS  = cpu/$(CPU)/start.o
 OBJS += cpu/$(CPU)/interrupt.o
-
 LIBS = lib/libcommon.a
 LIBS += drivers/libdrivers.a
 LIBS += boards/$(BOARD)/lib$(BOARD).a
@@ -81,7 +80,7 @@ EasyBoot.bin:	EasyBoot
 
 EasyBoot: $(OBJS) $(LIBS) $(LDSCRIPT)
 		#UNDEF_SYM_CMD=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/\(__Easy_Boot_cmd\)/-u\1/p'|sort|uniq`;
-		UNDEF_SYM_DRV=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/\(.*__easy_boot_driver.*\)/-u\1/p'|sort|uniq`;\
+		UNDEF_SYM_DRV=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/.*\(__easy_boot_driver.*\)/-u\1/p'|sort|uniq`;\
 		$(LD) $(LDFLAGS) $$UNDEF_SYM_DRV $(OBJS) \
 			--start-group $(LIBS) --end-group -o $@
 

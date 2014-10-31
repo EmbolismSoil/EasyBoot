@@ -1,7 +1,7 @@
 
 LIB     = lib.a
 SOBJS   = start.o
-COBJS= interrupt.o
+COBJS= interrupt.o 
 
 SRCS    := $(SOBJS:.o=.S) $(COBJS:.o=.c)
 OBJS:=$(COBJS) $(SOBJS)

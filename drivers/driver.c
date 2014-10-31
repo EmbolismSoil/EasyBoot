@@ -115,7 +115,7 @@ static int add_device(board_t *board,  device_t *device)
  *  driver_type : the driver which will be register as device_type 
  */
  
- int register_device(board_t *board,char driver_type[],
+ int register_device(board_t *board,class_t class,char driver_type[],
 				 char device_type[])
  {
     device_t *devp;
@@ -123,6 +123,7 @@ static int add_device(board_t *board,  device_t *device)
 	for (devp = &__driver_start; devp != &__driver_end; devp++) {
 		if (!strcmp(devp->drv, driver_type)){
 			devp->type = device_type;
+			devp->class = class;
 		    if (!add_device(board, devp)){
 		    	return 0;
 		    }else{
@@ -142,7 +143,7 @@ do{\
        foreach_class(pos, &board_pool[__nb], __class) \
          if (!strcmp(pos->type, __device_path) && pos->class == __class){ \
            board_pool[__nb].open[__nd] = pos; \
-           pos->ops.open(&board_pool[__nb],pos); \
+           pos->ops->open(&board_pool[__nb],pos); \
         } \
 }while(0)
 
@@ -203,7 +204,7 @@ int device_read(int fd, unsigned int addr, void *buf ,unsigned int len)
 {
     int nb = (fd >>  BOARD_MASK) & 0x00ff;
     int nd = fd & 0x00ff;
-    return board_pool[nb].open[nd]->ops.read(addr, buf, len);
+    return board_pool[nb].open[nd]->ops->read(addr, buf, len);
 }
 
 /*
@@ -214,7 +215,7 @@ int device_write(int fd, unsigned int addr,void *buf ,unsigned int len)
 {
     int nb = (fd >>  BOARD_MASK) & 0x00ff;
     int nd = fd & 0x00ff;
-    return board_pool[nb].open[nd]->ops.write(addr, buf, len);
+    return board_pool[nb].open[nd]->ops->write(addr, buf, len);
 }
 
 /*
@@ -225,7 +226,7 @@ int device_close(board_t *board, int fd)
 {
     int nb = (fd >> BOARD_MASK) & 0x00ff;
     int nd = fd & 0x00ff;
-    return board_pool[nb].open[nd]->ops.close(&board_pool[nb]);
+    return board_pool[nb].open[nd]->ops->close(&board_pool[nb]);
 }
 
 /*
@@ -235,5 +236,5 @@ int device_ioctl(board_t *board, int fd, int cmd, int arg)
 {
     int nb = (fd >>  BOARD_MASK) & 0x00ff;
     int nd = fd & 0x00ff;
-    return board_pool[nb].open[nd]->ops.ioctl(board,cmd,arg);
+    return board_pool[nb].open[nd]->ops->ioctl(board,cmd,arg);
 }
