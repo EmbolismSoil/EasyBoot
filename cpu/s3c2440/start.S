@@ -75,6 +75,12 @@ FIQ_STACK_START:
 .globl BAD_STACK_START
 BAD_STACK_START:
 	.word FIQ_STACK_START + 0x4000/*4KB*/
+.globl START
+START:
+	.word _start
+.globl _bss_start
+_bss_start:
+	.word __bss_start
 
 reset:
     ldr	    r0,=WTREG_BASE
@@ -90,11 +96,17 @@ reset:
     ldr	   sp,SVC_STACK_START
     bl 	   setup_ram
     bl     clock_init
-    bl     copy2ram
+    
+    adr    r0,_start
+    ldr    r1,START
+    ldr    r2,_bss_start
+    sub    r2,r2,r1
+    cmp    r0,r1
+    blne     copy2ram
     
     bl     clear_bss
 //    ldr	   pc,=user_device_main
-    ldr	   pc,=main @we will register all of the device we wanna use and open them
+//    ldr	   pc,=main @we will register all of the device we wanna use and open them
 		    @then....run the shell
 
 @

@@ -82,4 +82,11 @@ void clear_bss(void)
         for (; p < &__bss_end; p++)
                 *p = 0;
 }
- 
+
+void copy2ram(char *src, char *dest, unsigned long len)
+{
+    unsigned long cnt;
+    for (cnt = 0; cnt < len; cnt++){
+        dest[cnt] = src[cnt];
+    }
+}

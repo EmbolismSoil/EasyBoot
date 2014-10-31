@@ -83,7 +83,7 @@ EasyBoot: $(OBJS) $(LIBS) $(LDSCRIPT)
 		#UNDEF_SYM_CMD=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/\(__Easy_Boot_cmd\)/-u\1/p'|sort|uniq`;
 		UNDEF_SYM_DRV=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/\(.*__easy_boot_driver.*\)/-u\1/p'|sort|uniq`;\
 		$(LD) $(LDFLAGS) $$UNDEF_SYM_DRV $(OBJS) \
-			--start-group $(LIBS) --end-group
+			--start-group $(LIBS) --end-group -o $@
 
 $(OBJS):
 		$(MAKE) -C cpu/$(CPU)
@@ -94,4 +94,5 @@ $(LIBS):
 .PHONY:clean
 clean:
 #	'find /home/lee/project/EasyBoot/ -type f -name "*.o" -o -name "*.a"';
-	rm -f $(shell find /home/lee/project/EasyBoot/ -type f -name "*.o" -o -name "*.a")
+	rm -f $(shell find /home/lee/project/EasyBoot/ -type f -name "*.o" -o -name "*.a" -o -name "*.bin")
+	rm -f EasyBoot
