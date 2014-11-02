@@ -1,5 +1,5 @@
 #include <driver.h>
-int main()
+int user_main()
 {
   board_t *mini2440 = board_req("mini2440");
   int ret = register_device(mini2440,CPU,"LED", "LED");/*在mini2440这块板子上使用LED驱动注册一个CPU类型的LED设备*/

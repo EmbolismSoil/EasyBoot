@@ -80,15 +80,23 @@ _bss_start:
 	.word __bss_start
 
 reset:
-    ldr	    r0,=WTREG_BASE
-    mov	    r1,#0
-    str	    r1,[r0]
-	
-         // set the cpu to SVC32 mode
+    
     mrs     r0, cpsr
     bic     r0, r0, #0x1f
     orr     r0, r0, #0xd3
     msr     cpsr, r0
+
+
+    ldr	    r0,=WTREG_BASE
+    mov	    r1,#0
+    str	    r1,[r0]
+//    bl	    disable_wdg
+	
+         // set the cpu to SVC32 mode
+//    mrs     r0, cpsr
+//    bic     r0, r0, #0x1f
+//    orr     r0, r0, #0xd3
+//    msr     cpsr, r0
         
     ldr	   sp,SVC_STACK_START
     bl 	   setup_ram
@@ -103,7 +111,7 @@ reset:
     
     bl     clear_bss
 //    ldr	   pc,=user_device_main
-    ldr	   pc,=main @we will register all of the device we wanna use and open them
+    ldr	   pc,=user_main @we will register all of the device we wanna use and open them
 		    @then....run the shell
 
 @

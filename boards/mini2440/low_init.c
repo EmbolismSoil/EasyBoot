@@ -90,3 +90,9 @@ void copy2ram(char *src, char *dest, unsigned long len)
         dest[cnt] = src[cnt];
     }
 }
+
+void disable_wdg(void)
+{
+    #define WTDG_BASE (*(volatile unsigned long *)0x53000000)
+    WTDG_BASE = 0;
+}
