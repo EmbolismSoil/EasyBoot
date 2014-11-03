@@ -1,5 +1,8 @@
 #include <driver.h>
 #include <debug.h>
+
+typedef void (*start_boot)();
+start_boot s3c2440_boot = (start_boot*)0x30008000;
 int user_main()
 {
   int fd_tty;
@@ -15,5 +18,7 @@ int user_main()
   
   device_write(fd_led,0,"led testing....\n\r",0);
   device_write(fd_tty,0,"tty testing...\n\r",0);
+
+  s3c2440_boot();
   while(1);
 }
