@@ -1,6 +1,6 @@
 LIB     = libdrivers.a
 SOBJS   = 
-COBJS   = driver.o leds.o uart.o
+COBJS   = driver.o leds.o uart.o s3c2440_nand.o
 
 SRCS    := $(SOBJS:.o=.S) $(COBJS:.o=.c)
 OBJS:=$(COBJS) $(SOBJS)

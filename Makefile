@@ -4,7 +4,7 @@ export  TOPDIR SRCTREE
 
 
 OBJCFLAGS=--gap-fill=0xff 
-CFLAGS=-I $(TOPDIR)/includes -g
+CFLAGS=-I $(TOPDIR)/includes -g -O1
 export OBJCFLAGS CFLAGS
 
 ARCH=arm

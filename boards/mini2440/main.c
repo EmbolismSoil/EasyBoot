@@ -16,9 +16,15 @@ int user_main()
   ret = register_device(mini2440,CPU,"LED","LED");
   if (!ret) fd_led = device_open("/mini2440/CPU/LED");
   
-  device_write(fd_led,0,"led testing....\n\r",0);
-  device_write(fd_tty,0,"tty testing...\n\r",0);
+  
+  register_device(mini2440,CPU,"NAND","NAND");
+  int fd_nand = device_open("/mini2440/CPU/NAND/");
 
-  s3c2440_boot();
-  while(1);
+  PUT_DEC(fd_nand);
+  unsigned int *kernel = (unsigned int *)0x30008000;
+  device_write(fd_nand,0,kernel,2254848);
+
+  device_write(fd_tty,0,"read kernel...finish\n\r",0);
+   s3c2440_boot();
+  return;
 }

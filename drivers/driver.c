@@ -54,9 +54,6 @@ board_t *board_req(char *type)
     for (cnt = 0; cnt < MAX_BOARD && 
 	board_pool[cnt].type != NULL; cnt++)
 	if (!strncmp(board_pool[cnt].type, type, strlen(type))){
-	    PUT_STR("get board! : ");
-	    PUT_STR(board_pool[cnt].type);
-	    PUT_STR("\n\r");
 	    return &board_pool[cnt];
 	}
     
@@ -70,10 +67,6 @@ board_t *board_req(char *type)
 
     for (cnt2 = 0; cnt2 < MAX_DEV; cnt2++)
 	board_pool[cnt].open[cnt2] = NULL;
-
-    PUT_STR("get new board : ");
-    PUT_STR(type);
-    PUT_STR("\n\r");
 
     for (cnt1 = cnt + 1; cnt1 < MAX_BOARD; cnt1++){
 	board_pool[cnt1].type = "forbid!! do not use it before register";
@@ -136,10 +129,6 @@ static int add_device(board_t *board,  device_t *device)
  int register_device(board_t *board,class_t class,char driver_type[],
 				 char device_type[])
  {
-    PUT_STR("register ");
-    PUT_STR(device_type);
-    PUT_STR("...\n\r");
-
     device_t *devp;
     
 	for (devp = &__driver_start; devp != &__driver_end; devp++) {
@@ -147,10 +136,8 @@ static int add_device(board_t *board,  device_t *device)
 			devp->type = device_type;
 			devp->class = class;
 		    if (!add_device(board, devp)){
-			PUT_STR("succeed!\n\r");
 		    	return 0;
 		    }else{
-			PUT_STR("failed!\n\r");
 		    	return -1;
 		    }
 		}
@@ -193,8 +180,6 @@ int device_open(char *path)
 
     for (cnt = 0; board_pool[nb].devs && cnt < board_pool[nb].devs; cnt++){
        if (!strncmp(board_pool[nb].open[cnt]->type, device, strlen(device))){
-            PUT_STR("this device have been opened. num of device: ");
-            PUT_DEC(cnt);
 	    return GET_FD(nb,cnt);
 	}
        if (!board_pool[nb].open[cnt])

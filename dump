@@ -1,0 +1,3318 @@
+
+EasyBoot:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+32f80000 <_start>:
+32f80000:	ea000014 	b	32f80058 <reset>
+32f80004:	e59ff014 	ldr	pc, [pc, #20]	; 32f80020 <_undefined_instruction>
+32f80008:	e59ff014 	ldr	pc, [pc, #20]	; 32f80024 <_software_interrupt>
+32f8000c:	e59ff014 	ldr	pc, [pc, #20]	; 32f80028 <_prefetch_abort>
+32f80010:	e59ff014 	ldr	pc, [pc, #20]	; 32f8002c <_data_abort>
+32f80014:	e59ff014 	ldr	pc, [pc, #20]	; 32f80030 <_not_used>
+32f80018:	e59ff014 	ldr	pc, [pc, #20]	; 32f80034 <_irq>
+32f8001c:	e59ff014 	ldr	pc, [pc, #20]	; 32f80038 <_fiq>
+
+32f80020 <_undefined_instruction>:
+32f80020:	32f80100 	.word	0x32f80100
+
+32f80024 <_software_interrupt>:
+32f80024:	32f80160 	.word	0x32f80160
+
+32f80028 <_prefetch_abort>:
+32f80028:	32f801c0 	.word	0x32f801c0
+
+32f8002c <_data_abort>:
+32f8002c:	32f80220 	.word	0x32f80220
+
+32f80030 <_not_used>:
+32f80030:	32f80280 	.word	0x32f80280
+
+32f80034 <_irq>:
+32f80034:	32f802e0 	.word	0x32f802e0
+
+32f80038 <_fiq>:
+32f80038:	32f80320 	.word	0x32f80320
+32f8003c:	deadbeef 	.word	0xdeadbeef
+
+32f80040 <SVC_STACK_START>:
+32f80040:	32fb8198 	.word	0x32fb8198
+
+32f80044 <IRQ_STACK_START>:
+32f80044:	32f84040 	.word	0x32f84040
+
+32f80048 <FIQ_STACK_START>:
+32f80048:	32f84044 	.word	0x32f84044
+
+32f8004c <BAD_STACK_START>:
+32f8004c:	32f84048 	.word	0x32f84048
+
+32f80050 <START>:
+32f80050:	32f80000 	.word	0x32f80000
+
+32f80054 <_bss_start>:
+32f80054:	32f81f80 	.word	0x32f81f80
+
+32f80058 <reset>:
+32f80058:	e10f0000 	mrs	r0, CPSR
+32f8005c:	e3c0001f 	bic	r0, r0, #31
+32f80060:	e38000d3 	orr	r0, r0, #211	; 0xd3
+32f80064:	e129f000 	msr	CPSR_fc, r0
+32f80068:	e3a00453 	mov	r0, #1392508928	; 0x53000000
+32f8006c:	e3a01000 	mov	r1, #0
+32f80070:	e5801000 	str	r1, [r0]
+32f80074:	e59f0314 	ldr	r0, [pc, #788]	; 32f80390 <sdram_config+0x34>
+32f80078:	e3a01005 	mov	r1, #5
+32f8007c:	e5801000 	str	r1, [r0]
+32f80080:	ee111f10 	mrc	15, 0, r1, cr1, cr0, {0}
+32f80084:	e3811103 	orr	r1, r1, #-1073741824	; 0xc0000000
+32f80088:	ee011f10 	mcr	15, 0, r1, cr1, cr0, {0}
+32f8008c:	e59f0300 	ldr	r0, [pc, #768]	; 32f80394 <sdram_config+0x38>
+32f80090:	e59f1300 	ldr	r1, [pc, #768]	; 32f80398 <sdram_config+0x3c>
+32f80094:	e5801000 	str	r1, [r0]
+32f80098:	e51fd060 	ldr	sp, [pc, #-96]	; 32f80040 <SVC_STACK_START>
+32f8009c:	e3a00312 	mov	r0, #1207959552	; 0x48000000
+32f800a0:	e28f1fad 	add	r1, pc, #692	; 0x2b4
+32f800a4:	e2803034 	add	r3, r0, #52	; 0x34
+32f800a8:	e4912004 	ldr	r2, [r1], #4
+32f800ac:	e4802004 	str	r2, [r0], #4
+32f800b0:	e1500003 	cmp	r0, r3
+32f800b4:	1afffffb 	bne	32f800a8 <reset+0x50>
+32f800b8:	e24f00c0 	sub	r0, pc, #192	; 0xc0
+32f800bc:	e51f1074 	ldr	r1, [pc, #-116]	; 32f80050 <START>
+32f800c0:	e51f2074 	ldr	r2, [pc, #-116]	; 32f80054 <_bss_start>
+32f800c4:	e0422001 	sub	r2, r2, r1
+32f800c8:	e1500001 	cmp	r0, r1
+32f800cc:	1b00017e 	blne	32f806cc <copy2ram>
+32f800d0:	eb000172 	bl	32f806a0 <clear_bss>
+32f800d4:	e59ff2c0 	ldr	pc, [pc, #704]	; 32f8039c <sdram_config+0x40>
+
+32f800d8 <main>:
+32f800d8:	eb000188 	bl	32f80700 <user_main>
+32f800dc:	e24f00e4 	sub	r0, pc, #228	; 0xe4
+32f800e0:	eb0000fd 	bl	32f804dc <puthex>
+32f800e4:	e1a00000 	nop			; (mov r0, r0)
+32f800e8:	e1a00000 	nop			; (mov r0, r0)
+32f800ec:	e1a00000 	nop			; (mov r0, r0)
+32f800f0:	e1a00000 	nop			; (mov r0, r0)
+32f800f4:	e1a00000 	nop			; (mov r0, r0)
+32f800f8:	e1a00000 	nop			; (mov r0, r0)
+32f800fc:	e1a00000 	nop			; (mov r0, r0)
+
+32f80100 <undefined_instruction>:
+32f80100:	e51fd0bc 	ldr	sp, [pc, #-188]	; 32f8004c <BAD_STACK_START>
+32f80104:	e58de000 	str	lr, [sp]
+32f80108:	e14fe000 	mrs	lr, SPSR
+32f8010c:	e58de004 	str	lr, [sp, #4]
+32f80110:	e3a0d013 	mov	sp, #19
+32f80114:	e169f00d 	msr	SPSR_fc, sp
+32f80118:	e1a0e00f 	mov	lr, pc
+32f8011c:	e1b0f00e 	movs	pc, lr
+32f80120:	e24dd048 	sub	sp, sp, #72	; 0x48
+32f80124:	e88d1fff 	stm	sp, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}
+32f80128:	e51f20ec 	ldr	r2, [pc, #-236]	; 32f80044 <IRQ_STACK_START>
+32f8012c:	e892000c 	ldm	r2, {r2, r3}
+32f80130:	e28d0048 	add	r0, sp, #72	; 0x48
+32f80134:	e28d5034 	add	r5, sp, #52	; 0x34
+32f80138:	e1a0100e 	mov	r1, lr
+32f8013c:	e885000f 	stm	r5, {r0, r1, r2, r3}
+32f80140:	e1a0000d 	mov	r0, sp
+32f80144:	eb0000a2 	bl	32f803d4 <do_undefined_instruction>
+32f80148:	e1a00000 	nop			; (mov r0, r0)
+32f8014c:	e1a00000 	nop			; (mov r0, r0)
+32f80150:	e1a00000 	nop			; (mov r0, r0)
+32f80154:	e1a00000 	nop			; (mov r0, r0)
+32f80158:	e1a00000 	nop			; (mov r0, r0)
+32f8015c:	e1a00000 	nop			; (mov r0, r0)
+
+32f80160 <software_interrupt>:
+32f80160:	e51fd11c 	ldr	sp, [pc, #-284]	; 32f8004c <BAD_STACK_START>
+32f80164:	e58de000 	str	lr, [sp]
+32f80168:	e14fe000 	mrs	lr, SPSR
+32f8016c:	e58de004 	str	lr, [sp, #4]
+32f80170:	e3a0d013 	mov	sp, #19
+32f80174:	e169f00d 	msr	SPSR_fc, sp
+32f80178:	e1a0e00f 	mov	lr, pc
+32f8017c:	e1b0f00e 	movs	pc, lr
+32f80180:	e24dd048 	sub	sp, sp, #72	; 0x48
+32f80184:	e88d1fff 	stm	sp, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}
+32f80188:	e51f214c 	ldr	r2, [pc, #-332]	; 32f80044 <IRQ_STACK_START>
+32f8018c:	e892000c 	ldm	r2, {r2, r3}
+32f80190:	e28d0048 	add	r0, sp, #72	; 0x48
+32f80194:	e28d5034 	add	r5, sp, #52	; 0x34
+32f80198:	e1a0100e 	mov	r1, lr
+32f8019c:	e885000f 	stm	r5, {r0, r1, r2, r3}
+32f801a0:	e1a0000d 	mov	r0, sp
+32f801a4:	eb00008b 	bl	32f803d8 <do_software_interrupt>
+32f801a8:	e1a00000 	nop			; (mov r0, r0)
+32f801ac:	e1a00000 	nop			; (mov r0, r0)
+32f801b0:	e1a00000 	nop			; (mov r0, r0)
+32f801b4:	e1a00000 	nop			; (mov r0, r0)
+32f801b8:	e1a00000 	nop			; (mov r0, r0)
+32f801bc:	e1a00000 	nop			; (mov r0, r0)
+
+32f801c0 <prefetch_abort>:
+32f801c0:	e51fd17c 	ldr	sp, [pc, #-380]	; 32f8004c <BAD_STACK_START>
+32f801c4:	e58de000 	str	lr, [sp]
+32f801c8:	e14fe000 	mrs	lr, SPSR
+32f801cc:	e58de004 	str	lr, [sp, #4]
+32f801d0:	e3a0d013 	mov	sp, #19
+32f801d4:	e169f00d 	msr	SPSR_fc, sp
+32f801d8:	e1a0e00f 	mov	lr, pc
+32f801dc:	e1b0f00e 	movs	pc, lr
+32f801e0:	e24dd048 	sub	sp, sp, #72	; 0x48
+32f801e4:	e88d1fff 	stm	sp, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}
+32f801e8:	e51f21ac 	ldr	r2, [pc, #-428]	; 32f80044 <IRQ_STACK_START>
+32f801ec:	e892000c 	ldm	r2, {r2, r3}
+32f801f0:	e28d0048 	add	r0, sp, #72	; 0x48
+32f801f4:	e28d5034 	add	r5, sp, #52	; 0x34
+32f801f8:	e1a0100e 	mov	r1, lr
+32f801fc:	e885000f 	stm	r5, {r0, r1, r2, r3}
+32f80200:	e1a0000d 	mov	r0, sp
+32f80204:	eb000074 	bl	32f803dc <do_prefetch_abort>
+32f80208:	e1a00000 	nop			; (mov r0, r0)
+32f8020c:	e1a00000 	nop			; (mov r0, r0)
+32f80210:	e1a00000 	nop			; (mov r0, r0)
+32f80214:	e1a00000 	nop			; (mov r0, r0)
+32f80218:	e1a00000 	nop			; (mov r0, r0)
+32f8021c:	e1a00000 	nop			; (mov r0, r0)
+
+32f80220 <data_abort>:
+32f80220:	e51fd1dc 	ldr	sp, [pc, #-476]	; 32f8004c <BAD_STACK_START>
+32f80224:	e58de000 	str	lr, [sp]
+32f80228:	e14fe000 	mrs	lr, SPSR
+32f8022c:	e58de004 	str	lr, [sp, #4]
+32f80230:	e3a0d013 	mov	sp, #19
+32f80234:	e169f00d 	msr	SPSR_fc, sp
+32f80238:	e1a0e00f 	mov	lr, pc
+32f8023c:	e1b0f00e 	movs	pc, lr
+32f80240:	e24dd048 	sub	sp, sp, #72	; 0x48
+32f80244:	e88d1fff 	stm	sp, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}
+32f80248:	e51f220c 	ldr	r2, [pc, #-524]	; 32f80044 <IRQ_STACK_START>
+32f8024c:	e892000c 	ldm	r2, {r2, r3}
+32f80250:	e28d0048 	add	r0, sp, #72	; 0x48
+32f80254:	e28d5034 	add	r5, sp, #52	; 0x34
+32f80258:	e1a0100e 	mov	r1, lr
+32f8025c:	e885000f 	stm	r5, {r0, r1, r2, r3}
+32f80260:	e1a0000d 	mov	r0, sp
+32f80264:	eb00005d 	bl	32f803e0 <do_data_abort>
+32f80268:	e1a00000 	nop			; (mov r0, r0)
+32f8026c:	e1a00000 	nop			; (mov r0, r0)
+32f80270:	e1a00000 	nop			; (mov r0, r0)
+32f80274:	e1a00000 	nop			; (mov r0, r0)
+32f80278:	e1a00000 	nop			; (mov r0, r0)
+32f8027c:	e1a00000 	nop			; (mov r0, r0)
+
+32f80280 <not_used>:
+32f80280:	e51fd23c 	ldr	sp, [pc, #-572]	; 32f8004c <BAD_STACK_START>
+32f80284:	e58de000 	str	lr, [sp]
+32f80288:	e14fe000 	mrs	lr, SPSR
+32f8028c:	e58de004 	str	lr, [sp, #4]
+32f80290:	e3a0d013 	mov	sp, #19
+32f80294:	e169f00d 	msr	SPSR_fc, sp
+32f80298:	e1a0e00f 	mov	lr, pc
+32f8029c:	e1b0f00e 	movs	pc, lr
+32f802a0:	e24dd048 	sub	sp, sp, #72	; 0x48
+32f802a4:	e88d1fff 	stm	sp, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}
+32f802a8:	e51f226c 	ldr	r2, [pc, #-620]	; 32f80044 <IRQ_STACK_START>
+32f802ac:	e892000c 	ldm	r2, {r2, r3}
+32f802b0:	e28d0048 	add	r0, sp, #72	; 0x48
+32f802b4:	e28d5034 	add	r5, sp, #52	; 0x34
+32f802b8:	e1a0100e 	mov	r1, lr
+32f802bc:	e885000f 	stm	r5, {r0, r1, r2, r3}
+32f802c0:	e1a0000d 	mov	r0, sp
+32f802c4:	eb000046 	bl	32f803e4 <do_not_used>
+32f802c8:	e1a00000 	nop			; (mov r0, r0)
+32f802cc:	e1a00000 	nop			; (mov r0, r0)
+32f802d0:	e1a00000 	nop			; (mov r0, r0)
+32f802d4:	e1a00000 	nop			; (mov r0, r0)
+32f802d8:	e1a00000 	nop			; (mov r0, r0)
+32f802dc:	e1a00000 	nop			; (mov r0, r0)
+
+32f802e0 <irq>:
+32f802e0:	e51fd2a4 	ldr	sp, [pc, #-676]	; 32f80044 <IRQ_STACK_START>
+32f802e4:	e24dd048 	sub	sp, sp, #72	; 0x48
+32f802e8:	e88d1fff 	stm	sp, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}
+32f802ec:	e28d703c 	add	r7, sp, #60	; 0x3c
+32f802f0:	e9476000 	stmdb	r7, {sp, lr}^
+32f802f4:	e587e000 	str	lr, [r7]
+32f802f8:	e14f6000 	mrs	r6, SPSR
+32f802fc:	e5876004 	str	r6, [r7, #4]
+32f80300:	e5870008 	str	r0, [r7, #8]
+32f80304:	e1a0000d 	mov	r0, sp
+32f80308:	eb000037 	bl	32f803ec <do_irq>
+32f8030c:	e8dd7fff 	ldm	sp, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, sp, lr}^
+32f80310:	e1a00000 	nop			; (mov r0, r0)
+32f80314:	e59de03c 	ldr	lr, [sp, #60]	; 0x3c
+32f80318:	e25ef004 	subs	pc, lr, #4
+32f8031c:	e1a00000 	nop			; (mov r0, r0)
+
+32f80320 <fiq>:
+32f80320:	e51fd2e0 	ldr	sp, [pc, #-736]	; 32f80048 <FIQ_STACK_START>
+32f80324:	e24dd048 	sub	sp, sp, #72	; 0x48
+32f80328:	e88d1fff 	stm	sp, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}
+32f8032c:	e28d703c 	add	r7, sp, #60	; 0x3c
+32f80330:	e9476000 	stmdb	r7, {sp, lr}^
+32f80334:	e587e000 	str	lr, [r7]
+32f80338:	e14f6000 	mrs	r6, SPSR
+32f8033c:	e5876004 	str	r6, [r7, #4]
+32f80340:	e5870008 	str	r0, [r7, #8]
+32f80344:	e1a0000d 	mov	r0, sp
+32f80348:	eb000026 	bl	32f803e8 <do_fiq>
+32f8034c:	e8dd7fff 	ldm	sp, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, sp, lr}^
+32f80350:	e1a00000 	nop			; (mov r0, r0)
+32f80354:	e59de03c 	ldr	lr, [sp, #60]	; 0x3c
+32f80358:	e25ef004 	subs	pc, lr, #4
+
+32f8035c <sdram_config>:
+32f8035c:	22011110 	.word	0x22011110
+32f80360:	00000700 	.word	0x00000700
+32f80364:	00000700 	.word	0x00000700
+32f80368:	00000700 	.word	0x00000700
+32f8036c:	00000700 	.word	0x00000700
+32f80370:	00000700 	.word	0x00000700
+32f80374:	00000700 	.word	0x00000700
+32f80378:	00018005 	.word	0x00018005
+32f8037c:	00018005 	.word	0x00018005
+32f80380:	008c04f4 	.word	0x008c04f4
+32f80384:	000000b1 	.word	0x000000b1
+32f80388:	00000030 	.word	0x00000030
+32f8038c:	00000030 	.word	0x00000030
+32f80390:	4c000014 	.word	0x4c000014
+32f80394:	4c000004 	.word	0x4c000004
+32f80398:	0005c011 	.word	0x0005c011
+32f8039c:	32f800d8 	.word	0x32f800d8
+
+32f803a0 <enable_interrupts>:
+        long uregs[18];
+};
+void enable_interrupts (void)
+{
+	unsigned long temp;
+	__asm__ __volatile__("mrs %0, cpsr\n"
+32f803a0:	e10f3000 	mrs	r3, CPSR
+32f803a4:	e3c33080 	bic	r3, r3, #128	; 0x80
+32f803a8:	e121f003 	msr	CPSR_c, r3
+			     "bic %0, %0, #0x80\n"
+			     "msr cpsr_c, %0"
+			     : "=r" (temp)
+			     :
+			     : "memory");
+}
+32f803ac:	e12fff1e 	bx	lr
+
+32f803b0 <disable_interrupts>:
+ * returns true if interrupts had been enabled before we disabled them
+ */
+int disable_interrupts (void)
+{
+	unsigned long old,temp;
+	__asm__ __volatile__("mrs %0, cpsr\n"
+32f803b0:	e10f0000 	mrs	r0, CPSR
+32f803b4:	e38030c0 	orr	r3, r0, #192	; 0xc0
+32f803b8:	e121f003 	msr	CPSR_c, r3
+32f803bc:	e1a003a0 	lsr	r0, r0, #7
+32f803c0:	e2200001 	eor	r0, r0, #1
+			     "msr cpsr_c, %1"
+			     : "=r" (old), "=r" (temp)
+			     :
+			     : "memory");
+	return (old & 0x80) == 0;
+}
+32f803c4:	e2000001 	and	r0, r0, #1
+32f803c8:	e12fff1e 	bx	lr
+
+32f803cc <bad_mode>:
+
+
+void bad_mode (void)
+{
+   return;
+}
+32f803cc:	e12fff1e 	bx	lr
+
+32f803d0 <show_regs>:
+
+void show_regs (struct pt_regs *regs)
+{
+    return;
+}
+32f803d0:	e12fff1e 	bx	lr
+
+32f803d4 <do_undefined_instruction>:
+
+void do_undefined_instruction (struct pt_regs *pt_regs)
+{
+    return;
+}
+32f803d4:	e12fff1e 	bx	lr
+
+32f803d8 <do_software_interrupt>:
+
+void do_software_interrupt (struct pt_regs *pt_regs)
+{
+    return;
+}
+32f803d8:	e12fff1e 	bx	lr
+
+32f803dc <do_prefetch_abort>:
+
+void do_prefetch_abort (struct pt_regs *pt_regs)
+{
+	return;
+}
+32f803dc:	e12fff1e 	bx	lr
+
+32f803e0 <do_data_abort>:
+
+void do_data_abort (struct pt_regs *pt_regs)
+{
+        return;
+}
+32f803e0:	e12fff1e 	bx	lr
+
+32f803e4 <do_not_used>:
+
+void do_not_used (struct pt_regs *pt_regs)
+{
+	return;
+}
+32f803e4:	e12fff1e 	bx	lr
+
+32f803e8 <do_fiq>:
+
+void do_fiq (struct pt_regs *pt_regs)
+{
+	return;
+}
+32f803e8:	e12fff1e 	bx	lr
+
+32f803ec <do_irq>:
+
+void do_irq (struct pt_regs *pt_regs)
+{
+    return;
+}
+32f803ec:	e12fff1e 	bx	lr
+
+32f803f0 <open>:
+static int open(void *unuse, void *unuse2)
+{
+	unsigned long i = 0;
+
+	// LED1,LED2,LED4��Ӧ��4��������Ϊ���
+	GPBCON = GPB5_out | GPB6_out | GPB7_out | GPB8_out;
+32f803f0:	e3a02b55 	mov	r2, #87040	; 0x15400
+32f803f4:	e3a03456 	mov	r3, #1442840576	; 0x56000000
+32f803f8:	e5832010 	str	r2, [r3, #16]
+
+//	while(1){
+		wait(30000);
+32f803fc:	e59f3018 	ldr	r3, [pc, #24]	; 32f8041c <open+0x2c>
+#define	GPB7_out	(1<<(7*2))
+#define	GPB8_out	(1<<(8*2))
+
+static void  wait(volatile unsigned long dly)
+{
+	for(; dly > 0; dly--);
+32f80400:	e2533001 	subs	r3, r3, #1
+32f80404:	1afffffd 	bne	32f80400 <open+0x10>
+	// LED1,LED2,LED4��Ӧ��4��������Ϊ���
+	GPBCON = GPB5_out | GPB6_out | GPB7_out | GPB8_out;
+
+//	while(1){
+		wait(30000);
+		GPBDAT = (~(i<<5));	 	// ����i��ֵ������LED1,2,3,4
+32f80408:	e3e02000 	mvn	r2, #0
+32f8040c:	e3a03456 	mov	r3, #1442840576	; 0x56000000
+32f80410:	e5832014 	str	r2, [r3, #20]
+		if(++i == 16)
+			i = 0;
+//	}
+
+	return 0;
+}
+32f80414:	e3a00000 	mov	r0, #0
+32f80418:	e12fff1e 	bx	lr
+32f8041c:	00007530 	.word	0x00007530
+
+32f80420 <write_led>:
+
+static int  write_led(unsigned int addr ,void *buf, unsigned int len)
+{
+32f80420:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+32f80424:	e24dd004 	sub	sp, sp, #4
+    PUT_STR((char*)buf);
+32f80428:	e3a00000 	mov	r0, #0
+32f8042c:	e1a02000 	mov	r2, r0
+32f80430:	eb00001a 	bl	32f804a0 <uart_write>
+}
+32f80434:	e28dd004 	add	sp, sp, #4
+32f80438:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
+32f8043c:	e12fff1e 	bx	lr
+
+32f80440 <uart_open>:
+
+
+
+int uart_open(void *arg1, void *arg2)
+{
+    GPHCON  |= 0xa0;    // GPH2,GPH3ÓÃ×÷TXD0,RXD0
+32f80440:	e3a02456 	mov	r2, #1442840576	; 0x56000000
+32f80444:	e5923070 	ldr	r3, [r2, #112]	; 0x70
+32f80448:	e38330a0 	orr	r3, r3, #160	; 0xa0
+32f8044c:	e5823070 	str	r3, [r2, #112]	; 0x70
+    GPHUP   = 0x0c;     // GPH2,GPH3ÄÚ²¿ÉÏÀ­
+32f80450:	e3a0300c 	mov	r3, #12
+32f80454:	e5823078 	str	r3, [r2, #120]	; 0x78
+
+    ULCON0  = 0x03;     // 8N1(8¸öÊý¾ÝÎ»£¬ÎÞ½ÏÑé£¬1¸öÍ£Ö¹Î»)
+32f80458:	e28224fa 	add	r2, r2, #-100663296	; 0xfa000000
+32f8045c:	e2433009 	sub	r3, r3, #9
+32f80460:	e5823000 	str	r3, [r2]
+    UCON0   = 0x05;     // ²éÑ¯·½Ê½£¬UARTÊ±ÖÓÔ´ÎªPCLK
+32f80464:	e2833002 	add	r3, r3, #2
+32f80468:	e5823004 	str	r3, [r2, #4]
+    UFCON0  = 0x00;     // ²»Ê¹ÓÃFIFO
+32f8046c:	e2433005 	sub	r3, r3, #5
+32f80470:	e5823008 	str	r3, [r2, #8]
+    UMCON0  = 0x00;     // ²»Ê¹ÓÃÁ÷¿Ø
+32f80474:	e582300c 	str	r3, [r2, #12]
+    UBRDIV0 = UART_BRD; // ²¨ÌØÂÊÎª115200
+32f80478:	e283301a 	add	r3, r3, #26
+32f8047c:	e5823028 	str	r3, [r2, #40]	; 0x28
+}
+32f80480:	e12fff1e 	bx	lr
+
+32f80484 <putc>:
+ * ·¢ËÍÒ»¸ö×Ö·û
+ */
+static void putc(unsigned char c)
+{
+    /* µÈ´ý£¬Ö±µ½·¢ËÍ»º³åÇøÖÐµÄÊý¾ÝÒÑ¾­È«²¿·¢ËÍ³öÈ¥ */
+    while (!(UTRSTAT0 & TXD0READY));
+32f80484:	e3a02205 	mov	r2, #1342177280	; 0x50000000
+32f80488:	e5923010 	ldr	r3, [r2, #16]
+32f8048c:	e3130004 	tst	r3, #4
+32f80490:	0afffffc 	beq	32f80488 <putc+0x4>
+
+    /* ÏòUTXH0¼Ä´æÆ÷ÖÐÐ´ÈëÊý¾Ý£¬UART¼´×Ô¶¯½«Ëü·¢ËÍ³öÈ¥ */
+    UTXH0 = c;
+32f80494:	e3a03205 	mov	r3, #1342177280	; 0x50000000
+32f80498:	e5c30020 	strb	r0, [r3, #32]
+}
+32f8049c:	e12fff1e 	bx	lr
+
+32f804a0 <uart_write>:
+
+
+int uart_write(unsigned int addr ,void *buf, unsigned int len)
+{
+32f804a0:	e92d4030 	push	{r4, r5, lr}
+32f804a4:	e24dd004 	sub	sp, sp, #4
+32f804a8:	e1a05001 	mov	r5, r1
+        int i = 0;
+	char *str = (char *)buf;
+        while (str[i])
+32f804ac:	e5d10000 	ldrb	r0, [r1]
+32f804b0:	e3500000 	cmp	r0, #0
+32f804b4:	0a000005 	beq	32f804d0 <uart_write+0x30>
+32f804b8:	e3a04000 	mov	r4, #0
+        {
+                putc(str[i]);
+32f804bc:	ebfffff0 	bl	32f80484 <putc>
+                i++;
+32f804c0:	e2844001 	add	r4, r4, #1
+
+int uart_write(unsigned int addr ,void *buf, unsigned int len)
+{
+        int i = 0;
+	char *str = (char *)buf;
+        while (str[i])
+32f804c4:	e7d50004 	ldrb	r0, [r5, r4]
+32f804c8:	e3500000 	cmp	r0, #0
+32f804cc:	1afffffa 	bne	32f804bc <uart_write+0x1c>
+        {
+                putc(str[i]);
+                i++;
+        }
+                                                                        
+}
+32f804d0:	e28dd004 	add	sp, sp, #4
+32f804d4:	e8bd4030 	pop	{r4, r5, lr}
+32f804d8:	e12fff1e 	bx	lr
+
+32f804dc <puthex>:
+
+void puthex(unsigned int val)
+{
+32f804dc:	e92d4030 	push	{r4, r5, lr}
+32f804e0:	e24dd004 	sub	sp, sp, #4
+32f804e4:	e1a05000 	mov	r5, r0
+        /* 0x1234abcd */
+        int i;
+        int j;
+
+        uart_write(0,"0x",0);
+32f804e8:	e3a00000 	mov	r0, #0
+32f804ec:	e59f1044 	ldr	r1, [pc, #68]	; 32f80538 <puthex+0x5c>
+32f804f0:	e1a02000 	mov	r2, r0
+32f804f4:	ebffffe9 	bl	32f804a0 <uart_write>
+32f804f8:	e3a0401c 	mov	r4, #28
+
+        for (i = 0; i < 8; i++)
+        {
+                j = (val >> ((7-i)*4)) & 0xf;
+32f804fc:	e1a03435 	lsr	r3, r5, r4
+32f80500:	e203000f 	and	r0, r3, #15
+                if ((j >= 0) && (j <= 9))
+32f80504:	e3500009 	cmp	r0, #9
+32f80508:	8a000002 	bhi	32f80518 <puthex+0x3c>
+                        putc('0' + j);
+32f8050c:	e2800030 	add	r0, r0, #48	; 0x30
+32f80510:	ebffffdb 	bl	32f80484 <putc>
+32f80514:	ea000001 	b	32f80520 <puthex+0x44>
+                else
+                        putc('A' + j - 0xa);
+32f80518:	e2800037 	add	r0, r0, #55	; 0x37
+32f8051c:	ebffffd8 	bl	32f80484 <putc>
+32f80520:	e2444004 	sub	r4, r4, #4
+        int i;
+        int j;
+
+        uart_write(0,"0x",0);
+
+        for (i = 0; i < 8; i++)
+32f80524:	e3740004 	cmn	r4, #4
+32f80528:	1afffff3 	bne	32f804fc <puthex+0x20>
+                else
+                        putc('A' + j - 0xa);
+
+        }
+
+}
+32f8052c:	e28dd004 	add	sp, sp, #4
+32f80530:	e8bd4030 	pop	{r4, r5, lr}
+32f80534:	e12fff1e 	bx	lr
+32f80538:	32f81dd4 	.word	0x32f81dd4
+
+32f8053c <putdec>:
+
+void putdec(int val)
+{
+32f8053c:	e92d4070 	push	{r4, r5, r6, lr}
+32f80540:	e1a05000 	mov	r5, r0
+     int dec1 = val%10;
+     int dec2 = val%100/10;
+     int dec3 = val%1000/100;
+     int dec4 = val%10000/1000;
+     int dec5 = val/10000;
+     putc('0' + dec5);
+32f80544:	e59f30e4 	ldr	r3, [pc, #228]	; 32f80630 <putdec+0xf4>
+32f80548:	e0c42093 	smull	r2, r4, r3, r0
+32f8054c:	e1a06fc0 	asr	r6, r0, #31
+32f80550:	e0664644 	rsb	r4, r6, r4, asr #12
+32f80554:	e2840030 	add	r0, r4, #48	; 0x30
+32f80558:	e20000ff 	and	r0, r0, #255	; 0xff
+32f8055c:	ebffffc8 	bl	32f80484 <putc>
+     putc('0' + dec4);
+32f80560:	e1a00384 	lsl	r0, r4, #7
+32f80564:	e0400104 	sub	r0, r0, r4, lsl #2
+32f80568:	e0800004 	add	r0, r0, r4
+32f8056c:	e1a03100 	lsl	r3, r0, #2
+32f80570:	e0800003 	add	r0, r0, r3
+32f80574:	e0450200 	sub	r0, r5, r0, lsl #4
+32f80578:	e59f40b4 	ldr	r4, [pc, #180]	; 32f80634 <putdec+0xf8>
+32f8057c:	e0c32094 	smull	r2, r3, r4, r0
+32f80580:	e1a00fc0 	asr	r0, r0, #31
+32f80584:	e0600323 	rsb	r0, r0, r3, lsr #6
+32f80588:	e2800030 	add	r0, r0, #48	; 0x30
+32f8058c:	e20000ff 	and	r0, r0, #255	; 0xff
+32f80590:	ebffffbb 	bl	32f80484 <putc>
+     putc('0' + dec3);
+32f80594:	e0c32594 	smull	r2, r3, r4, r5
+32f80598:	e0663343 	rsb	r3, r6, r3, asr #6
+32f8059c:	e1a00383 	lsl	r0, r3, #7
+32f805a0:	e0400103 	sub	r0, r0, r3, lsl #2
+32f805a4:	e0800003 	add	r0, r0, r3
+32f805a8:	e0450180 	sub	r0, r5, r0, lsl #3
+32f805ac:	e59f4084 	ldr	r4, [pc, #132]	; 32f80638 <putdec+0xfc>
+32f805b0:	e0c32094 	smull	r2, r3, r4, r0
+32f805b4:	e1a00fc0 	asr	r0, r0, #31
+32f805b8:	e06002a3 	rsb	r0, r0, r3, lsr #5
+32f805bc:	e2800030 	add	r0, r0, #48	; 0x30
+32f805c0:	e20000ff 	and	r0, r0, #255	; 0xff
+32f805c4:	ebffffae 	bl	32f80484 <putc>
+     putc('0' + dec2);
+32f805c8:	e0c32594 	smull	r2, r3, r4, r5
+32f805cc:	e06632c3 	rsb	r3, r6, r3, asr #5
+32f805d0:	e1a00103 	lsl	r0, r3, #2
+32f805d4:	e1a03203 	lsl	r3, r3, #4
+32f805d8:	e0800003 	add	r0, r0, r3
+32f805dc:	e1a03100 	lsl	r3, r0, #2
+32f805e0:	e0800003 	add	r0, r0, r3
+32f805e4:	e0600005 	rsb	r0, r0, r5
+32f805e8:	e59f404c 	ldr	r4, [pc, #76]	; 32f8063c <putdec+0x100>
+32f805ec:	e0c32094 	smull	r2, r3, r4, r0
+32f805f0:	e1a00fc0 	asr	r0, r0, #31
+32f805f4:	e0600123 	rsb	r0, r0, r3, lsr #2
+32f805f8:	e2800030 	add	r0, r0, #48	; 0x30
+32f805fc:	e20000ff 	and	r0, r0, #255	; 0xff
+32f80600:	ebffff9f 	bl	32f80484 <putc>
+     putc('0' + dec1);
+32f80604:	e0c32594 	smull	r2, r3, r4, r5
+32f80608:	e0666143 	rsb	r6, r6, r3, asr #2
+32f8060c:	e1a03086 	lsl	r3, r6, #1
+32f80610:	e1a06186 	lsl	r6, r6, #3
+32f80614:	e0833006 	add	r3, r3, r6
+32f80618:	e0635005 	rsb	r5, r3, r5
+32f8061c:	e2855030 	add	r5, r5, #48	; 0x30
+32f80620:	e20500ff 	and	r0, r5, #255	; 0xff
+32f80624:	ebffff96 	bl	32f80484 <putc>
+}
+32f80628:	e8bd4070 	pop	{r4, r5, r6, lr}
+32f8062c:	e12fff1e 	bx	lr
+32f80630:	68db8bad 	.word	0x68db8bad
+32f80634:	10624dd3 	.word	0x10624dd3
+32f80638:	51eb851f 	.word	0x51eb851f
+32f8063c:	66666667 	.word	0x66666667
+
+32f80640 <setup_ram>:
+
+#define MPLL_400MHZ     ((0x5c<<12)|(0x01<<4)|(0x01))
+
+ void setup_ram()
+ {
+	MEM_REG_BASE[0] = 0x22011110;    
+32f80640:	e3a02312 	mov	r2, #1207959552	; 0x48000000
+32f80644:	e59f3048 	ldr	r3, [pc, #72]	; 32f80694 <setup_ram+0x54>
+32f80648:	e5823000 	str	r3, [r2]
+	MEM_REG_BASE[1] = 0x00000700;     
+32f8064c:	e3a03c07 	mov	r3, #1792	; 0x700
+32f80650:	e5823004 	str	r3, [r2, #4]
+	MEM_REG_BASE[2] = 0x00000700;    
+32f80654:	e5823008 	str	r3, [r2, #8]
+	MEM_REG_BASE[3] = 0x00000700;    
+32f80658:	e582300c 	str	r3, [r2, #12]
+	MEM_REG_BASE[4] = 0x00000700;   
+32f8065c:	e5823010 	str	r3, [r2, #16]
+	MEM_REG_BASE[5] = 0x00000700;     
+32f80660:	e5823014 	str	r3, [r2, #20]
+	MEM_REG_BASE[6] = 0x00000700;    
+32f80664:	e5823018 	str	r3, [r2, #24]
+	MEM_REG_BASE[7] = 0x00018005;     
+32f80668:	e59f3028 	ldr	r3, [pc, #40]	; 32f80698 <setup_ram+0x58>
+32f8066c:	e582301c 	str	r3, [r2, #28]
+	MEM_REG_BASE[8] = 0x00018005;     
+32f80670:	e5823020 	str	r3, [r2, #32]
+	MEM_REG_BASE[9] = 0x008C07A3;     
+32f80674:	e59f3020 	ldr	r3, [pc, #32]	; 32f8069c <setup_ram+0x5c>
+32f80678:	e5823024 	str	r3, [r2, #36]	; 0x24
+	MEM_REG_BASE[10] = 0x000000B1;   
+32f8067c:	e3a030b1 	mov	r3, #177	; 0xb1
+32f80680:	e5823028 	str	r3, [r2, #40]	; 0x28
+	MEM_REG_BASE[11] = 0x00000030;     
+32f80684:	e2433081 	sub	r3, r3, #129	; 0x81
+32f80688:	e582302c 	str	r3, [r2, #44]	; 0x2c
+	MEM_REG_BASE[12] = 0x00000030;    
+32f8068c:	e5823030 	str	r3, [r2, #48]	; 0x30
+ }
+32f80690:	e12fff1e 	bx	lr
+32f80694:	22011110 	.word	0x22011110
+32f80698:	00018005 	.word	0x00018005
+32f8069c:	008c07a3 	.word	0x008c07a3
+
+32f806a0 <clear_bss>:
+void clear_bss(void)
+{
+        extern int __bss_start, __bss_end;
+        int *p = &__bss_start;
+
+        for (; p < &__bss_end; p++)
+32f806a0:	e59f201c 	ldr	r2, [pc, #28]	; 32f806c4 <clear_bss+0x24>
+32f806a4:	e59f301c 	ldr	r3, [pc, #28]	; 32f806c8 <clear_bss+0x28>
+32f806a8:	e1530002 	cmp	r3, r2
+32f806ac:	212fff1e 	bxcs	lr
+                *p = 0;
+32f806b0:	e3a01000 	mov	r1, #0
+32f806b4:	e4831004 	str	r1, [r3], #4
+void clear_bss(void)
+{
+        extern int __bss_start, __bss_end;
+        int *p = &__bss_start;
+
+        for (; p < &__bss_end; p++)
+32f806b8:	e1530002 	cmp	r3, r2
+32f806bc:	3afffffc 	bcc	32f806b4 <clear_bss+0x14>
+32f806c0:	e12fff1e 	bx	lr
+32f806c4:	32f82598 	.word	0x32f82598
+32f806c8:	32f81f80 	.word	0x32f81f80
+
+32f806cc <copy2ram>:
+}
+
+void copy2ram(char *src, char *dest, unsigned long len)
+{
+    unsigned long cnt;
+    for (cnt = 0; cnt < len; cnt++){
+32f806cc:	e3520000 	cmp	r2, #0
+32f806d0:	012fff1e 	bxeq	lr
+32f806d4:	e3a0c000 	mov	ip, #0
+        dest[cnt] = src[cnt];
+32f806d8:	e7d0300c 	ldrb	r3, [r0, ip]
+32f806dc:	e7c1300c 	strb	r3, [r1, ip]
+}
+
+void copy2ram(char *src, char *dest, unsigned long len)
+{
+    unsigned long cnt;
+    for (cnt = 0; cnt < len; cnt++){
+32f806e0:	e28cc001 	add	ip, ip, #1
+32f806e4:	e152000c 	cmp	r2, ip
+32f806e8:	8afffffa 	bhi	32f806d8 <copy2ram+0xc>
+32f806ec:	e12fff1e 	bx	lr
+
+32f806f0 <disable_wdg>:
+}
+
+void disable_wdg(void)
+{
+    #define WTDG_BASE (*(volatile unsigned long *)0x53000000)
+    WTDG_BASE = 0;
+32f806f0:	e3a02000 	mov	r2, #0
+32f806f4:	e3a03453 	mov	r3, #1392508928	; 0x53000000
+32f806f8:	e5832000 	str	r2, [r3]
+}
+32f806fc:	e12fff1e 	bx	lr
+
+32f80700 <user_main>:
+#include <debug.h>
+
+typedef void (*start_boot)();
+start_boot s3c2440_boot = (start_boot*)0x30008000;
+int user_main()
+{
+32f80700:	e92d4030 	push	{r4, r5, lr}
+32f80704:	e24dd004 	sub	sp, sp, #4
+  int fd_tty;
+  int fd_led;
+
+  board_t *mini2440 = board_req("mini2440");
+32f80708:	e59f0088 	ldr	r0, [pc, #136]	; 32f80798 <user_main+0x98>
+32f8070c:	eb000132 	bl	32f80bdc <board_req>
+32f80710:	e1a04000 	mov	r4, r0
+  
+  int ret = register_device(mini2440,CPU,"UART", "TTY");
+32f80714:	e3a01000 	mov	r1, #0
+32f80718:	e59f207c 	ldr	r2, [pc, #124]	; 32f8079c <user_main+0x9c>
+32f8071c:	e59f307c 	ldr	r3, [pc, #124]	; 32f807a0 <user_main+0xa0>
+32f80720:	eb00007f 	bl	32f80924 <register_device>
+  if(!ret) fd_tty = device_open("/mini2440/CPU/TTY");       
+32f80724:	e3500000 	cmp	r0, #0
+32f80728:	1a000002 	bne	32f80738 <user_main+0x38>
+32f8072c:	e59f0070 	ldr	r0, [pc, #112]	; 32f807a4 <user_main+0xa4>
+32f80730:	eb0001a6 	bl	32f80dd0 <device_open>
+32f80734:	e1a05000 	mov	r5, r0
+
+  ret = register_device(mini2440,CPU,"LED","LED");
+32f80738:	e59f3068 	ldr	r3, [pc, #104]	; 32f807a8 <user_main+0xa8>
+32f8073c:	e1a00004 	mov	r0, r4
+32f80740:	e3a01000 	mov	r1, #0
+32f80744:	e1a02003 	mov	r2, r3
+32f80748:	eb000075 	bl	32f80924 <register_device>
+  if (!ret) fd_led = device_open("/mini2440/CPU/LED");
+32f8074c:	e3500000 	cmp	r0, #0
+32f80750:	059f0054 	ldreq	r0, [pc, #84]	; 32f807ac <user_main+0xac>
+32f80754:	0b00019d 	bleq	32f80dd0 <device_open>
+  
+  device_write(fd_led,0,"led testing....\n\r",0);
+32f80758:	e3a01000 	mov	r1, #0
+32f8075c:	e59f204c 	ldr	r2, [pc, #76]	; 32f807b0 <user_main+0xb0>
+32f80760:	e1a03001 	mov	r3, r1
+32f80764:	eb00002c 	bl	32f8081c <device_write>
+  device_write(fd_tty,0,"tty testing...\n\r",0);
+32f80768:	e1a00005 	mov	r0, r5
+32f8076c:	e3a01000 	mov	r1, #0
+32f80770:	e59f203c 	ldr	r2, [pc, #60]	; 32f807b4 <user_main+0xb4>
+32f80774:	e1a03001 	mov	r3, r1
+32f80778:	eb000027 	bl	32f8081c <device_write>
+
+   s3c2440_boot();
+32f8077c:	e59f3034 	ldr	r3, [pc, #52]	; 32f807b8 <user_main+0xb8>
+32f80780:	e593c000 	ldr	ip, [r3]
+32f80784:	e1a0e00f 	mov	lr, pc
+32f80788:	e12fff1c 	bx	ip
+  return;
+}
+32f8078c:	e28dd004 	add	sp, sp, #4
+32f80790:	e8bd4030 	pop	{r4, r5, lr}
+32f80794:	e12fff1e 	bx	lr
+32f80798:	32f81de0 	.word	0x32f81de0
+32f8079c:	32f81dd8 	.word	0x32f81dd8
+32f807a0:	32f81dec 	.word	0x32f81dec
+32f807a4:	32f81df0 	.word	0x32f81df0
+32f807a8:	32f81dd0 	.word	0x32f81dd0
+32f807ac:	32f81e04 	.word	0x32f81e04
+32f807b0:	32f81e18 	.word	0x32f81e18
+32f807b4:	32f81e2c 	.word	0x32f81e2c
+32f807b8:	32f81f1c 	.word	0x32f81f1c
+
+32f807bc <default_show>:
+static char *default_show(void *atr,void *r_buf,int len)
+{
+   //DEBUG_CHECK(!r_buf, NULL);
+    r_buf = (void *)(((attribute *)atr)->info);
+	return (char *)r_buf;
+}
+32f807bc:	e5900004 	ldr	r0, [r0, #4]
+32f807c0:	e12fff1e 	bx	lr
+
+32f807c4 <device_read>:
+/*
+* @device_read 
+*/
+
+int device_read(int fd, unsigned int addr, void *buf ,unsigned int len)
+{
+32f807c4:	e92d4010 	push	{r4, lr}
+    int nb = (fd >>  BOARD_MASK) & 0x00ff;
+    int nd = fd & 0x00ff;
+    return board_pool[nb].open[nd]->ops->read(addr, buf, len);
+32f807c8:	e20040ff 	and	r4, r0, #255	; 0xff
+32f807cc:	e1a00440 	asr	r0, r0, #8
+32f807d0:	e20000ff 	and	r0, r0, #255	; 0xff
+32f807d4:	e1a0c180 	lsl	ip, r0, #3
+32f807d8:	e1a0e280 	lsl	lr, r0, #5
+32f807dc:	e08cc00e 	add	ip, ip, lr
+32f807e0:	e060c00c 	rsb	ip, r0, ip
+32f807e4:	e08cc004 	add	ip, ip, r4
+32f807e8:	e28cc00a 	add	ip, ip, #10
+32f807ec:	e59f0024 	ldr	r0, [pc, #36]	; 32f80818 <device_read+0x54>
+32f807f0:	e790010c 	ldr	r0, [r0, ip, lsl #2]
+32f807f4:	e590c00c 	ldr	ip, [r0, #12]
+32f807f8:	e1a00001 	mov	r0, r1
+32f807fc:	e1a01002 	mov	r1, r2
+32f80800:	e1a02003 	mov	r2, r3
+32f80804:	e59cc008 	ldr	ip, [ip, #8]
+32f80808:	e1a0e00f 	mov	lr, pc
+32f8080c:	e12fff1c 	bx	ip
+}
+32f80810:	e8bd4010 	pop	{r4, lr}
+32f80814:	e12fff1e 	bx	lr
+32f80818:	32f81f80 	.word	0x32f81f80
+
+32f8081c <device_write>:
+/*
+* @device_write 
+*/
+
+int device_write(int fd, unsigned int addr,void *buf ,unsigned int len)
+{
+32f8081c:	e92d4010 	push	{r4, lr}
+    int nb = (fd >>  BOARD_MASK) & 0x00ff;
+    int nd = fd & 0x00ff;
+    return board_pool[nb].open[nd]->ops->write(addr, buf, len);
+32f80820:	e20040ff 	and	r4, r0, #255	; 0xff
+32f80824:	e1a00440 	asr	r0, r0, #8
+32f80828:	e20000ff 	and	r0, r0, #255	; 0xff
+32f8082c:	e1a0c180 	lsl	ip, r0, #3
+32f80830:	e1a0e280 	lsl	lr, r0, #5
+32f80834:	e08cc00e 	add	ip, ip, lr
+32f80838:	e060c00c 	rsb	ip, r0, ip
+32f8083c:	e08cc004 	add	ip, ip, r4
+32f80840:	e28cc00a 	add	ip, ip, #10
+32f80844:	e59f0024 	ldr	r0, [pc, #36]	; 32f80870 <device_write+0x54>
+32f80848:	e790010c 	ldr	r0, [r0, ip, lsl #2]
+32f8084c:	e590c00c 	ldr	ip, [r0, #12]
+32f80850:	e1a00001 	mov	r0, r1
+32f80854:	e1a01002 	mov	r1, r2
+32f80858:	e1a02003 	mov	r2, r3
+32f8085c:	e59cc004 	ldr	ip, [ip, #4]
+32f80860:	e1a0e00f 	mov	lr, pc
+32f80864:	e12fff1c 	bx	ip
+}
+32f80868:	e8bd4010 	pop	{r4, lr}
+32f8086c:	e12fff1e 	bx	lr
+32f80870:	32f81f80 	.word	0x32f81f80
+
+32f80874 <device_close>:
+/*
+* @device_close 
+*/
+
+int device_close(board_t *board, int fd)
+{
+32f80874:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+32f80878:	e24dd004 	sub	sp, sp, #4
+    int nb = (fd >> BOARD_MASK) & 0x00ff;
+32f8087c:	e1a02441 	asr	r2, r1, #8
+32f80880:	e20220ff 	and	r2, r2, #255	; 0xff
+    int nd = fd & 0x00ff;
+    return board_pool[nb].open[nd]->ops->close(&board_pool[nb]);
+32f80884:	e59fc040 	ldr	ip, [pc, #64]	; 32f808cc <device_close+0x58>
+32f80888:	e20110ff 	and	r1, r1, #255	; 0xff
+32f8088c:	e1a00182 	lsl	r0, r2, #3
+32f80890:	e1a03282 	lsl	r3, r2, #5
+32f80894:	e0800003 	add	r0, r0, r3
+32f80898:	e0620000 	rsb	r0, r2, r0
+32f8089c:	e0801001 	add	r1, r0, r1
+32f808a0:	e281100a 	add	r1, r1, #10
+32f808a4:	e79c3101 	ldr	r3, [ip, r1, lsl #2]
+32f808a8:	e593300c 	ldr	r3, [r3, #12]
+32f808ac:	e1a00100 	lsl	r0, r0, #2
+32f808b0:	e08c0000 	add	r0, ip, r0
+32f808b4:	e593c010 	ldr	ip, [r3, #16]
+32f808b8:	e1a0e00f 	mov	lr, pc
+32f808bc:	e12fff1c 	bx	ip
+}
+32f808c0:	e28dd004 	add	sp, sp, #4
+32f808c4:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
+32f808c8:	e12fff1e 	bx	lr
+32f808cc:	32f81f80 	.word	0x32f81f80
+
+32f808d0 <device_ioctl>:
+
+/*
+* @device_ioctl  
+*/
+int device_ioctl(board_t *board, int fd, int cmd, int arg)
+{
+32f808d0:	e92d4010 	push	{r4, lr}
+    int nb = (fd >>  BOARD_MASK) & 0x00ff;
+    int nd = fd & 0x00ff;
+    return board_pool[nb].open[nd]->ops->ioctl(board,cmd,arg);
+32f808d4:	e20140ff 	and	r4, r1, #255	; 0xff
+32f808d8:	e1a01441 	asr	r1, r1, #8
+32f808dc:	e20110ff 	and	r1, r1, #255	; 0xff
+32f808e0:	e1a0c181 	lsl	ip, r1, #3
+32f808e4:	e1a0e281 	lsl	lr, r1, #5
+32f808e8:	e08cc00e 	add	ip, ip, lr
+32f808ec:	e061c00c 	rsb	ip, r1, ip
+32f808f0:	e08cc004 	add	ip, ip, r4
+32f808f4:	e28cc00a 	add	ip, ip, #10
+32f808f8:	e59f1020 	ldr	r1, [pc, #32]	; 32f80920 <device_ioctl+0x50>
+32f808fc:	e791110c 	ldr	r1, [r1, ip, lsl #2]
+32f80900:	e591c00c 	ldr	ip, [r1, #12]
+32f80904:	e1a01002 	mov	r1, r2
+32f80908:	e1a02003 	mov	r2, r3
+32f8090c:	e59cc00c 	ldr	ip, [ip, #12]
+32f80910:	e1a0e00f 	mov	lr, pc
+32f80914:	e12fff1c 	bx	ip
+}
+32f80918:	e8bd4010 	pop	{r4, lr}
+32f8091c:	e12fff1e 	bx	lr
+32f80920:	32f81f80 	.word	0x32f81f80
+
+32f80924 <register_device>:
+ *  driver_type : the driver which will be register as device_type 
+ */
+ 
+ int register_device(board_t *board,class_t class,char driver_type[],
+				 char device_type[])
+ {
+32f80924:	e92d47f0 	push	{r4, r5, r6, r7, r8, r9, sl, lr}
+32f80928:	e1a09000 	mov	r9, r0
+32f8092c:	e1a08001 	mov	r8, r1
+32f80930:	e1a07002 	mov	r7, r2
+32f80934:	e1a0a003 	mov	sl, r3
+    PUT_STR("register ");
+32f80938:	e3a00000 	mov	r0, #0
+32f8093c:	e59f1280 	ldr	r1, [pc, #640]	; 32f80bc4 <register_device+0x2a0>
+32f80940:	e1a02000 	mov	r2, r0
+32f80944:	ebfffed5 	bl	32f804a0 <uart_write>
+    PUT_STR(device_type);
+32f80948:	e3a00000 	mov	r0, #0
+32f8094c:	e1a0100a 	mov	r1, sl
+32f80950:	e1a02000 	mov	r2, r0
+32f80954:	ebfffed1 	bl	32f804a0 <uart_write>
+    PUT_STR("...\n\r");
+32f80958:	e3a00000 	mov	r0, #0
+32f8095c:	e59f1264 	ldr	r1, [pc, #612]	; 32f80bc8 <register_device+0x2a4>
+32f80960:	e1a02000 	mov	r2, r0
+32f80964:	ebfffecd 	bl	32f804a0 <uart_write>
+
+    device_t *devp;
+    
+	for (devp = &__driver_start; devp != &__driver_end; devp++) {
+32f80968:	e59f225c 	ldr	r2, [pc, #604]	; 32f80bcc <register_device+0x2a8>
+32f8096c:	e59f325c 	ldr	r3, [pc, #604]	; 32f80bd0 <register_device+0x2ac>
+32f80970:	e1530002 	cmp	r3, r2
+32f80974:	0a000090 	beq	32f80bbc <register_device+0x298>
+		if (!strncmp(devp->drv, driver_type,strlen(driver_type))){
+32f80978:	e1a00007 	mov	r0, r7
+32f8097c:	eb000344 	bl	32f81694 <strlen>
+32f80980:	e1a05000 	mov	r5, r0
+32f80984:	e59f4244 	ldr	r4, [pc, #580]	; 32f80bd0 <register_device+0x2ac>
+    PUT_STR(device_type);
+    PUT_STR("...\n\r");
+
+    device_t *devp;
+    
+	for (devp = &__driver_start; devp != &__driver_end; devp++) {
+32f80988:	e59f623c 	ldr	r6, [pc, #572]	; 32f80bcc <register_device+0x2a8>
+		if (!strncmp(devp->drv, driver_type,strlen(driver_type))){
+32f8098c:	e5940004 	ldr	r0, [r4, #4]
+32f80990:	e1a01007 	mov	r1, r7
+32f80994:	e1a02005 	mov	r2, r5
+32f80998:	eb000311 	bl	32f815e4 <strncmp>
+32f8099c:	e3500000 	cmp	r0, #0
+32f809a0:	1a000082 	bne	32f80bb0 <register_device+0x28c>
+			devp->type = device_type;
+32f809a4:	e584a000 	str	sl, [r4]
+			devp->class = class;
+32f809a8:	e5848008 	str	r8, [r4, #8]
+*/
+static int add_device(board_t *board,  device_t *device)
+{
+	//DEBUG_CHECK(!board || !device, -1);
+	device_t *pos;
+    switch (device->class){
+32f809ac:	e3580003 	cmp	r8, #3
+32f809b0:	979ff108 	ldrls	pc, [pc, r8, lsl #2]
+32f809b4:	ea00006e 	b	32f80b74 <register_device+0x250>
+32f809b8:	32f809c8 	.word	0x32f809c8
+32f809bc:	32f80a34 	.word	0x32f80a34
+32f809c0:	32f80aa0 	.word	0x32f80aa0
+32f809c4:	32f80b0c 	.word	0x32f80b0c
+    case CPU :  
+      foreach_class(pos, board, CPU)
+32f809c8:	e1a06009 	mov	r6, r9
+32f809cc:	e5b6a008 	ldr	sl, [r6, #8]!
+32f809d0:	e24a5018 	sub	r5, sl, #24
+32f809d4:	e1a0200a 	mov	r2, sl
+32f809d8:	e15a0006 	cmp	sl, r6
+32f809dc:	0a00000e 	beq	32f80a1c <register_device+0xf8>
+        if (!strncmp(pos->type, device->type, strlen(device->type)))
+32f809e0:	e5948000 	ldr	r8, [r4]
+32f809e4:	e1a00008 	mov	r0, r8
+32f809e8:	eb000329 	bl	32f81694 <strlen>
+32f809ec:	e1a07000 	mov	r7, r0
+32f809f0:	e5950000 	ldr	r0, [r5]
+32f809f4:	e1a01008 	mov	r1, r8
+32f809f8:	e1a02007 	mov	r2, r7
+32f809fc:	eb0002f8 	bl	32f815e4 <strncmp>
+32f80a00:	e3500000 	cmp	r0, #0
+32f80a04:	0a000063 	beq	32f80b98 <register_device+0x274>
+{
+	//DEBUG_CHECK(!board || !device, -1);
+	device_t *pos;
+    switch (device->class){
+    case CPU :  
+      foreach_class(pos, board, CPU)
+32f80a08:	e5953018 	ldr	r3, [r5, #24]
+32f80a0c:	e2435018 	sub	r5, r3, #24
+32f80a10:	e1a02003 	mov	r2, r3
+32f80a14:	e1530006 	cmp	r3, r6
+32f80a18:	1afffff4 	bne	32f809f0 <register_device+0xcc>
+        if (!strncmp(pos->type, device->type, strlen(device->type)))
+	    return -1;
+      list_add(&device->list, &board->CPU_list);
+32f80a1c:	e2843018 	add	r3, r4, #24
+ */
+static inline void __list_add(struct list_head *new,
+			      struct list_head *prev,
+			      struct list_head *next)
+{
+	next->prev = new;
+32f80a20:	e58a3004 	str	r3, [sl, #4]
+	new->next = next;
+32f80a24:	e584a018 	str	sl, [r4, #24]
+	new->prev = prev;
+32f80a28:	e584201c 	str	r2, [r4, #28]
+	prev->next = new;
+32f80a2c:	e5893008 	str	r3, [r9, #8]
+32f80a30:	ea00004f 	b	32f80b74 <register_device+0x250>
+      break;
+	
+    case RAM :  
+      foreach_class(pos, board, RAM)
+32f80a34:	e1a06009 	mov	r6, r9
+32f80a38:	e5b6a010 	ldr	sl, [r6, #16]!
+32f80a3c:	e24a5018 	sub	r5, sl, #24
+32f80a40:	e1a0200a 	mov	r2, sl
+32f80a44:	e15a0006 	cmp	sl, r6
+32f80a48:	0a00000e 	beq	32f80a88 <register_device+0x164>
+        if (!strncmp(pos->type, device->type, strlen(device->type)))
+32f80a4c:	e5948000 	ldr	r8, [r4]
+32f80a50:	e1a00008 	mov	r0, r8
+32f80a54:	eb00030e 	bl	32f81694 <strlen>
+32f80a58:	e1a07000 	mov	r7, r0
+32f80a5c:	e5950000 	ldr	r0, [r5]
+32f80a60:	e1a01008 	mov	r1, r8
+32f80a64:	e1a02007 	mov	r2, r7
+32f80a68:	eb0002dd 	bl	32f815e4 <strncmp>
+32f80a6c:	e3500000 	cmp	r0, #0
+32f80a70:	0a000048 	beq	32f80b98 <register_device+0x274>
+	    return -1;
+      list_add(&device->list, &board->CPU_list);
+      break;
+	
+    case RAM :  
+      foreach_class(pos, board, RAM)
+32f80a74:	e5953018 	ldr	r3, [r5, #24]
+32f80a78:	e2435018 	sub	r5, r3, #24
+32f80a7c:	e1a02003 	mov	r2, r3
+32f80a80:	e1530006 	cmp	r3, r6
+32f80a84:	1afffff4 	bne	32f80a5c <register_device+0x138>
+        if (!strncmp(pos->type, device->type, strlen(device->type)))
+	    return -1;
+      list_add(&device->list, &board->RAM_list);
+32f80a88:	e2843018 	add	r3, r4, #24
+ */
+static inline void __list_add(struct list_head *new,
+			      struct list_head *prev,
+			      struct list_head *next)
+{
+	next->prev = new;
+32f80a8c:	e58a3004 	str	r3, [sl, #4]
+	new->next = next;
+32f80a90:	e584a018 	str	sl, [r4, #24]
+	new->prev = prev;
+32f80a94:	e584201c 	str	r2, [r4, #28]
+	prev->next = new;
+32f80a98:	e5893010 	str	r3, [r9, #16]
+32f80a9c:	ea000034 	b	32f80b74 <register_device+0x250>
+      break;
+
+    case NOR :  
+      foreach_class(pos, board, NOR)
+32f80aa0:	e1a06009 	mov	r6, r9
+32f80aa4:	e5b6a018 	ldr	sl, [r6, #24]!
+32f80aa8:	e24a5018 	sub	r5, sl, #24
+32f80aac:	e1a0200a 	mov	r2, sl
+32f80ab0:	e15a0006 	cmp	sl, r6
+32f80ab4:	0a00000e 	beq	32f80af4 <register_device+0x1d0>
+        if(!strncmp(pos->type, device->type, strlen(device->type)))
+32f80ab8:	e5948000 	ldr	r8, [r4]
+32f80abc:	e1a00008 	mov	r0, r8
+32f80ac0:	eb0002f3 	bl	32f81694 <strlen>
+32f80ac4:	e1a07000 	mov	r7, r0
+32f80ac8:	e5950000 	ldr	r0, [r5]
+32f80acc:	e1a01008 	mov	r1, r8
+32f80ad0:	e1a02007 	mov	r2, r7
+32f80ad4:	eb0002c2 	bl	32f815e4 <strncmp>
+32f80ad8:	e3500000 	cmp	r0, #0
+32f80adc:	0a00002d 	beq	32f80b98 <register_device+0x274>
+	    return -1;
+      list_add(&device->list, &board->RAM_list);
+      break;
+
+    case NOR :  
+      foreach_class(pos, board, NOR)
+32f80ae0:	e5953018 	ldr	r3, [r5, #24]
+32f80ae4:	e2435018 	sub	r5, r3, #24
+32f80ae8:	e1a02003 	mov	r2, r3
+32f80aec:	e1530006 	cmp	r3, r6
+32f80af0:	1afffff4 	bne	32f80ac8 <register_device+0x1a4>
+        if(!strncmp(pos->type, device->type, strlen(device->type)))
+            return -1;
+      list_add(&device->list, &board->NOR_list);
+32f80af4:	e2843018 	add	r3, r4, #24
+ */
+static inline void __list_add(struct list_head *new,
+			      struct list_head *prev,
+			      struct list_head *next)
+{
+	next->prev = new;
+32f80af8:	e58a3004 	str	r3, [sl, #4]
+	new->next = next;
+32f80afc:	e584a018 	str	sl, [r4, #24]
+	new->prev = prev;
+32f80b00:	e584201c 	str	r2, [r4, #28]
+	prev->next = new;
+32f80b04:	e5893018 	str	r3, [r9, #24]
+32f80b08:	ea000019 	b	32f80b74 <register_device+0x250>
+      break;
+	
+    case NAND : 
+      foreach_class(pos, board, NAND)
+32f80b0c:	e1a06009 	mov	r6, r9
+32f80b10:	e5b6a020 	ldr	sl, [r6, #32]!
+32f80b14:	e24a5018 	sub	r5, sl, #24
+32f80b18:	e1a0200a 	mov	r2, sl
+32f80b1c:	e15a0006 	cmp	sl, r6
+32f80b20:	0a00000e 	beq	32f80b60 <register_device+0x23c>
+	if (!strncmp(pos->type, device->type, strlen(device->type)))
+32f80b24:	e5948000 	ldr	r8, [r4]
+32f80b28:	e1a00008 	mov	r0, r8
+32f80b2c:	eb0002d8 	bl	32f81694 <strlen>
+32f80b30:	e1a07000 	mov	r7, r0
+32f80b34:	e5950000 	ldr	r0, [r5]
+32f80b38:	e1a01008 	mov	r1, r8
+32f80b3c:	e1a02007 	mov	r2, r7
+32f80b40:	eb0002a7 	bl	32f815e4 <strncmp>
+32f80b44:	e3500000 	cmp	r0, #0
+32f80b48:	0a000012 	beq	32f80b98 <register_device+0x274>
+            return -1;
+      list_add(&device->list, &board->NOR_list);
+      break;
+	
+    case NAND : 
+      foreach_class(pos, board, NAND)
+32f80b4c:	e5953018 	ldr	r3, [r5, #24]
+32f80b50:	e2435018 	sub	r5, r3, #24
+32f80b54:	e1a02003 	mov	r2, r3
+32f80b58:	e1530006 	cmp	r3, r6
+32f80b5c:	1afffff4 	bne	32f80b34 <register_device+0x210>
+	if (!strncmp(pos->type, device->type, strlen(device->type)))
+	    return -1;
+      list_add(&device->list, &board->NAND_list);
+32f80b60:	e2843018 	add	r3, r4, #24
+ */
+static inline void __list_add(struct list_head *new,
+			      struct list_head *prev,
+			      struct list_head *next)
+{
+	next->prev = new;
+32f80b64:	e58a3004 	str	r3, [sl, #4]
+	new->next = next;
+32f80b68:	e584a018 	str	sl, [r4, #24]
+	new->prev = prev;
+32f80b6c:	e584201c 	str	r2, [r4, #28]
+	prev->next = new;
+32f80b70:	e5893020 	str	r3, [r9, #32]
+      break;
+    }
+	board->devs++;
+32f80b74:	e5993094 	ldr	r3, [r9, #148]	; 0x94
+32f80b78:	e2833001 	add	r3, r3, #1
+32f80b7c:	e5893094 	str	r3, [r9, #148]	; 0x94
+	for (devp = &__driver_start; devp != &__driver_end; devp++) {
+		if (!strncmp(devp->drv, driver_type,strlen(driver_type))){
+			devp->type = device_type;
+			devp->class = class;
+		    if (!add_device(board, devp)){
+			PUT_STR("succeed!\n\r");
+32f80b80:	e3a00000 	mov	r0, #0
+32f80b84:	e59f1048 	ldr	r1, [pc, #72]	; 32f80bd4 <register_device+0x2b0>
+32f80b88:	e1a02000 	mov	r2, r0
+32f80b8c:	ebfffe43 	bl	32f804a0 <uart_write>
+32f80b90:	e3a00000 	mov	r0, #0
+32f80b94:	ea000008 	b	32f80bbc <register_device+0x298>
+		    	return 0;
+		    }else{
+			PUT_STR("failed!\n\r");
+32f80b98:	e3a00000 	mov	r0, #0
+32f80b9c:	e59f1034 	ldr	r1, [pc, #52]	; 32f80bd8 <register_device+0x2b4>
+32f80ba0:	e1a02000 	mov	r2, r0
+32f80ba4:	ebfffe3d 	bl	32f804a0 <uart_write>
+32f80ba8:	e3e00000 	mvn	r0, #0
+32f80bac:	ea000002 	b	32f80bbc <register_device+0x298>
+    PUT_STR(device_type);
+    PUT_STR("...\n\r");
+
+    device_t *devp;
+    
+	for (devp = &__driver_start; devp != &__driver_end; devp++) {
+32f80bb0:	e2844028 	add	r4, r4, #40	; 0x28
+32f80bb4:	e1540006 	cmp	r4, r6
+32f80bb8:	1affff73 	bne	32f8098c <register_device+0x68>
+		    	return -1;
+		    }
+		}
+	}
+
+ }
+32f80bbc:	e8bd47f0 	pop	{r4, r5, r6, r7, r8, r9, sl, lr}
+32f80bc0:	e12fff1e 	bx	lr
+32f80bc4:	32f81e40 	.word	0x32f81e40
+32f80bc8:	32f81e24 	.word	0x32f81e24
+32f80bcc:	32f81f70 	.word	0x32f81f70
+32f80bd0:	32f81f20 	.word	0x32f81f20
+32f80bd4:	32f81e4c 	.word	0x32f81e4c
+32f80bd8:	32f81e58 	.word	0x32f81e58
+
+32f80bdc <board_req>:
+ * System will alloc an blank board if it can not find this type the blank board which 
+  * user have been given should be  initialised.his blank board use the function 
+  *'defaule_show' as an default member : boaard.show
+ */
+board_t *board_req(char *type)
+{
+32f80bdc:	e92d47f0 	push	{r4, r5, r6, r7, r8, r9, sl, lr}
+32f80be0:	e1a0a000 	mov	sl, r0
+32f80be4:	e3a07000 	mov	r7, #0
+32f80be8:	e1a06007 	mov	r6, r7
+32f80bec:	e1a05007 	mov	r5, r7
+    //DEBUG_CHECK(!type, NULL);
+    char cnt;
+    char cnt1;
+    char cnt2;
+    for (cnt = 0; cnt < MAX_BOARD && 
+32f80bf0:	e59f91c0 	ldr	r9, [pc, #448]	; 32f80db8 <board_req+0x1dc>
+32f80bf4:	ea000024 	b	32f80c8c <board_req+0xb0>
+	board_pool[cnt].type != NULL; cnt++)
+	if (!strncmp(board_pool[cnt].type, type, strlen(type))){
+32f80bf8:	e1a0000a 	mov	r0, sl
+32f80bfc:	eb0002a4 	bl	32f81694 <strlen>
+32f80c00:	e1a02000 	mov	r2, r0
+32f80c04:	e1a00004 	mov	r0, r4
+32f80c08:	e1a0100a 	mov	r1, sl
+32f80c0c:	eb000274 	bl	32f815e4 <strncmp>
+32f80c10:	e3500000 	cmp	r0, #0
+32f80c14:	1a000016 	bne	32f80c74 <board_req+0x98>
+	    PUT_STR("get board! : ");
+32f80c18:	e59f119c 	ldr	r1, [pc, #412]	; 32f80dbc <board_req+0x1e0>
+32f80c1c:	e1a02000 	mov	r2, r0
+32f80c20:	ebfffe1e 	bl	32f804a0 <uart_write>
+	    PUT_STR(board_pool[cnt].type);
+32f80c24:	e59f418c 	ldr	r4, [pc, #396]	; 32f80db8 <board_req+0x1dc>
+32f80c28:	e1a03188 	lsl	r3, r8, #3
+32f80c2c:	e1a02288 	lsl	r2, r8, #5
+32f80c30:	e0833002 	add	r3, r3, r2
+32f80c34:	e0683003 	rsb	r3, r8, r3
+32f80c38:	e3a00000 	mov	r0, #0
+32f80c3c:	e7941103 	ldr	r1, [r4, r3, lsl #2]
+32f80c40:	e1a02000 	mov	r2, r0
+32f80c44:	ebfffe15 	bl	32f804a0 <uart_write>
+	    PUT_STR("\n\r");
+32f80c48:	e3a00000 	mov	r0, #0
+32f80c4c:	e59f116c 	ldr	r1, [pc, #364]	; 32f80dc0 <board_req+0x1e4>
+32f80c50:	e1a02000 	mov	r2, r0
+32f80c54:	ebfffe11 	bl	32f804a0 <uart_write>
+	    return &board_pool[cnt];
+32f80c58:	e1a03187 	lsl	r3, r7, #3
+32f80c5c:	e1a02287 	lsl	r2, r7, #5
+32f80c60:	e0833002 	add	r3, r3, r2
+32f80c64:	e0673003 	rsb	r3, r7, r3
+32f80c68:	e1a03103 	lsl	r3, r3, #2
+32f80c6c:	e0840003 	add	r0, r4, r3
+32f80c70:	ea00004e 	b	32f80db0 <board_req+0x1d4>
+    //DEBUG_CHECK(!type, NULL);
+    char cnt;
+    char cnt1;
+    char cnt2;
+    for (cnt = 0; cnt < MAX_BOARD && 
+	board_pool[cnt].type != NULL; cnt++)
+32f80c74:	e2873001 	add	r3, r7, #1
+32f80c78:	e20370ff 	and	r7, r3, #255	; 0xff
+32f80c7c:	e2866001 	add	r6, r6, #1
+32f80c80:	e285509c 	add	r5, r5, #156	; 0x9c
+{
+    //DEBUG_CHECK(!type, NULL);
+    char cnt;
+    char cnt1;
+    char cnt2;
+    for (cnt = 0; cnt < MAX_BOARD && 
+32f80c84:	e357000a 	cmp	r7, #10
+32f80c88:	0a000003 	beq	32f80c9c <board_req+0xc0>
+32f80c8c:	e1a08006 	mov	r8, r6
+32f80c90:	e7994005 	ldr	r4, [r9, r5]
+32f80c94:	e3540000 	cmp	r4, #0
+32f80c98:	1affffd6 	bne	32f80bf8 <board_req+0x1c>
+	    PUT_STR(board_pool[cnt].type);
+	    PUT_STR("\n\r");
+	    return &board_pool[cnt];
+	}
+    
+    board_pool[cnt].type = type;
+32f80c9c:	e59fc114 	ldr	ip, [pc, #276]	; 32f80db8 <board_req+0x1dc>
+32f80ca0:	e1a01187 	lsl	r1, r7, #3
+32f80ca4:	e1a03287 	lsl	r3, r7, #5
+32f80ca8:	e0811003 	add	r1, r1, r3
+32f80cac:	e0671001 	rsb	r1, r7, r1
+32f80cb0:	e1a01101 	lsl	r1, r1, #2
+32f80cb4:	e08c0001 	add	r0, ip, r1
+32f80cb8:	e1a03000 	mov	r3, r0
+32f80cbc:	e483a08c 	str	sl, [r3], #140	; 0x8c
+    board_pool[cnt].atr.show = default_show;
+32f80cc0:	e59f20fc 	ldr	r2, [pc, #252]	; 32f80dc4 <board_req+0x1e8>
+32f80cc4:	e5832000 	str	r2, [r3]
+    
+    INIT_LIST_HEAD(&board_pool[cnt].CPU_list);
+32f80cc8:	e2813008 	add	r3, r1, #8
+32f80ccc:	e08c3003 	add	r3, ip, r3
+#define LIST_HEAD(name) \
+	struct list_head name = LIST_HEAD_INIT(name)
+
+static inline void INIT_LIST_HEAD(struct list_head *list)
+{
+	list->next = list;
+32f80cd0:	e5803008 	str	r3, [r0, #8]
+	list->prev = list;
+32f80cd4:	e580300c 	str	r3, [r0, #12]
+    INIT_LIST_HEAD(&board_pool[cnt].RAM_list);
+32f80cd8:	e2813010 	add	r3, r1, #16
+32f80cdc:	e08c3003 	add	r3, ip, r3
+#define LIST_HEAD(name) \
+	struct list_head name = LIST_HEAD_INIT(name)
+
+static inline void INIT_LIST_HEAD(struct list_head *list)
+{
+	list->next = list;
+32f80ce0:	e5803010 	str	r3, [r0, #16]
+	list->prev = list;
+32f80ce4:	e5803014 	str	r3, [r0, #20]
+    INIT_LIST_HEAD(&board_pool[cnt].NOR_list);
+32f80ce8:	e2813018 	add	r3, r1, #24
+32f80cec:	e08c3003 	add	r3, ip, r3
+#define LIST_HEAD(name) \
+	struct list_head name = LIST_HEAD_INIT(name)
+
+static inline void INIT_LIST_HEAD(struct list_head *list)
+{
+	list->next = list;
+32f80cf0:	e5803018 	str	r3, [r0, #24]
+	list->prev = list;
+32f80cf4:	e580301c 	str	r3, [r0, #28]
+    INIT_LIST_HEAD(&board_pool[cnt].NAND_list);
+32f80cf8:	e2811020 	add	r1, r1, #32
+32f80cfc:	e08cc001 	add	ip, ip, r1
+#define LIST_HEAD(name) \
+	struct list_head name = LIST_HEAD_INIT(name)
+
+static inline void INIT_LIST_HEAD(struct list_head *list)
+{
+	list->next = list;
+32f80d00:	e580c020 	str	ip, [r0, #32]
+	list->prev = list;
+32f80d04:	e580c024 	str	ip, [r0, #36]	; 0x24
+32f80d08:	e3a03000 	mov	r3, #0
+
+    for (cnt2 = 0; cnt2 < MAX_DEV; cnt2++)
+	board_pool[cnt].open[cnt2] = NULL;
+32f80d0c:	e1a02003 	mov	r2, r3
+32f80d10:	e5802028 	str	r2, [r0, #40]	; 0x28
+    INIT_LIST_HEAD(&board_pool[cnt].CPU_list);
+    INIT_LIST_HEAD(&board_pool[cnt].RAM_list);
+    INIT_LIST_HEAD(&board_pool[cnt].NOR_list);
+    INIT_LIST_HEAD(&board_pool[cnt].NAND_list);
+
+    for (cnt2 = 0; cnt2 < MAX_DEV; cnt2++)
+32f80d14:	e2833001 	add	r3, r3, #1
+32f80d18:	e20330ff 	and	r3, r3, #255	; 0xff
+32f80d1c:	e2800004 	add	r0, r0, #4
+32f80d20:	e3530019 	cmp	r3, #25
+32f80d24:	1afffff9 	bne	32f80d10 <board_req+0x134>
+	board_pool[cnt].open[cnt2] = NULL;
+
+    PUT_STR("get new board : ");
+32f80d28:	e3a00000 	mov	r0, #0
+32f80d2c:	e59f1094 	ldr	r1, [pc, #148]	; 32f80dc8 <board_req+0x1ec>
+32f80d30:	e1a02000 	mov	r2, r0
+32f80d34:	ebfffdd9 	bl	32f804a0 <uart_write>
+    PUT_STR(type);
+32f80d38:	e3a00000 	mov	r0, #0
+32f80d3c:	e1a0100a 	mov	r1, sl
+32f80d40:	e1a02000 	mov	r2, r0
+32f80d44:	ebfffdd5 	bl	32f804a0 <uart_write>
+    PUT_STR("\n\r");
+32f80d48:	e3a00000 	mov	r0, #0
+32f80d4c:	e59f106c 	ldr	r1, [pc, #108]	; 32f80dc0 <board_req+0x1e4>
+32f80d50:	e1a02000 	mov	r2, r0
+32f80d54:	ebfffdd1 	bl	32f804a0 <uart_write>
+
+    for (cnt1 = cnt + 1; cnt1 < MAX_BOARD; cnt1++){
+32f80d58:	e2873001 	add	r3, r7, #1
+32f80d5c:	e20310ff 	and	r1, r3, #255	; 0xff
+32f80d60:	e3510009 	cmp	r1, #9
+32f80d64:	8a00000a 	bhi	32f80d94 <board_req+0x1b8>
+	board_pool[cnt1].type = "forbid!! do not use it before register";
+32f80d68:	e59fc048 	ldr	ip, [pc, #72]	; 32f80db8 <board_req+0x1dc>
+32f80d6c:	e59f0058 	ldr	r0, [pc, #88]	; 32f80dcc <board_req+0x1f0>
+32f80d70:	e1a03181 	lsl	r3, r1, #3
+32f80d74:	e1a02281 	lsl	r2, r1, #5
+32f80d78:	e0833002 	add	r3, r3, r2
+32f80d7c:	e0613003 	rsb	r3, r1, r3
+32f80d80:	e78c0103 	str	r0, [ip, r3, lsl #2]
+
+    PUT_STR("get new board : ");
+    PUT_STR(type);
+    PUT_STR("\n\r");
+
+    for (cnt1 = cnt + 1; cnt1 < MAX_BOARD; cnt1++){
+32f80d84:	e2813001 	add	r3, r1, #1
+32f80d88:	e20310ff 	and	r1, r3, #255	; 0xff
+32f80d8c:	e3510009 	cmp	r1, #9
+32f80d90:	9afffff6 	bls	32f80d70 <board_req+0x194>
+	board_pool[cnt1].type = "forbid!! do not use it before register";
+    }
+
+    return &board_pool[cnt];
+32f80d94:	e1a03187 	lsl	r3, r7, #3
+32f80d98:	e1a02287 	lsl	r2, r7, #5
+32f80d9c:	e0833002 	add	r3, r3, r2
+32f80da0:	e0673003 	rsb	r3, r7, r3
+32f80da4:	e1a03103 	lsl	r3, r3, #2
+32f80da8:	e59f2008 	ldr	r2, [pc, #8]	; 32f80db8 <board_req+0x1dc>
+32f80dac:	e0820003 	add	r0, r2, r3
+}
+32f80db0:	e8bd47f0 	pop	{r4, r5, r6, r7, r8, r9, sl, lr}
+32f80db4:	e12fff1e 	bx	lr
+32f80db8:	32f81f80 	.word	0x32f81f80
+32f80dbc:	32f81e64 	.word	0x32f81e64
+32f80dc0:	32f81e54 	.word	0x32f81e54
+32f80dc4:	32f807bc 	.word	0x32f807bc
+32f80dc8:	32f81e74 	.word	0x32f81e74
+32f80dcc:	32f81e88 	.word	0x32f81e88
+
+32f80dd0 <device_open>:
+#define GET_FD(__nb,__nd) (((__nb) << BOARD_MASK) | (__nd & 0x00ff))
+/*
+* @device_open 
+*/
+int device_open(char *path)
+{
+32f80dd0:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+32f80dd4:	e24dd034 	sub	sp, sp, #52	; 0x34
+32f80dd8:	e1a06000 	mov	r6, r0
+    int cnt;
+    int nb = -1;
+    int nd = -1;
+    char board[10] , class[10], device[10];
+    split_path(path,board,class,device);
+32f80ddc:	e28d7026 	add	r7, sp, #38	; 0x26
+32f80de0:	e3a04002 	mov	r4, #2
+32f80de4:	e58d4000 	str	r4, [sp]
+32f80de8:	e1a01007 	mov	r1, r7
+32f80dec:	e3a0202f 	mov	r2, #47	; 0x2f
+32f80df0:	e3a03001 	mov	r3, #1
+32f80df4:	eb000171 	bl	32f813c0 <str_split>
+32f80df8:	e3a05003 	mov	r5, #3
+32f80dfc:	e58d5000 	str	r5, [sp]
+32f80e00:	e1a00006 	mov	r0, r6
+32f80e04:	e28d101c 	add	r1, sp, #28
+32f80e08:	e3a0202f 	mov	r2, #47	; 0x2f
+32f80e0c:	e1a03004 	mov	r3, r4
+32f80e10:	eb00016a 	bl	32f813c0 <str_split>
+32f80e14:	e3a03004 	mov	r3, #4
+32f80e18:	e58d3000 	str	r3, [sp]
+32f80e1c:	e1a00006 	mov	r0, r6
+32f80e20:	e28d1012 	add	r1, sp, #18
+32f80e24:	e3a0202f 	mov	r2, #47	; 0x2f
+32f80e28:	e1a03005 	mov	r3, r5
+32f80e2c:	eb000163 	bl	32f813c0 <str_split>
+
+    for(cnt = 0; cnt < MAX_BOARD; cnt++ )
+       if (!strncmp(board_pool[cnt].type, board, strlen(board))){
+32f80e30:	e1a00007 	mov	r0, r7
+32f80e34:	eb000216 	bl	32f81694 <strlen>
+32f80e38:	e1a06000 	mov	r6, r0
+32f80e3c:	e2444002 	sub	r4, r4, #2
+32f80e40:	e3e0a000 	mvn	sl, #0
+32f80e44:	e1a05004 	mov	r5, r4
+32f80e48:	e59f8464 	ldr	r8, [pc, #1124]	; 32f812b4 <device_open+0x4e4>
+32f80e4c:	e28d7026 	add	r7, sp, #38	; 0x26
+32f80e50:	e7980005 	ldr	r0, [r8, r5]
+32f80e54:	e1a01007 	mov	r1, r7
+32f80e58:	e1a02006 	mov	r2, r6
+32f80e5c:	eb0001e0 	bl	32f815e4 <strncmp>
+32f80e60:	e3500000 	cmp	r0, #0
+32f80e64:	01a0a004 	moveq	sl, r4
+    int nb = -1;
+    int nd = -1;
+    char board[10] , class[10], device[10];
+    split_path(path,board,class,device);
+
+    for(cnt = 0; cnt < MAX_BOARD; cnt++ )
+32f80e68:	e2844001 	add	r4, r4, #1
+32f80e6c:	e285509c 	add	r5, r5, #156	; 0x9c
+32f80e70:	e354000a 	cmp	r4, #10
+32f80e74:	1afffff5 	bne	32f80e50 <device_open+0x80>
+       if (!strncmp(board_pool[cnt].type, board, strlen(board))){
+	   nb = cnt;
+    }
+    if (nb < 0) return -1;
+32f80e78:	e35a0000 	cmp	sl, #0
+32f80e7c:	ba000108 	blt	32f812a4 <device_open+0x4d4>
+
+    for (cnt = 0; board_pool[nb].devs && cnt < board_pool[nb].devs; cnt++){
+32f80e80:	e1a0318a 	lsl	r3, sl, #3
+32f80e84:	e1a0228a 	lsl	r2, sl, #5
+32f80e88:	e0833002 	add	r3, r3, r2
+32f80e8c:	e06a3003 	rsb	r3, sl, r3
+32f80e90:	e59f2420 	ldr	r2, [pc, #1056]	; 32f812b8 <device_open+0x4e8>
+32f80e94:	e7928103 	ldr	r8, [r2, r3, lsl #2]
+32f80e98:	e3580000 	cmp	r8, #0
+32f80e9c:	0a00002e 	beq	32f80f5c <device_open+0x18c>
+32f80ea0:	da00002d 	ble	32f80f5c <device_open+0x18c>
+       if (!strncmp(board_pool[nb].open[cnt]->type, device, strlen(device))){
+32f80ea4:	e28d0012 	add	r0, sp, #18
+32f80ea8:	eb0001f9 	bl	32f81694 <strlen>
+32f80eac:	e1a09000 	mov	r9, r0
+32f80eb0:	e1a0318a 	lsl	r3, sl, #3
+32f80eb4:	e1a0228a 	lsl	r2, sl, #5
+32f80eb8:	e0833002 	add	r3, r3, r2
+32f80ebc:	e06a3003 	rsb	r3, sl, r3
+32f80ec0:	e1a03103 	lsl	r3, r3, #2
+32f80ec4:	e59f23e8 	ldr	r2, [pc, #1000]	; 32f812b4 <device_open+0x4e4>
+32f80ec8:	e0826003 	add	r6, r2, r3
+32f80ecc:	e3e02000 	mvn	r2, #0
+32f80ed0:	e58d200c 	str	r2, [sp, #12]
+32f80ed4:	e3a05001 	mov	r5, #1
+32f80ed8:	e28db012 	add	fp, sp, #18
+32f80edc:	e2457001 	sub	r7, r5, #1
+32f80ee0:	e5964028 	ldr	r4, [r6, #40]	; 0x28
+32f80ee4:	e5940000 	ldr	r0, [r4]
+32f80ee8:	e1a0100b 	mov	r1, fp
+32f80eec:	e1a02009 	mov	r2, r9
+32f80ef0:	eb0001bb 	bl	32f815e4 <strncmp>
+32f80ef4:	e3500000 	cmp	r0, #0
+32f80ef8:	1a00000b 	bne	32f80f2c <device_open+0x15c>
+            PUT_STR("this device have been opened. num of device: ");
+32f80efc:	e59f13b8 	ldr	r1, [pc, #952]	; 32f812bc <device_open+0x4ec>
+32f80f00:	e1a02000 	mov	r2, r0
+32f80f04:	ebfffd65 	bl	32f804a0 <uart_write>
+            PUT_DEC(cnt);
+32f80f08:	e1a00007 	mov	r0, r7
+32f80f0c:	ebfffd8a 	bl	32f8053c <putdec>
+32f80f10:	e3a00000 	mov	r0, #0
+32f80f14:	e59f13a4 	ldr	r1, [pc, #932]	; 32f812c0 <device_open+0x4f0>
+32f80f18:	e1a02000 	mov	r2, r0
+32f80f1c:	ebfffd5f 	bl	32f804a0 <uart_write>
+	    return GET_FD(nb,cnt);
+32f80f20:	e20730ff 	and	r3, r7, #255	; 0xff
+32f80f24:	e183040a 	orr	r0, r3, sl, lsl #8
+32f80f28:	ea0000de 	b	32f812a8 <device_open+0x4d8>
+	}
+       if (!board_pool[nb].open[cnt])
+32f80f2c:	e3540000 	cmp	r4, #0
+32f80f30:	01a03005 	moveq	r3, r5
+32f80f34:	11a03005 	movne	r3, r5
+32f80f38:	e59d200c 	ldr	r2, [sp, #12]
+32f80f3c:	e3540000 	cmp	r4, #0
+32f80f40:	01a02007 	moveq	r2, r7
+32f80f44:	e58d200c 	str	r2, [sp, #12]
+32f80f48:	e2866004 	add	r6, r6, #4
+32f80f4c:	e2855001 	add	r5, r5, #1
+       if (!strncmp(board_pool[cnt].type, board, strlen(board))){
+	   nb = cnt;
+    }
+    if (nb < 0) return -1;
+
+    for (cnt = 0; board_pool[nb].devs && cnt < board_pool[nb].devs; cnt++){
+32f80f50:	e1530008 	cmp	r3, r8
+32f80f54:	baffffe0 	blt	32f80edc <device_open+0x10c>
+32f80f58:	ea000001 	b	32f80f64 <device_open+0x194>
+32f80f5c:	e3e03000 	mvn	r3, #0
+32f80f60:	e58d300c 	str	r3, [sp, #12]
+       if (!board_pool[nb].open[cnt])
+		nd = cnt;
+    }  
+
+  device_t *pos;
+  if (!strncmp(class,"CPU",3)){
+32f80f64:	e28d001c 	add	r0, sp, #28
+32f80f68:	e59f1354 	ldr	r1, [pc, #852]	; 32f812c4 <device_open+0x4f4>
+32f80f6c:	e3a02003 	mov	r2, #3
+32f80f70:	eb00019b 	bl	32f815e4 <strncmp>
+32f80f74:	e3500000 	cmp	r0, #0
+32f80f78:	1a00002d 	bne	32f81034 <device_open+0x264>
+     FIND_DEVICE(pos,nb, nd, device, CPU);
+32f80f7c:	e1a0318a 	lsl	r3, sl, #3
+32f80f80:	e1a0228a 	lsl	r2, sl, #5
+32f80f84:	e0833002 	add	r3, r3, r2
+32f80f88:	e06a3003 	rsb	r3, sl, r3
+32f80f8c:	e1a00103 	lsl	r0, r3, #2
+32f80f90:	e59f331c 	ldr	r3, [pc, #796]	; 32f812b4 <device_open+0x4e4>
+32f80f94:	e0835000 	add	r5, r3, r0
+32f80f98:	e5b53008 	ldr	r3, [r5, #8]!
+32f80f9c:	e2434018 	sub	r4, r3, #24
+32f80fa0:	e1550003 	cmp	r5, r3
+32f80fa4:	0a00001e 	beq	32f81024 <device_open+0x254>
+32f80fa8:	e28d6012 	add	r6, sp, #18
+32f80fac:	e59f9300 	ldr	r9, [pc, #768]	; 32f812b4 <device_open+0x4e4>
+32f80fb0:	e1a0318a 	lsl	r3, sl, #3
+32f80fb4:	e0833002 	add	r3, r3, r2
+32f80fb8:	e06a3003 	rsb	r3, sl, r3
+32f80fbc:	e59d200c 	ldr	r2, [sp, #12]
+32f80fc0:	e0833002 	add	r3, r3, r2
+32f80fc4:	e283800a 	add	r8, r3, #10
+32f80fc8:	e0897000 	add	r7, r9, r0
+32f80fcc:	e1a00006 	mov	r0, r6
+32f80fd0:	eb0001af 	bl	32f81694 <strlen>
+32f80fd4:	e1a02000 	mov	r2, r0
+32f80fd8:	e5940000 	ldr	r0, [r4]
+32f80fdc:	e1a01006 	mov	r1, r6
+32f80fe0:	eb00017f 	bl	32f815e4 <strncmp>
+32f80fe4:	e3500000 	cmp	r0, #0
+32f80fe8:	1a000009 	bne	32f81014 <device_open+0x244>
+32f80fec:	e5943008 	ldr	r3, [r4, #8]
+32f80ff0:	e3530000 	cmp	r3, #0
+32f80ff4:	1a000006 	bne	32f81014 <device_open+0x244>
+32f80ff8:	e7894108 	str	r4, [r9, r8, lsl #2]
+32f80ffc:	e594300c 	ldr	r3, [r4, #12]
+32f81000:	e1a00007 	mov	r0, r7
+32f81004:	e1a01004 	mov	r1, r4
+32f81008:	e593c000 	ldr	ip, [r3]
+32f8100c:	e1a0e00f 	mov	lr, pc
+32f81010:	e12fff1c 	bx	ip
+32f81014:	e5943018 	ldr	r3, [r4, #24]
+32f81018:	e2434018 	sub	r4, r3, #24
+32f8101c:	e1550003 	cmp	r5, r3
+32f81020:	1affffe9 	bne	32f80fcc <device_open+0x1fc>
+     return GET_FD(nb,nd);
+32f81024:	e59d200c 	ldr	r2, [sp, #12]
+32f81028:	e20230ff 	and	r3, r2, #255	; 0xff
+32f8102c:	e183040a 	orr	r0, r3, sl, lsl #8
+32f81030:	ea00009c 	b	32f812a8 <device_open+0x4d8>
+  }else if (strncmp(class, "RAM",3)){
+32f81034:	e28d001c 	add	r0, sp, #28
+32f81038:	e59f1288 	ldr	r1, [pc, #648]	; 32f812c8 <device_open+0x4f8>
+32f8103c:	e3a02003 	mov	r2, #3
+32f81040:	eb000167 	bl	32f815e4 <strncmp>
+32f81044:	e3500000 	cmp	r0, #0
+32f81048:	0a00002d 	beq	32f81104 <device_open+0x334>
+     FIND_DEVICE(pos,nb, nd, device, RAM);
+32f8104c:	e1a0318a 	lsl	r3, sl, #3
+32f81050:	e1a0228a 	lsl	r2, sl, #5
+32f81054:	e0833002 	add	r3, r3, r2
+32f81058:	e06a3003 	rsb	r3, sl, r3
+32f8105c:	e1a00103 	lsl	r0, r3, #2
+32f81060:	e59f324c 	ldr	r3, [pc, #588]	; 32f812b4 <device_open+0x4e4>
+32f81064:	e0835000 	add	r5, r3, r0
+32f81068:	e5b53010 	ldr	r3, [r5, #16]!
+32f8106c:	e2434018 	sub	r4, r3, #24
+32f81070:	e1550003 	cmp	r5, r3
+32f81074:	0a00001e 	beq	32f810f4 <device_open+0x324>
+32f81078:	e28d6012 	add	r6, sp, #18
+32f8107c:	e59f9230 	ldr	r9, [pc, #560]	; 32f812b4 <device_open+0x4e4>
+32f81080:	e1a0318a 	lsl	r3, sl, #3
+32f81084:	e0833002 	add	r3, r3, r2
+32f81088:	e06a3003 	rsb	r3, sl, r3
+32f8108c:	e59d200c 	ldr	r2, [sp, #12]
+32f81090:	e0833002 	add	r3, r3, r2
+32f81094:	e283800a 	add	r8, r3, #10
+32f81098:	e0897000 	add	r7, r9, r0
+32f8109c:	e1a00006 	mov	r0, r6
+32f810a0:	eb00017b 	bl	32f81694 <strlen>
+32f810a4:	e1a02000 	mov	r2, r0
+32f810a8:	e5940000 	ldr	r0, [r4]
+32f810ac:	e1a01006 	mov	r1, r6
+32f810b0:	eb00014b 	bl	32f815e4 <strncmp>
+32f810b4:	e3500000 	cmp	r0, #0
+32f810b8:	1a000009 	bne	32f810e4 <device_open+0x314>
+32f810bc:	e5943008 	ldr	r3, [r4, #8]
+32f810c0:	e3530001 	cmp	r3, #1
+32f810c4:	1a000006 	bne	32f810e4 <device_open+0x314>
+32f810c8:	e7894108 	str	r4, [r9, r8, lsl #2]
+32f810cc:	e594300c 	ldr	r3, [r4, #12]
+32f810d0:	e1a00007 	mov	r0, r7
+32f810d4:	e1a01004 	mov	r1, r4
+32f810d8:	e593c000 	ldr	ip, [r3]
+32f810dc:	e1a0e00f 	mov	lr, pc
+32f810e0:	e12fff1c 	bx	ip
+32f810e4:	e5943018 	ldr	r3, [r4, #24]
+32f810e8:	e2434018 	sub	r4, r3, #24
+32f810ec:	e1550003 	cmp	r5, r3
+32f810f0:	1affffe9 	bne	32f8109c <device_open+0x2cc>
+     return GET_FD(nb,nd);
+32f810f4:	e59d200c 	ldr	r2, [sp, #12]
+32f810f8:	e20230ff 	and	r3, r2, #255	; 0xff
+32f810fc:	e183040a 	orr	r0, r3, sl, lsl #8
+32f81100:	ea000068 	b	32f812a8 <device_open+0x4d8>
+  }else if (strncmp(class, "NOR",3)){
+32f81104:	e28d001c 	add	r0, sp, #28
+32f81108:	e59f11bc 	ldr	r1, [pc, #444]	; 32f812cc <device_open+0x4fc>
+32f8110c:	e3a02003 	mov	r2, #3
+32f81110:	eb000133 	bl	32f815e4 <strncmp>
+32f81114:	e3500000 	cmp	r0, #0
+32f81118:	0a00002d 	beq	32f811d4 <device_open+0x404>
+     FIND_DEVICE(pos,nb, nd, device, NOR);
+32f8111c:	e1a0318a 	lsl	r3, sl, #3
+32f81120:	e1a0228a 	lsl	r2, sl, #5
+32f81124:	e0833002 	add	r3, r3, r2
+32f81128:	e06a3003 	rsb	r3, sl, r3
+32f8112c:	e1a00103 	lsl	r0, r3, #2
+32f81130:	e59f317c 	ldr	r3, [pc, #380]	; 32f812b4 <device_open+0x4e4>
+32f81134:	e0835000 	add	r5, r3, r0
+32f81138:	e5b53018 	ldr	r3, [r5, #24]!
+32f8113c:	e2434018 	sub	r4, r3, #24
+32f81140:	e1550003 	cmp	r5, r3
+32f81144:	0a00001e 	beq	32f811c4 <device_open+0x3f4>
+32f81148:	e28d6012 	add	r6, sp, #18
+32f8114c:	e59f9160 	ldr	r9, [pc, #352]	; 32f812b4 <device_open+0x4e4>
+32f81150:	e1a0318a 	lsl	r3, sl, #3
+32f81154:	e0833002 	add	r3, r3, r2
+32f81158:	e06a3003 	rsb	r3, sl, r3
+32f8115c:	e59d200c 	ldr	r2, [sp, #12]
+32f81160:	e0833002 	add	r3, r3, r2
+32f81164:	e283700a 	add	r7, r3, #10
+32f81168:	e0898000 	add	r8, r9, r0
+32f8116c:	e1a00006 	mov	r0, r6
+32f81170:	eb000147 	bl	32f81694 <strlen>
+32f81174:	e1a02000 	mov	r2, r0
+32f81178:	e5940000 	ldr	r0, [r4]
+32f8117c:	e1a01006 	mov	r1, r6
+32f81180:	eb000117 	bl	32f815e4 <strncmp>
+32f81184:	e3500000 	cmp	r0, #0
+32f81188:	1a000009 	bne	32f811b4 <device_open+0x3e4>
+32f8118c:	e5943008 	ldr	r3, [r4, #8]
+32f81190:	e3530002 	cmp	r3, #2
+32f81194:	1a000006 	bne	32f811b4 <device_open+0x3e4>
+32f81198:	e7894107 	str	r4, [r9, r7, lsl #2]
+32f8119c:	e594300c 	ldr	r3, [r4, #12]
+32f811a0:	e1a00008 	mov	r0, r8
+32f811a4:	e1a01004 	mov	r1, r4
+32f811a8:	e593c000 	ldr	ip, [r3]
+32f811ac:	e1a0e00f 	mov	lr, pc
+32f811b0:	e12fff1c 	bx	ip
+32f811b4:	e5943018 	ldr	r3, [r4, #24]
+32f811b8:	e2434018 	sub	r4, r3, #24
+32f811bc:	e1550003 	cmp	r5, r3
+32f811c0:	1affffe9 	bne	32f8116c <device_open+0x39c>
+     return GET_FD(nb,nd);
+32f811c4:	e59d200c 	ldr	r2, [sp, #12]
+32f811c8:	e20230ff 	and	r3, r2, #255	; 0xff
+32f811cc:	e183040a 	orr	r0, r3, sl, lsl #8
+32f811d0:	ea000034 	b	32f812a8 <device_open+0x4d8>
+  }else if (strncmp(class, "NAND",3)){
+32f811d4:	e28d001c 	add	r0, sp, #28
+32f811d8:	e59f10f0 	ldr	r1, [pc, #240]	; 32f812d0 <device_open+0x500>
+32f811dc:	e3a02003 	mov	r2, #3
+32f811e0:	eb0000ff 	bl	32f815e4 <strncmp>
+32f811e4:	e3500000 	cmp	r0, #0
+32f811e8:	0a00002d 	beq	32f812a4 <device_open+0x4d4>
+     FIND_DEVICE(pos, nb, nd, device, NAND); 
+32f811ec:	e1a0318a 	lsl	r3, sl, #3
+32f811f0:	e1a0228a 	lsl	r2, sl, #5
+32f811f4:	e0833002 	add	r3, r3, r2
+32f811f8:	e06a3003 	rsb	r3, sl, r3
+32f811fc:	e1a00103 	lsl	r0, r3, #2
+32f81200:	e59f30ac 	ldr	r3, [pc, #172]	; 32f812b4 <device_open+0x4e4>
+32f81204:	e0835000 	add	r5, r3, r0
+32f81208:	e5b53020 	ldr	r3, [r5, #32]!
+32f8120c:	e2434018 	sub	r4, r3, #24
+32f81210:	e1550003 	cmp	r5, r3
+32f81214:	0a00001e 	beq	32f81294 <device_open+0x4c4>
+32f81218:	e28d6012 	add	r6, sp, #18
+32f8121c:	e59f7090 	ldr	r7, [pc, #144]	; 32f812b4 <device_open+0x4e4>
+32f81220:	e1a0318a 	lsl	r3, sl, #3
+32f81224:	e0833002 	add	r3, r3, r2
+32f81228:	e06a3003 	rsb	r3, sl, r3
+32f8122c:	e59d200c 	ldr	r2, [sp, #12]
+32f81230:	e0833002 	add	r3, r3, r2
+32f81234:	e283800a 	add	r8, r3, #10
+32f81238:	e0879000 	add	r9, r7, r0
+32f8123c:	e1a00006 	mov	r0, r6
+32f81240:	eb000113 	bl	32f81694 <strlen>
+32f81244:	e1a02000 	mov	r2, r0
+32f81248:	e5940000 	ldr	r0, [r4]
+32f8124c:	e1a01006 	mov	r1, r6
+32f81250:	eb0000e3 	bl	32f815e4 <strncmp>
+32f81254:	e3500000 	cmp	r0, #0
+32f81258:	1a000009 	bne	32f81284 <device_open+0x4b4>
+32f8125c:	e5943008 	ldr	r3, [r4, #8]
+32f81260:	e3530003 	cmp	r3, #3
+32f81264:	1a000006 	bne	32f81284 <device_open+0x4b4>
+32f81268:	e7874108 	str	r4, [r7, r8, lsl #2]
+32f8126c:	e594300c 	ldr	r3, [r4, #12]
+32f81270:	e1a00009 	mov	r0, r9
+32f81274:	e1a01004 	mov	r1, r4
+32f81278:	e593c000 	ldr	ip, [r3]
+32f8127c:	e1a0e00f 	mov	lr, pc
+32f81280:	e12fff1c 	bx	ip
+32f81284:	e5943018 	ldr	r3, [r4, #24]
+32f81288:	e2434018 	sub	r4, r3, #24
+32f8128c:	e1550003 	cmp	r5, r3
+32f81290:	1affffe9 	bne	32f8123c <device_open+0x46c>
+     return GET_FD(nb,nd);
+32f81294:	e59d200c 	ldr	r2, [sp, #12]
+32f81298:	e20230ff 	and	r3, r2, #255	; 0xff
+32f8129c:	e183040a 	orr	r0, r3, sl, lsl #8
+32f812a0:	ea000000 	b	32f812a8 <device_open+0x4d8>
+32f812a4:	e3e00000 	mvn	r0, #0
+  }else{
+     return -1;
+  }
+
+}
+32f812a8:	e28dd034 	add	sp, sp, #52	; 0x34
+32f812ac:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+32f812b0:	e12fff1e 	bx	lr
+32f812b4:	32f81f80 	.word	0x32f81f80
+32f812b8:	32f82014 	.word	0x32f82014
+32f812bc:	32f81eb0 	.word	0x32f81eb0
+32f812c0:	32f81e54 	.word	0x32f81e54
+32f812c4:	32f81ee0 	.word	0x32f81ee0
+32f812c8:	32f81ee4 	.word	0x32f81ee4
+32f812cc:	32f81ee8 	.word	0x32f81ee8
+32f812d0:	32f81eec 	.word	0x32f81eec
+
+32f812d4 <strdel_head>:
+   
+   return buf;
+}
+
+char * strdel_head(const char *str, char buf[],int chr, int n)
+{
+32f812d4:	e92d45f0 	push	{r4, r5, r6, r7, r8, sl, lr}
+32f812d8:	e24dd004 	sub	sp, sp, #4
+32f812dc:	e1a08000 	mov	r8, r0
+32f812e0:	e1a06001 	mov	r6, r1
+32f812e4:	e1a04002 	mov	r4, r2
+32f812e8:	e1a05003 	mov	r5, r3
+   //DEBUG_CHECK(!str && !buf && !n, NULL);
+   int len = strlen(str);
+32f812ec:	eb0000e8 	bl	32f81694 <strlen>
+32f812f0:	e1a0a000 	mov	sl, r0
+32f812f4:	e1a07000 	mov	r7, r0
+   int count;
+   char *dest;
+
+   dest = strnchr(str,chr,n);
+32f812f8:	e1a00008 	mov	r0, r8
+32f812fc:	e1a01004 	mov	r1, r4
+32f81300:	e1a02005 	mov	r2, r5
+32f81304:	eb000195 	bl	32f81960 <strnchr>
+   int pos = (int)(dest - str);
+32f81308:	e0680000 	rsb	r0, r8, r0
+   for (count = pos; count < len; count++)
+32f8130c:	e15a0000 	cmp	sl, r0
+32f81310:	da00000b 	ble	32f81344 <strdel_head+0x70>
+32f81314:	e3a02000 	mov	r2, #0
+        buf[count - pos] = str[count];
+32f81318:	e0881000 	add	r1, r8, r0
+32f8131c:	e7d13002 	ldrb	r3, [r1, r2]
+32f81320:	e7c63002 	strb	r3, [r6, r2]
+32f81324:	e2822001 	add	r2, r2, #1
+   int count;
+   char *dest;
+
+   dest = strnchr(str,chr,n);
+   int pos = (int)(dest - str);
+   for (count = pos; count < len; count++)
+32f81328:	e0823000 	add	r3, r2, r0
+32f8132c:	e1570003 	cmp	r7, r3
+32f81330:	cafffff9 	bgt	32f8131c <strdel_head+0x48>
+32f81334:	e2802001 	add	r2, r0, #1
+32f81338:	e1e03000 	mvn	r3, r0
+32f8133c:	e083300a 	add	r3, r3, sl
+32f81340:	e0820003 	add	r0, r2, r3
+        buf[count - pos] = str[count];
+   buf[count] = '\0';
+32f81344:	e3a03000 	mov	r3, #0
+32f81348:	e7c63000 	strb	r3, [r6, r0]
+
+   return buf;
+}
+32f8134c:	e1a00006 	mov	r0, r6
+32f81350:	e28dd004 	add	sp, sp, #4
+32f81354:	e8bd45f0 	pop	{r4, r5, r6, r7, r8, sl, lr}
+32f81358:	e12fff1e 	bx	lr
+
+32f8135c <strdel_tail>:
+#include <linux/string.h>
+#include <debug.h>
+
+
+char *strdel_tail(const char *str, char buf[],int chr, int n)
+{
+32f8135c:	e92d4030 	push	{r4, r5, lr}
+32f81360:	e24dd004 	sub	sp, sp, #4
+32f81364:	e1a05000 	mov	r5, r0
+32f81368:	e1a04001 	mov	r4, r1
+   //DEBUG_CHECK(!str && !buf && !n, NULL);
+   int len = strlen(str);
+   char *dest;
+
+   dest = strnchr(str,chr,n);
+32f8136c:	e1a01002 	mov	r1, r2
+32f81370:	e1a02003 	mov	r2, r3
+32f81374:	eb000179 	bl	32f81960 <strnchr>
+   int pos = (int)(dest - str);
+32f81378:	e0650000 	rsb	r0, r5, r0
+   int count;
+   for (count = 0; count < pos; count++ )
+32f8137c:	e3500000 	cmp	r0, #0
+32f81380:	d3a00000 	movle	r0, #0
+32f81384:	da000005 	ble	32f813a0 <strdel_tail+0x44>
+32f81388:	e3a02000 	mov	r2, #0
+        buf[count] = str[count];
+32f8138c:	e7d53002 	ldrb	r3, [r5, r2]
+32f81390:	e7c43002 	strb	r3, [r4, r2]
+   char *dest;
+
+   dest = strnchr(str,chr,n);
+   int pos = (int)(dest - str);
+   int count;
+   for (count = 0; count < pos; count++ )
+32f81394:	e2822001 	add	r2, r2, #1
+32f81398:	e1500002 	cmp	r0, r2
+32f8139c:	cafffffa 	bgt	32f8138c <strdel_tail+0x30>
+        buf[count] = str[count];
+   buf[count - 1] = '\0';
+32f813a0:	e0843000 	add	r3, r4, r0
+32f813a4:	e2433001 	sub	r3, r3, #1
+32f813a8:	e3a02000 	mov	r2, #0
+32f813ac:	e5c32000 	strb	r2, [r3]
+   
+   return buf;
+}
+32f813b0:	e1a00004 	mov	r0, r4
+32f813b4:	e28dd004 	add	sp, sp, #4
+32f813b8:	e8bd4030 	pop	{r4, r5, lr}
+32f813bc:	e12fff1e 	bx	lr
+
+32f813c0 <str_split>:
+
+   return buf;
+}
+
+char *str_split(const char *src,char buf[],int chr, int n1, int n2)
+{   
+32f813c0:	e92d4070 	push	{r4, r5, r6, lr}
+32f813c4:	e24dd038 	sub	sp, sp, #56	; 0x38
+32f813c8:	e1a04001 	mov	r4, r1
+32f813cc:	e1a05002 	mov	r5, r2
+32f813d0:	e1a06003 	mov	r6, r3
+    //DEBUG_CHECK(!src && !buf && !n1 && !n2, NULL);
+    char tmp[50];
+    if (!strdel_head(src,tmp,chr,n1))
+32f813d4:	e28d1006 	add	r1, sp, #6
+32f813d8:	ebffffbd 	bl	32f812d4 <strdel_head>
+32f813dc:	e3500000 	cmp	r0, #0
+32f813e0:	0a000007 	beq	32f81404 <str_split+0x44>
+       return NULL;
+    if (!strdel_tail(tmp,buf,chr,n2 - n1))
+32f813e4:	e28d0006 	add	r0, sp, #6
+32f813e8:	e1a01004 	mov	r1, r4
+32f813ec:	e1a02005 	mov	r2, r5
+32f813f0:	e59dc048 	ldr	ip, [sp, #72]	; 0x48
+32f813f4:	e066300c 	rsb	r3, r6, ip
+32f813f8:	ebffffd7 	bl	32f8135c <strdel_tail>
+32f813fc:	e3500000 	cmp	r0, #0
+32f81400:	1a000000 	bne	32f81408 <str_split+0x48>
+32f81404:	e3a04000 	mov	r4, #0
+       return NULL;
+
+    return buf;
+}
+32f81408:	e1a00004 	mov	r0, r4
+32f8140c:	e28dd038 	add	sp, sp, #56	; 0x38
+32f81410:	e8bd4070 	pop	{r4, r5, r6, lr}
+32f81414:	e12fff1e 	bx	lr
+
+32f81418 <strncasecmp>:
+{
+	/* Yes, Virginia, it had better be unsigned */
+	unsigned char c1, c2;
+
+	c1 = 0;	c2 = 0;
+	if (len) {
+32f81418:	e92d0070 	push	{r4, r5, r6}
+32f8141c:	e1a05000 	mov	r5, r0
+32f81420:	e2524000 	subs	r4, r2, #0
+32f81424:	03a00000 	moveq	r0, #0
+32f81428:	01a0c000 	moveq	ip, r0
+32f8142c:	0a000016 	beq	32f8148c <strncasecmp+0x74>
+32f81430:	e3a02000 	mov	r2, #0
+#define isascii(c) (((unsigned char)(c))<=0x7f)
+#define toascii(c) (((unsigned char)(c))&0x7f)
+
+static inline unsigned char __tolower(unsigned char c)
+{
+	if (isupper(c))
+32f81434:	e59f605c 	ldr	r6, [pc, #92]	; 32f81498 <strncasecmp+0x80>
+		do {
+			c1 = *s1; c2 = *s2;
+32f81438:	e7d50002 	ldrb	r0, [r5, r2]
+32f8143c:	e7d1c002 	ldrb	ip, [r1, r2]
+			s1++; s2++;
+			if (!c1)
+32f81440:	e3500000 	cmp	r0, #0
+32f81444:	0a000010 	beq	32f8148c <strncasecmp+0x74>
+				break;
+			if (!c2)
+32f81448:	e35c0000 	cmp	ip, #0
+32f8144c:	0a00000e 	beq	32f8148c <strncasecmp+0x74>
+				break;
+			if (c1 == c2)
+32f81450:	e150000c 	cmp	r0, ip
+32f81454:	0a000009 	beq	32f81480 <strncasecmp+0x68>
+32f81458:	e7d63000 	ldrb	r3, [r6, r0]
+32f8145c:	e3130001 	tst	r3, #1
+		c -= 'A'-'a';
+32f81460:	12803020 	addne	r3, r0, #32
+32f81464:	120300ff 	andne	r0, r3, #255	; 0xff
+#define isascii(c) (((unsigned char)(c))<=0x7f)
+#define toascii(c) (((unsigned char)(c))&0x7f)
+
+static inline unsigned char __tolower(unsigned char c)
+{
+	if (isupper(c))
+32f81468:	e7d6300c 	ldrb	r3, [r6, ip]
+32f8146c:	e3130001 	tst	r3, #1
+		c -= 'A'-'a';
+32f81470:	128c3020 	addne	r3, ip, #32
+32f81474:	1203c0ff 	andne	ip, r3, #255	; 0xff
+				continue;
+			c1 = tolower(c1);
+			c2 = tolower(c2);
+			if (c1 != c2)
+32f81478:	e150000c 	cmp	r0, ip
+32f8147c:	1a000002 	bne	32f8148c <strncasecmp+0x74>
+				break;
+32f81480:	e2822001 	add	r2, r2, #1
+		} while (--len);
+32f81484:	e1540002 	cmp	r4, r2
+32f81488:	1affffea 	bne	32f81438 <strncasecmp+0x20>
+	}
+	return (int)c1 - (int)c2;
+}
+32f8148c:	e06c0000 	rsb	r0, ip, r0
+32f81490:	e8bd0070 	pop	{r4, r5, r6}
+32f81494:	e12fff1e 	bx	lr
+32f81498:	32f81cd0 	.word	0x32f81cd0
+
+32f8149c <strcasecmp>:
+ * @s1: One string
+ * @s2: The other string
+ */
+int strcasecmp(const char *s1, const char *s2)
+{
+	return strncasecmp(s1, s2, -1U);
+32f8149c:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+32f814a0:	e24dd004 	sub	sp, sp, #4
+32f814a4:	e3e02000 	mvn	r2, #0
+32f814a8:	ebffffda 	bl	32f81418 <strncasecmp>
+}
+32f814ac:	e28dd004 	add	sp, sp, #4
+32f814b0:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
+32f814b4:	e12fff1e 	bx	lr
+
+32f814b8 <strcpy>:
+ */
+char * strcpy(char * dest,const char *src)
+{
+	char *tmp = dest;
+
+	while ((*dest++ = *src++) != '\0')
+32f814b8:	e3a02000 	mov	r2, #0
+32f814bc:	e7d13002 	ldrb	r3, [r1, r2]
+32f814c0:	e7c03002 	strb	r3, [r0, r2]
+32f814c4:	e2822001 	add	r2, r2, #1
+32f814c8:	e3530000 	cmp	r3, #0
+32f814cc:	1afffffa 	bne	32f814bc <strcpy+0x4>
+		/* nothing */;
+	return tmp;
+}
+32f814d0:	e12fff1e 	bx	lr
+
+32f814d4 <strncpy>:
+ */
+char * strncpy(char * dest,const char *src,size_t count)
+{
+	char *tmp = dest;
+
+	while (count-- && (*dest++ = *src++) != '\0')
+32f814d4:	e3a0c000 	mov	ip, #0
+32f814d8:	e3520000 	cmp	r2, #0
+32f814dc:	012fff1e 	bxeq	lr
+32f814e0:	e7d1300c 	ldrb	r3, [r1, ip]
+32f814e4:	e7c0300c 	strb	r3, [r0, ip]
+32f814e8:	e28cc001 	add	ip, ip, #1
+32f814ec:	e2422001 	sub	r2, r2, #1
+32f814f0:	e3530000 	cmp	r3, #0
+32f814f4:	1afffff7 	bne	32f814d8 <strncpy+0x4>
+		/* nothing */;
+
+	return tmp;
+}
+32f814f8:	e12fff1e 	bx	lr
+
+32f814fc <strcat>:
+ */
+char * strcat(char * dest, const char * src)
+{
+	char *tmp = dest;
+
+	while (*dest)
+32f814fc:	e5d03000 	ldrb	r3, [r0]
+32f81500:	e3530000 	cmp	r3, #0
+32f81504:	01a0c000 	moveq	ip, r0
+32f81508:	0a000003 	beq	32f8151c <strcat+0x20>
+32f8150c:	e1a0c000 	mov	ip, r0
+32f81510:	e5fc3001 	ldrb	r3, [ip, #1]!
+32f81514:	e3530000 	cmp	r3, #0
+32f81518:	1afffffc 	bne	32f81510 <strcat+0x14>
+32f8151c:	e3a02000 	mov	r2, #0
+		dest++;
+	while ((*dest++ = *src++) != '\0')
+32f81520:	e7d13002 	ldrb	r3, [r1, r2]
+32f81524:	e7cc3002 	strb	r3, [ip, r2]
+32f81528:	e2822001 	add	r2, r2, #1
+32f8152c:	e3530000 	cmp	r3, #0
+32f81530:	1afffffa 	bne	32f81520 <strcat+0x24>
+		;
+
+	return tmp;
+}
+32f81534:	e12fff1e 	bx	lr
+
+32f81538 <strncat>:
+ */
+char * strncat(char *dest, const char *src, size_t count)
+{
+	char *tmp = dest;
+
+	if (count) {
+32f81538:	e92d0030 	push	{r4, r5}
+32f8153c:	e1a05001 	mov	r5, r1
+32f81540:	e2524000 	subs	r4, r2, #0
+32f81544:	0a000015 	beq	32f815a0 <strncat+0x68>
+		while (*dest)
+32f81548:	e5d03000 	ldrb	r3, [r0]
+32f8154c:	e3530000 	cmp	r3, #0
+			dest++;
+		while ((*dest++ = *src++)) {
+			if (--count == 0) {
+				*dest = '\0';
+				break;
+32f81550:	01a02000 	moveq	r2, r0
+char * strncat(char *dest, const char *src, size_t count)
+{
+	char *tmp = dest;
+
+	if (count) {
+		while (*dest)
+32f81554:	0a00000b 	beq	32f81588 <strncat+0x50>
+32f81558:	e1a02000 	mov	r2, r0
+32f8155c:	e5f23001 	ldrb	r3, [r2, #1]!
+32f81560:	e3530000 	cmp	r3, #0
+32f81564:	1afffffc 	bne	32f8155c <strncat+0x24>
+32f81568:	ea000006 	b	32f81588 <strncat+0x50>
+			dest++;
+		while ((*dest++ = *src++)) {
+32f8156c:	e2811001 	add	r1, r1, #1
+32f81570:	e28cc001 	add	ip, ip, #1
+			if (--count == 0) {
+32f81574:	e154000c 	cmp	r4, ip
+32f81578:	1a000004 	bne	32f81590 <strncat+0x58>
+				*dest = '\0';
+32f8157c:	e3a03000 	mov	r3, #0
+32f81580:	e5c13000 	strb	r3, [r1]
+32f81584:	ea000005 	b	32f815a0 <strncat+0x68>
+				break;
+32f81588:	e1a01002 	mov	r1, r2
+32f8158c:	e3a0c000 	mov	ip, #0
+	char *tmp = dest;
+
+	if (count) {
+		while (*dest)
+			dest++;
+		while ((*dest++ = *src++)) {
+32f81590:	e7d5300c 	ldrb	r3, [r5, ip]
+32f81594:	e7c2300c 	strb	r3, [r2, ip]
+32f81598:	e3530000 	cmp	r3, #0
+32f8159c:	1afffff2 	bne	32f8156c <strncat+0x34>
+			}
+		}
+	}
+
+	return tmp;
+}
+32f815a0:	e8bd0030 	pop	{r4, r5}
+32f815a4:	e12fff1e 	bx	lr
+
+32f815a8 <strcmp>:
+int strcmp(const char * cs,const char * ct)
+{
+	register signed char __res;
+
+	while (1) {
+		if ((__res = *cs - *ct++) != 0 || !*cs++)
+32f815a8:	e52d4004 	push	{r4}		; (str r4, [sp, #-4]!)
+32f815ac:	e1a04000 	mov	r4, r0
+32f815b0:	e3a02000 	mov	r2, #0
+32f815b4:	e7d4c002 	ldrb	ip, [r4, r2]
+32f815b8:	e7d13002 	ldrb	r3, [r1, r2]
+32f815bc:	e063300c 	rsb	r3, r3, ip
+32f815c0:	e21300ff 	ands	r0, r3, #255	; 0xff
+32f815c4:	1a000002 	bne	32f815d4 <strcmp+0x2c>
+32f815c8:	e2822001 	add	r2, r2, #1
+32f815cc:	e35c0000 	cmp	ip, #0
+32f815d0:	1afffff7 	bne	32f815b4 <strcmp+0xc>
+32f815d4:	e1a00c00 	lsl	r0, r0, #24
+			break;
+	}
+
+	return __res;
+}
+32f815d8:	e1a00c40 	asr	r0, r0, #24
+32f815dc:	e8bd0010 	pop	{r4}
+32f815e0:	e12fff1e 	bx	lr
+
+32f815e4 <strncmp>:
+ */
+int strncmp(const char * cs,const char * ct,size_t count)
+{
+	register signed char __res = 0;
+
+	while (count) {
+32f815e4:	e52d4004 	push	{r4}		; (str r4, [sp, #-4]!)
+32f815e8:	e3520000 	cmp	r2, #0
+32f815ec:	03a04000 	moveq	r4, #0
+32f815f0:	0a000014 	beq	32f81648 <strncmp+0x64>
+		if ((__res = *cs - *ct++) != 0 || !*cs++)
+32f815f4:	e5d0c000 	ldrb	ip, [r0]
+32f815f8:	e5d13000 	ldrb	r3, [r1]
+32f815fc:	e063300c 	rsb	r3, r3, ip
+32f81600:	e21340ff 	ands	r4, r3, #255	; 0xff
+32f81604:	1a00000f 	bne	32f81648 <strncmp+0x64>
+32f81608:	e35c0000 	cmp	ip, #0
+32f8160c:	1a000009 	bne	32f81638 <strncmp+0x54>
+32f81610:	ea00000c 	b	32f81648 <strncmp+0x64>
+32f81614:	e5d0c001 	ldrb	ip, [r0, #1]
+32f81618:	e5d13001 	ldrb	r3, [r1, #1]
+32f8161c:	e063300c 	rsb	r3, r3, ip
+32f81620:	e21330ff 	ands	r3, r3, #255	; 0xff
+32f81624:	1a000006 	bne	32f81644 <strncmp+0x60>
+32f81628:	e2800001 	add	r0, r0, #1
+32f8162c:	e2811001 	add	r1, r1, #1
+32f81630:	e35c0000 	cmp	ip, #0
+32f81634:	0a000002 	beq	32f81644 <strncmp+0x60>
+ */
+int strncmp(const char * cs,const char * ct,size_t count)
+{
+	register signed char __res = 0;
+
+	while (count) {
+32f81638:	e2522001 	subs	r2, r2, #1
+32f8163c:	1afffff4 	bne	32f81614 <strncmp+0x30>
+32f81640:	ea000000 	b	32f81648 <strncmp+0x64>
+32f81644:	e20340ff 	and	r4, r3, #255	; 0xff
+32f81648:	e1a00c04 	lsl	r0, r4, #24
+			break;
+		count--;
+	}
+
+	return __res;
+}
+32f8164c:	e1a00c40 	asr	r0, r0, #24
+32f81650:	e8bd0010 	pop	{r4}
+32f81654:	e12fff1e 	bx	lr
+
+32f81658 <strchr>:
+ * @s: The string to be searched
+ * @c: The character to search for
+ */
+char * strchr(const char * s, int c)
+{
+	for(; *s != (char) c; ++s)
+32f81658:	e5d03000 	ldrb	r3, [r0]
+32f8165c:	e20110ff 	and	r1, r1, #255	; 0xff
+32f81660:	e1530001 	cmp	r3, r1
+32f81664:	012fff1e 	bxeq	lr
+		if (*s == '\0')
+32f81668:	e3530000 	cmp	r3, #0
+32f8166c:	1a000002 	bne	32f8167c <strchr+0x24>
+32f81670:	ea000005 	b	32f8168c <strchr+0x34>
+32f81674:	e3530000 	cmp	r3, #0
+32f81678:	0a000003 	beq	32f8168c <strchr+0x34>
+ * @s: The string to be searched
+ * @c: The character to search for
+ */
+char * strchr(const char * s, int c)
+{
+	for(; *s != (char) c; ++s)
+32f8167c:	e5f03001 	ldrb	r3, [r0, #1]!
+32f81680:	e1530001 	cmp	r3, r1
+32f81684:	1afffffa 	bne	32f81674 <strchr+0x1c>
+32f81688:	e12fff1e 	bx	lr
+		if (*s == '\0')
+			return NULL;
+	return (char *) s;
+32f8168c:	e3a00000 	mov	r0, #0
+}
+32f81690:	e12fff1e 	bx	lr
+
+32f81694 <strlen>:
+ */
+size_t strlen(const char * s)
+{
+	const char *sc;
+
+	for (sc = s; *sc != '\0'; ++sc)
+32f81694:	e1a02000 	mov	r2, r0
+32f81698:	e5d03000 	ldrb	r3, [r0]
+32f8169c:	e3530000 	cmp	r3, #0
+32f816a0:	01a00000 	moveq	r0, r0
+32f816a4:	0a000003 	beq	32f816b8 <strlen+0x24>
+32f816a8:	e1a00002 	mov	r0, r2
+32f816ac:	e5f03001 	ldrb	r3, [r0, #1]!
+32f816b0:	e3530000 	cmp	r3, #0
+32f816b4:	1afffffc 	bne	32f816ac <strlen+0x18>
+		/* nothing */;
+	return sc - s;
+}
+32f816b8:	e0620000 	rsb	r0, r2, r0
+32f816bc:	e12fff1e 	bx	lr
+
+32f816c0 <strrchr>:
+ * @s: The string to be searched
+ * @c: The character to search for
+ */
+char * strrchr(const char * s, int c)
+{
+       const char *p = s + strlen(s);
+32f816c0:	e92d4030 	push	{r4, r5, lr}
+32f816c4:	e24dd004 	sub	sp, sp, #4
+32f816c8:	e1a05000 	mov	r5, r0
+32f816cc:	e1a04001 	mov	r4, r1
+32f816d0:	ebffffef 	bl	32f81694 <strlen>
+32f816d4:	e0850000 	add	r0, r5, r0
+       do {
+	   if (*p == (char)c)
+32f816d8:	e20440ff 	and	r4, r4, #255	; 0xff
+32f816dc:	e5d03000 	ldrb	r3, [r0]
+32f816e0:	e1530004 	cmp	r3, r4
+32f816e4:	0a000003 	beq	32f816f8 <strrchr+0x38>
+	       return (char *)p;
+       } while (--p >= s);
+32f816e8:	e2400001 	sub	r0, r0, #1
+32f816ec:	e1550000 	cmp	r5, r0
+32f816f0:	9afffff9 	bls	32f816dc <strrchr+0x1c>
+32f816f4:	e3a00000 	mov	r0, #0
+       return NULL;
+}
+32f816f8:	e28dd004 	add	sp, sp, #4
+32f816fc:	e8bd4030 	pop	{r4, r5, lr}
+32f81700:	e12fff1e 	bx	lr
+
+32f81704 <strnlen>:
+ * strnlen - Find the length of a length-limited string
+ * @s: The string to be sized
+ * @count: The maximum number of bytes to search
+ */
+size_t strnlen(const char * s, size_t count)
+{
+32f81704:	e1a02000 	mov	r2, r0
+	const char *sc;
+
+	for (sc = s; count-- && *sc != '\0'; ++sc)
+32f81708:	e3510000 	cmp	r1, #0
+32f8170c:	0a00000b 	beq	32f81740 <strnlen+0x3c>
+32f81710:	e5d03000 	ldrb	r3, [r0]
+32f81714:	e3530000 	cmp	r3, #0
+32f81718:	0a000008 	beq	32f81740 <strnlen+0x3c>
+32f8171c:	e2411001 	sub	r1, r1, #1
+32f81720:	e2800001 	add	r0, r0, #1
+32f81724:	e3510000 	cmp	r1, #0
+32f81728:	0a000005 	beq	32f81744 <strnlen+0x40>
+32f8172c:	e2411001 	sub	r1, r1, #1
+32f81730:	e5d03000 	ldrb	r3, [r0]
+32f81734:	e3530000 	cmp	r3, #0
+32f81738:	1afffff8 	bne	32f81720 <strnlen+0x1c>
+32f8173c:	ea000000 	b	32f81744 <strnlen+0x40>
+32f81740:	e1a00002 	mov	r0, r2
+		/* nothing */;
+	return sc - s;
+}
+32f81744:	e0620000 	rsb	r0, r2, r0
+32f81748:	e12fff1e 	bx	lr
+
+32f8174c <strspn>:
+{
+	const char *p;
+	const char *a;
+	size_t count = 0;
+
+	for (p = s; *p != '\0'; ++p) {
+32f8174c:	e92d0030 	push	{r4, r5}
+32f81750:	e1a05000 	mov	r5, r0
+32f81754:	e5d0c000 	ldrb	ip, [r0]
+32f81758:	e35c0000 	cmp	ip, #0
+32f8175c:	0a000013 	beq	32f817b0 <strspn+0x64>
+		for (a = accept; *a != '\0'; ++a) {
+32f81760:	e5d14000 	ldrb	r4, [r1]
+32f81764:	e3540000 	cmp	r4, #0
+32f81768:	13a00000 	movne	r0, #0
+32f8176c:	1a00000b 	bne	32f817a0 <strspn+0x54>
+32f81770:	ea00000e 	b	32f817b0 <strspn+0x64>
+32f81774:	e2833001 	add	r3, r3, #1
+			if (*p == *a)
+32f81778:	e15c0002 	cmp	ip, r2
+32f8177c:	0a000003 	beq	32f81790 <strspn+0x44>
+	const char *p;
+	const char *a;
+	size_t count = 0;
+
+	for (p = s; *p != '\0'; ++p) {
+		for (a = accept; *a != '\0'; ++a) {
+32f81780:	e5d32001 	ldrb	r2, [r3, #1]
+32f81784:	e3520000 	cmp	r2, #0
+32f81788:	1afffff9 	bne	32f81774 <strspn+0x28>
+32f8178c:	ea000008 	b	32f817b4 <strspn+0x68>
+			if (*p == *a)
+				break;
+		}
+		if (*a == '\0')
+			return count;
+		++count;
+32f81790:	e2800001 	add	r0, r0, #1
+{
+	const char *p;
+	const char *a;
+	size_t count = 0;
+
+	for (p = s; *p != '\0'; ++p) {
+32f81794:	e7d5c000 	ldrb	ip, [r5, r0]
+32f81798:	e35c0000 	cmp	ip, #0
+32f8179c:	0a000004 	beq	32f817b4 <strspn+0x68>
+		for (a = accept; *a != '\0'; ++a) {
+			if (*p == *a)
+32f817a0:	e15c0004 	cmp	ip, r4
+32f817a4:	11a03001 	movne	r3, r1
+32f817a8:	1afffff4 	bne	32f81780 <strspn+0x34>
+32f817ac:	eafffff7 	b	32f81790 <strspn+0x44>
+32f817b0:	e3a00000 	mov	r0, #0
+			return count;
+		++count;
+	}
+
+	return count;
+}
+32f817b4:	e8bd0030 	pop	{r4, r5}
+32f817b8:	e12fff1e 	bx	lr
+
+32f817bc <strpbrk>:
+ */
+char * strpbrk(const char * cs,const char * ct)
+{
+	const char *sc1,*sc2;
+
+	for( sc1 = cs; *sc1 != '\0'; ++sc1) {
+32f817bc:	e92d0030 	push	{r4, r5}
+32f817c0:	e5d0c000 	ldrb	ip, [r0]
+32f817c4:	e35c0000 	cmp	ip, #0
+		for( sc2 = ct; *sc2 != '\0'; ++sc2) {
+32f817c8:	15d14000 	ldrbne	r4, [r1]
+			if (*sc1 == *sc2)
+32f817cc:	11a05001 	movne	r5, r1
+ */
+char * strpbrk(const char * cs,const char * ct)
+{
+	const char *sc1,*sc2;
+
+	for( sc1 = cs; *sc1 != '\0'; ++sc1) {
+32f817d0:	1a00000b 	bne	32f81804 <strpbrk+0x48>
+32f817d4:	ea000011 	b	32f81820 <strpbrk+0x64>
+		for( sc2 = ct; *sc2 != '\0'; ++sc2) {
+32f817d8:	e2833001 	add	r3, r3, #1
+			if (*sc1 == *sc2)
+32f817dc:	e15c0002 	cmp	ip, r2
+32f817e0:	1a000001 	bne	32f817ec <strpbrk+0x30>
+				return (char *) sc1;
+32f817e4:	e1a00001 	mov	r0, r1
+32f817e8:	ea00000d 	b	32f81824 <strpbrk+0x68>
+char * strpbrk(const char * cs,const char * ct)
+{
+	const char *sc1,*sc2;
+
+	for( sc1 = cs; *sc1 != '\0'; ++sc1) {
+		for( sc2 = ct; *sc2 != '\0'; ++sc2) {
+32f817ec:	e5d32001 	ldrb	r2, [r3, #1]
+32f817f0:	e3520000 	cmp	r2, #0
+32f817f4:	1afffff7 	bne	32f817d8 <strpbrk+0x1c>
+ */
+char * strpbrk(const char * cs,const char * ct)
+{
+	const char *sc1,*sc2;
+
+	for( sc1 = cs; *sc1 != '\0'; ++sc1) {
+32f817f8:	e5f0c001 	ldrb	ip, [r0, #1]!
+32f817fc:	e35c0000 	cmp	ip, #0
+32f81800:	0a000006 	beq	32f81820 <strpbrk+0x64>
+32f81804:	e1a01000 	mov	r1, r0
+		for( sc2 = ct; *sc2 != '\0'; ++sc2) {
+32f81808:	e3540000 	cmp	r4, #0
+32f8180c:	0afffff9 	beq	32f817f8 <strpbrk+0x3c>
+			if (*sc1 == *sc2)
+32f81810:	e15c0004 	cmp	ip, r4
+32f81814:	0afffff2 	beq	32f817e4 <strpbrk+0x28>
+32f81818:	e1a03005 	mov	r3, r5
+32f8181c:	eafffff2 	b	32f817ec <strpbrk+0x30>
+32f81820:	e3a00000 	mov	r0, #0
+				return (char *) sc1;
+		}
+	}
+	return NULL;
+}
+32f81824:	e8bd0030 	pop	{r4, r5}
+32f81828:	e12fff1e 	bx	lr
+
+32f8182c <strtok>:
+ * @ct: The characters to search for
+ *
+ * WARNING: strtok is deprecated, use strsep instead.
+ */
+char * strtok(char * s,const char * ct)
+{
+32f8182c:	e92d4030 	push	{r4, r5, lr}
+32f81830:	e24dd004 	sub	sp, sp, #4
+32f81834:	e1a05001 	mov	r5, r1
+	char *sbegin, *send;
+
+	sbegin  = s ? s : ___strtok;
+32f81838:	e3500000 	cmp	r0, #0
+32f8183c:	11a04000 	movne	r4, r0
+32f81840:	1a000003 	bne	32f81854 <strtok+0x28>
+32f81844:	e59f3070 	ldr	r3, [pc, #112]	; 32f818bc <strtok+0x90>
+32f81848:	e5934000 	ldr	r4, [r3]
+	if (!sbegin) {
+32f8184c:	e3540000 	cmp	r4, #0
+32f81850:	0a000015 	beq	32f818ac <strtok+0x80>
+		return NULL;
+	}
+	sbegin += strspn(sbegin,ct);
+32f81854:	e1a00004 	mov	r0, r4
+32f81858:	e1a01005 	mov	r1, r5
+32f8185c:	ebffffba 	bl	32f8174c <strspn>
+	if (*sbegin == '\0') {
+32f81860:	e7f43000 	ldrb	r3, [r4, r0]!
+32f81864:	e3530000 	cmp	r3, #0
+32f81868:	1a000004 	bne	32f81880 <strtok+0x54>
+		___strtok = NULL;
+32f8186c:	e3a02000 	mov	r2, #0
+32f81870:	e59f3044 	ldr	r3, [pc, #68]	; 32f818bc <strtok+0x90>
+32f81874:	e5832000 	str	r2, [r3]
+32f81878:	e1a04002 	mov	r4, r2
+32f8187c:	ea00000a 	b	32f818ac <strtok+0x80>
+		return( NULL );
+	}
+	send = strpbrk( sbegin, ct);
+32f81880:	e1a00004 	mov	r0, r4
+32f81884:	e1a01005 	mov	r1, r5
+32f81888:	ebffffcb 	bl	32f817bc <strpbrk>
+	if (send && *send != '\0')
+32f8188c:	e3500000 	cmp	r0, #0
+32f81890:	0a000003 	beq	32f818a4 <strtok+0x78>
+32f81894:	e5d03000 	ldrb	r3, [r0]
+32f81898:	e3530000 	cmp	r3, #0
+		*send++ = '\0';
+32f8189c:	13a03000 	movne	r3, #0
+32f818a0:	14c03001 	strbne	r3, [r0], #1
+	___strtok = send;
+32f818a4:	e59f3010 	ldr	r3, [pc, #16]	; 32f818bc <strtok+0x90>
+32f818a8:	e5830000 	str	r0, [r3]
+	return (sbegin);
+}
+32f818ac:	e1a00004 	mov	r0, r4
+32f818b0:	e28dd004 	add	sp, sp, #4
+32f818b4:	e8bd4030 	pop	{r4, r5, lr}
+32f818b8:	e12fff1e 	bx	lr
+32f818bc:	32f82598 	.word	0x32f82598
+
+32f818c0 <strsep>:
+ * It returns empty tokens, too, behaving exactly like the libc function
+ * of that name. In fact, it was stolen from glibc2 and de-fancy-fied.
+ * Same semantics, slimmer shape. ;)
+ */
+char * strsep(char **s, const char *ct)
+{
+32f818c0:	e92d4030 	push	{r4, r5, lr}
+32f818c4:	e24dd004 	sub	sp, sp, #4
+32f818c8:	e1a05000 	mov	r5, r0
+	char *sbegin = *s, *end;
+32f818cc:	e5904000 	ldr	r4, [r0]
+
+	if (sbegin == NULL)
+32f818d0:	e3540000 	cmp	r4, #0
+32f818d4:	0a000005 	beq	32f818f0 <strsep+0x30>
+		return NULL;
+
+	end = strpbrk(sbegin, ct);
+32f818d8:	e1a00004 	mov	r0, r4
+32f818dc:	ebffffb6 	bl	32f817bc <strpbrk>
+	if (end)
+32f818e0:	e3500000 	cmp	r0, #0
+		*end++ = '\0';
+32f818e4:	13a03000 	movne	r3, #0
+32f818e8:	14c03001 	strbne	r3, [r0], #1
+	*s = end;
+32f818ec:	e5850000 	str	r0, [r5]
+
+	return sbegin;
+}
+32f818f0:	e1a00004 	mov	r0, r4
+32f818f4:	e28dd004 	add	sp, sp, #4
+32f818f8:	e8bd4030 	pop	{r4, r5, lr}
+32f818fc:	e12fff1e 	bx	lr
+
+32f81900 <strswab>:
+ */
+char *strswab(const char *s)
+{
+	char *p, *q;
+
+	if ((NULL == s) || ('\0' == *s)) {
+32f81900:	e3500000 	cmp	r0, #0
+32f81904:	0a000012 	beq	32f81954 <strswab+0x54>
+32f81908:	e5d03000 	ldrb	r3, [r0]
+32f8190c:	e3530000 	cmp	r3, #0
+32f81910:	0a00000f 	beq	32f81954 <strswab+0x54>
+		return (NULL);
+	}
+
+	for (p=(char *)s, q=p+1; (*p != '\0') && (*q != '\0'); p+=2, q+=2) {
+32f81914:	e1a01000 	mov	r1, r0
+32f81918:	e1a02003 	mov	r2, r3
+32f8191c:	0a00000d 	beq	32f81958 <strswab+0x58>
+32f81920:	e5d03001 	ldrb	r3, [r0, #1]
+32f81924:	e3530000 	cmp	r3, #0
+32f81928:	0a00000a 	beq	32f81958 <strswab+0x58>
+		char  tmp;
+
+		tmp = *p;
+		*p  = *q;
+32f8192c:	e5c03000 	strb	r3, [r0]
+		*q  = tmp;
+32f81930:	e5c02001 	strb	r2, [r0, #1]
+
+	if ((NULL == s) || ('\0' == *s)) {
+		return (NULL);
+	}
+
+	for (p=(char *)s, q=p+1; (*p != '\0') && (*q != '\0'); p+=2, q+=2) {
+32f81934:	e5d02002 	ldrb	r2, [r0, #2]
+32f81938:	e3520000 	cmp	r2, #0
+32f8193c:	0a000005 	beq	32f81958 <strswab+0x58>
+32f81940:	e5d03003 	ldrb	r3, [r0, #3]
+32f81944:	e2800002 	add	r0, r0, #2
+32f81948:	e3530000 	cmp	r3, #0
+32f8194c:	1afffff6 	bne	32f8192c <strswab+0x2c>
+32f81950:	ea000000 	b	32f81958 <strswab+0x58>
+32f81954:	e3a01000 	mov	r1, #0
+		*p  = *q;
+		*q  = tmp;
+	}
+
+	return (char *) s;
+}
+32f81958:	e1a00001 	mov	r0, r1
+32f8195c:	e12fff1e 	bx	lr
+
+32f81960 <strnchr>:
+ * strnchr - find the nth chr int the string and 
+ * return this chr's address base
+ */
+
+char * strnchr(const char *src, int chr, int n)
+{
+32f81960:	e92d4030 	push	{r4, r5, lr}
+32f81964:	e24dd004 	sub	sp, sp, #4
+    if (!src && !n)
+32f81968:	e1a04000 	mov	r4, r0
+32f8196c:	e1a05002 	mov	r5, r2
+32f81970:	e3500000 	cmp	r0, #0
+32f81974:	03520000 	cmpeq	r2, #0
+32f81978:	0a000015 	beq	32f819d4 <strnchr+0x74>
+	return NULL;
+
+    const char *dest = src;
+    int len = strlen(src);
+32f8197c:	ebffff44 	bl	32f81694 <strlen>
+    int cnt, count = 0;
+
+    for (cnt = 0; cnt < len && count < n; dest++,cnt++)
+32f81980:	e1a0c000 	mov	ip, r0
+32f81984:	e3500000 	cmp	r0, #0
+32f81988:	c3550000 	cmpgt	r5, #0
+32f8198c:	da000010 	ble	32f819d4 <strnchr+0x74>
+32f81990:	e1a00004 	mov	r0, r4
+32f81994:	e3a02000 	mov	r2, #0
+32f81998:	e1a01002 	mov	r1, r2
+        if ('/' == src[cnt])
+32f8199c:	e7d43002 	ldrb	r3, [r4, r2]
+32f819a0:	e353002f 	cmp	r3, #47	; 0x2f
+           count++;
+32f819a4:	02811001 	addeq	r1, r1, #1
+
+    const char *dest = src;
+    int len = strlen(src);
+    int cnt, count = 0;
+
+    for (cnt = 0; cnt < len && count < n; dest++,cnt++)
+32f819a8:	e2800001 	add	r0, r0, #1
+32f819ac:	e2822001 	add	r2, r2, #1
+32f819b0:	e15c0002 	cmp	ip, r2
+32f819b4:	d3a03000 	movle	r3, #0
+32f819b8:	c3a03001 	movgt	r3, #1
+32f819bc:	e1510005 	cmp	r1, r5
+32f819c0:	a3a03000 	movge	r3, #0
+32f819c4:	e3530000 	cmp	r3, #0
+32f819c8:	1afffff3 	bne	32f8199c <strnchr+0x3c>
+        if ('/' == src[cnt])
+           count++;
+
+    return count ? (char *)dest : NULL;
+32f819cc:	e3510000 	cmp	r1, #0
+32f819d0:	1a000000 	bne	32f819d8 <strnchr+0x78>
+32f819d4:	e3a00000 	mov	r0, #0
+}
+32f819d8:	e28dd004 	add	sp, sp, #4
+32f819dc:	e8bd4030 	pop	{r4, r5, lr}
+32f819e0:	e12fff1e 	bx	lr
+
+32f819e4 <memset>:
+ *
+ * Do not use memset() to access IO space, use memset_io() instead.
+ */
+void * memset(void * s,int c,size_t count)
+{
+	unsigned long *sl = (unsigned long *) s;
+32f819e4:	e92d0030 	push	{r4, r5}
+32f819e8:	e1a04000 	mov	r4, r0
+32f819ec:	e1a05001 	mov	r5, r1
+32f819f0:	e1a0c002 	mov	ip, r2
+32f819f4:	e1a01000 	mov	r1, r0
+	unsigned long cl = 0;
+	char *s8;
+	int i;
+
+	/* do it one word at a time (32 bits or 64 bits) while possible */
+	if ( ((ulong)s & (sizeof(*sl) - 1)) == 0) {
+32f819f8:	e3100003 	tst	r0, #3
+32f819fc:	1a000010 	bne	32f81a44 <memset+0x60>
+		for (i = 0; i < sizeof(*sl); i++) {
+			cl <<= 8;
+			cl |= c & 0xff;
+32f81a00:	e20520ff 	and	r2, r5, #255	; 0xff
+32f81a04:	e1823402 	orr	r3, r2, r2, lsl #8
+32f81a08:	e1823403 	orr	r3, r2, r3, lsl #8
+32f81a0c:	e1820403 	orr	r0, r2, r3, lsl #8
+		}
+		while (count >= sizeof(*sl)) {
+32f81a10:	e35c0003 	cmp	ip, #3
+32f81a14:	9a00000a 	bls	32f81a44 <memset+0x60>
+32f81a18:	e3a02000 	mov	r2, #0
+			*sl++ = cl;
+32f81a1c:	e7840002 	str	r0, [r4, r2]
+32f81a20:	e2822004 	add	r2, r2, #4
+	if ( ((ulong)s & (sizeof(*sl) - 1)) == 0) {
+		for (i = 0; i < sizeof(*sl); i++) {
+			cl <<= 8;
+			cl |= c & 0xff;
+		}
+		while (count >= sizeof(*sl)) {
+32f81a24:	e062300c 	rsb	r3, r2, ip
+32f81a28:	e3530003 	cmp	r3, #3
+32f81a2c:	8afffffa 	bhi	32f81a1c <memset+0x38>
+ * @count: The size of the area.
+ *
+ * Do not use memset() to access IO space, use memset_io() instead.
+ */
+void * memset(void * s,int c,size_t count)
+{
+32f81a30:	e24c3004 	sub	r3, ip, #4
+32f81a34:	e203c003 	and	ip, r3, #3
+32f81a38:	e3c33003 	bic	r3, r3, #3
+32f81a3c:	e2833004 	add	r3, r3, #4
+32f81a40:	e0811003 	add	r1, r1, r3
+			count -= sizeof(*sl);
+		}
+	}
+	/* fill 8 bits at a time */
+	s8 = (char *)sl;
+	while (count--)
+32f81a44:	e35c0000 	cmp	ip, #0
+32f81a48:	0a000004 	beq	32f81a60 <memset+0x7c>
+32f81a4c:	e3a03000 	mov	r3, #0
+		*s8++ = c;
+32f81a50:	e7c15003 	strb	r5, [r1, r3]
+32f81a54:	e2833001 	add	r3, r3, #1
+			count -= sizeof(*sl);
+		}
+	}
+	/* fill 8 bits at a time */
+	s8 = (char *)sl;
+	while (count--)
+32f81a58:	e15c0003 	cmp	ip, r3
+32f81a5c:	1afffffb 	bne	32f81a50 <memset+0x6c>
+		*s8++ = c;
+
+	return s;
+}
+32f81a60:	e1a00004 	mov	r0, r4
+32f81a64:	e8bd0030 	pop	{r4, r5}
+32f81a68:	e12fff1e 	bx	lr
+
+32f81a6c <bcopy>:
+ *
+ * You should not use this function to access IO space, use memcpy_toio()
+ * or memcpy_fromio() instead.
+ */
+char * bcopy(const char * src, char * dest, int count)
+{
+32f81a6c:	e52d4004 	push	{r4}		; (str r4, [sp, #-4]!)
+32f81a70:	e1a04000 	mov	r4, r0
+32f81a74:	e1a00001 	mov	r0, r1
+	char *tmp = dest;
+
+	while (count--)
+32f81a78:	e3520000 	cmp	r2, #0
+32f81a7c:	0a000005 	beq	32f81a98 <bcopy+0x2c>
+32f81a80:	e3a0c000 	mov	ip, #0
+		*tmp++ = *src++;
+32f81a84:	e7d4300c 	ldrb	r3, [r4, ip]
+32f81a88:	e7c0300c 	strb	r3, [r0, ip]
+32f81a8c:	e28cc001 	add	ip, ip, #1
+ */
+char * bcopy(const char * src, char * dest, int count)
+{
+	char *tmp = dest;
+
+	while (count--)
+32f81a90:	e15c0002 	cmp	ip, r2
+32f81a94:	1afffffa 	bne	32f81a84 <bcopy+0x18>
+		*tmp++ = *src++;
+
+	return dest;
+}
+32f81a98:	e8bd0010 	pop	{r4}
+32f81a9c:	e12fff1e 	bx	lr
+
+32f81aa0 <memcpy>:
+void * memcpy(void *dest, const void *src, size_t count)
+{
+	unsigned long *dl = (unsigned long *)dest, *sl = (unsigned long *)src;
+	char *d8, *s8;
+
+	if (src == dest)
+32f81aa0:	e92d0030 	push	{r4, r5}
+32f81aa4:	e1a05000 	mov	r5, r0
+32f81aa8:	e1510000 	cmp	r1, r0
+32f81aac:	0a00001b 	beq	32f81b20 <memcpy+0x80>
+ * You should not use this function to access IO space, use memcpy_toio()
+ * or memcpy_fromio() instead.
+ */
+void * memcpy(void *dest, const void *src, size_t count)
+{
+	unsigned long *dl = (unsigned long *)dest, *sl = (unsigned long *)src;
+32f81ab0:	e1a04000 	mov	r4, r0
+32f81ab4:	e1a00001 	mov	r0, r1
+
+	if (src == dest)
+		return dest;
+
+	/* while all data is aligned (common case), copy a word at a time */
+	if ( (((ulong)dest | (ulong)src) & (sizeof(*dl) - 1)) == 0) {
+32f81ab8:	e1813005 	orr	r3, r1, r5
+32f81abc:	e3130003 	tst	r3, #3
+32f81ac0:	1a00000e 	bne	32f81b00 <memcpy+0x60>
+		while (count >= sizeof(*dl)) {
+32f81ac4:	e3520003 	cmp	r2, #3
+32f81ac8:	9a00000c 	bls	32f81b00 <memcpy+0x60>
+32f81acc:	e3a0c000 	mov	ip, #0
+			*dl++ = *sl++;
+32f81ad0:	e791300c 	ldr	r3, [r1, ip]
+32f81ad4:	e785300c 	str	r3, [r5, ip]
+32f81ad8:	e28cc004 	add	ip, ip, #4
+	if (src == dest)
+		return dest;
+
+	/* while all data is aligned (common case), copy a word at a time */
+	if ( (((ulong)dest | (ulong)src) & (sizeof(*dl) - 1)) == 0) {
+		while (count >= sizeof(*dl)) {
+32f81adc:	e06c3002 	rsb	r3, ip, r2
+32f81ae0:	e3530003 	cmp	r3, #3
+32f81ae4:	8afffff9 	bhi	32f81ad0 <memcpy+0x30>
+ *
+ * You should not use this function to access IO space, use memcpy_toio()
+ * or memcpy_fromio() instead.
+ */
+void * memcpy(void *dest, const void *src, size_t count)
+{
+32f81ae8:	e2423004 	sub	r3, r2, #4
+32f81aec:	e2032003 	and	r2, r3, #3
+32f81af0:	e3c33003 	bic	r3, r3, #3
+32f81af4:	e2833004 	add	r3, r3, #4
+32f81af8:	e0800003 	add	r0, r0, r3
+32f81afc:	e0844003 	add	r4, r4, r3
+		}
+	}
+	/* copy the reset one byte at a time */
+	d8 = (char *)dl;
+	s8 = (char *)sl;
+	while (count--)
+32f81b00:	e3520000 	cmp	r2, #0
+32f81b04:	0a000005 	beq	32f81b20 <memcpy+0x80>
+32f81b08:	e3a01000 	mov	r1, #0
+		*d8++ = *s8++;
+32f81b0c:	e7d03001 	ldrb	r3, [r0, r1]
+32f81b10:	e7c43001 	strb	r3, [r4, r1]
+32f81b14:	e2811001 	add	r1, r1, #1
+		}
+	}
+	/* copy the reset one byte at a time */
+	d8 = (char *)dl;
+	s8 = (char *)sl;
+	while (count--)
+32f81b18:	e1520001 	cmp	r2, r1
+32f81b1c:	1afffffa 	bne	32f81b0c <memcpy+0x6c>
+		*d8++ = *s8++;
+
+	return dest;
+}
+32f81b20:	e1a00005 	mov	r0, r5
+32f81b24:	e8bd0030 	pop	{r4, r5}
+32f81b28:	e12fff1e 	bx	lr
+
+32f81b2c <memmove>:
+ */
+void * memmove(void * dest,const void *src,size_t count)
+{
+	char *tmp, *s;
+
+	if (src == dest)
+32f81b2c:	e92d0030 	push	{r4, r5}
+32f81b30:	e1a04000 	mov	r4, r0
+32f81b34:	e1a0c001 	mov	ip, r1
+32f81b38:	e1a01002 	mov	r1, r2
+32f81b3c:	e15c0000 	cmp	ip, r0
+32f81b40:	0a000016 	beq	32f81ba0 <memmove+0x74>
+		return dest;
+
+	if (dest <= src) {
+32f81b44:	3a000008 	bcc	32f81b6c <memmove+0x40>
+		tmp = (char *) dest;
+		s = (char *) src;
+		while (count--)
+32f81b48:	e3520000 	cmp	r2, #0
+32f81b4c:	0a000013 	beq	32f81ba0 <memmove+0x74>
+32f81b50:	e3a02000 	mov	r2, #0
+			*tmp++ = *s++;
+32f81b54:	e7dc3002 	ldrb	r3, [ip, r2]
+32f81b58:	e7c43002 	strb	r3, [r4, r2]
+32f81b5c:	e2822001 	add	r2, r2, #1
+		return dest;
+
+	if (dest <= src) {
+		tmp = (char *) dest;
+		s = (char *) src;
+		while (count--)
+32f81b60:	e1520001 	cmp	r2, r1
+32f81b64:	1afffffa 	bne	32f81b54 <memmove+0x28>
+32f81b68:	ea00000c 	b	32f81ba0 <memmove+0x74>
+			*tmp++ = *s++;
+		}
+	else {
+		tmp = (char *) dest + count;
+		s = (char *) src + count;
+		while (count--)
+32f81b6c:	e3520000 	cmp	r2, #0
+32f81b70:	0a00000a 	beq	32f81ba0 <memmove+0x74>
+		s = (char *) src;
+		while (count--)
+			*tmp++ = *s++;
+		}
+	else {
+		tmp = (char *) dest + count;
+32f81b74:	e0803002 	add	r3, r0, r2
+		s = (char *) src + count;
+32f81b78:	e08c2002 	add	r2, ip, r2
+		while (count--)
+32f81b7c:	e241c001 	sub	ip, r1, #1
+ * @count: The size of the area.
+ *
+ * Unlike memcpy(), memmove() copes with overlapping areas.
+ */
+void * memmove(void * dest,const void *src,size_t count)
+{
+32f81b80:	e2615000 	rsb	r5, r1, #0
+		}
+	else {
+		tmp = (char *) dest + count;
+		s = (char *) src + count;
+		while (count--)
+			*--tmp = *--s;
+32f81b84:	e0830005 	add	r0, r3, r5
+32f81b88:	e0821005 	add	r1, r2, r5
+32f81b8c:	e7d1300c 	ldrb	r3, [r1, ip]
+32f81b90:	e7c0300c 	strb	r3, [r0, ip]
+			*tmp++ = *s++;
+		}
+	else {
+		tmp = (char *) dest + count;
+		s = (char *) src + count;
+		while (count--)
+32f81b94:	e24cc001 	sub	ip, ip, #1
+32f81b98:	e37c0001 	cmn	ip, #1
+32f81b9c:	1afffffa 	bne	32f81b8c <memmove+0x60>
+			*--tmp = *--s;
+		}
+
+	return dest;
+}
+32f81ba0:	e1a00004 	mov	r0, r4
+32f81ba4:	e8bd0030 	pop	{r4, r5}
+32f81ba8:	e12fff1e 	bx	lr
+
+32f81bac <memcmp>:
+int memcmp(const void * cs,const void * ct,size_t count)
+{
+	const unsigned char *su1, *su2;
+	int res = 0;
+
+	for( su1 = cs, su2 = ct; 0 < count; ++su1, ++su2, count--)
+32f81bac:	e92d0030 	push	{r4, r5}
+32f81bb0:	e252c000 	subs	ip, r2, #0
+32f81bb4:	03a00000 	moveq	r0, #0
+32f81bb8:	0a00000c 	beq	32f81bf0 <memcmp+0x44>
+		if ((res = *su1 - *su2) != 0)
+32f81bbc:	e5d02000 	ldrb	r2, [r0]
+32f81bc0:	e5d13000 	ldrb	r3, [r1]
+32f81bc4:	e0525003 	subs	r5, r2, r3
+32f81bc8:	01a04000 	moveq	r4, r0
+32f81bcc:	0a000004 	beq	32f81be4 <memcmp+0x38>
+32f81bd0:	ea000005 	b	32f81bec <memcmp+0x40>
+32f81bd4:	e5f42001 	ldrb	r2, [r4, #1]!
+32f81bd8:	e5f13001 	ldrb	r3, [r1, #1]!
+32f81bdc:	e0520003 	subs	r0, r2, r3
+32f81be0:	1a000002 	bne	32f81bf0 <memcmp+0x44>
+int memcmp(const void * cs,const void * ct,size_t count)
+{
+	const unsigned char *su1, *su2;
+	int res = 0;
+
+	for( su1 = cs, su2 = ct; 0 < count; ++su1, ++su2, count--)
+32f81be4:	e25cc001 	subs	ip, ip, #1
+32f81be8:	1afffff9 	bne	32f81bd4 <memcmp+0x28>
+32f81bec:	e1a00005 	mov	r0, r5
+		if ((res = *su1 - *su2) != 0)
+			break;
+	return res;
+}
+32f81bf0:	e8bd0030 	pop	{r4, r5}
+32f81bf4:	e12fff1e 	bx	lr
+
+32f81bf8 <memscan>:
+ */
+void * memscan(void * addr, int c, size_t size)
+{
+	unsigned char * p = (unsigned char *) addr;
+
+	while (size) {
+32f81bf8:	e3520000 	cmp	r2, #0
+32f81bfc:	012fff1e 	bxeq	lr
+		if (*p == c)
+32f81c00:	e5d03000 	ldrb	r3, [r0]
+32f81c04:	e1530001 	cmp	r3, r1
+32f81c08:	1a000003 	bne	32f81c1c <memscan+0x24>
+32f81c0c:	e12fff1e 	bx	lr
+32f81c10:	e5d03000 	ldrb	r3, [r0]
+32f81c14:	e1530001 	cmp	r3, r1
+32f81c18:	012fff1e 	bxeq	lr
+			return (void *) p;
+		p++;
+32f81c1c:	e2800001 	add	r0, r0, #1
+ */
+void * memscan(void * addr, int c, size_t size)
+{
+	unsigned char * p = (unsigned char *) addr;
+
+	while (size) {
+32f81c20:	e2522001 	subs	r2, r2, #1
+32f81c24:	1afffff9 	bne	32f81c10 <memscan+0x18>
+			return (void *) p;
+		p++;
+		size--;
+	}
+	return (void *) p;
+}
+32f81c28:	e12fff1e 	bx	lr
+
+32f81c2c <strstr>:
+ */
+char * strstr(const char * s1,const char * s2)
+{
+	int l1, l2;
+
+	l2 = strlen(s2);
+32f81c2c:	e92d41f0 	push	{r4, r5, r6, r7, r8, lr}
+32f81c30:	e1a05000 	mov	r5, r0
+32f81c34:	e1a06001 	mov	r6, r1
+32f81c38:	e1a00001 	mov	r0, r1
+32f81c3c:	ebfffe94 	bl	32f81694 <strlen>
+32f81c40:	e1a04000 	mov	r4, r0
+32f81c44:	e1a08000 	mov	r8, r0
+	if (!l2)
+32f81c48:	e3500000 	cmp	r0, #0
+		return (char *) s1;
+32f81c4c:	01a00005 	moveq	r0, r5
+char * strstr(const char * s1,const char * s2)
+{
+	int l1, l2;
+
+	l2 = strlen(s2);
+	if (!l2)
+32f81c50:	0a000010 	beq	32f81c98 <strstr+0x6c>
+		return (char *) s1;
+	l1 = strlen(s1);
+32f81c54:	e1a00005 	mov	r0, r5
+32f81c58:	ebfffe8d 	bl	32f81694 <strlen>
+32f81c5c:	e1a07000 	mov	r7, r0
+	while (l1 >= l2) {
+32f81c60:	e1540000 	cmp	r4, r0
+32f81c64:	ca00000a 	bgt	32f81c94 <strstr+0x68>
+		l1--;
+		if (!memcmp(s1,s2,l2))
+32f81c68:	e1a00005 	mov	r0, r5
+32f81c6c:	e1a01006 	mov	r1, r6
+32f81c70:	e1a02004 	mov	r2, r4
+32f81c74:	ebffffcc 	bl	32f81bac <memcmp>
+32f81c78:	e3500000 	cmp	r0, #0
+			return (char *) s1;
+32f81c7c:	01a00005 	moveq	r0, r5
+32f81c80:	0a000004 	beq	32f81c98 <strstr+0x6c>
+	l2 = strlen(s2);
+	if (!l2)
+		return (char *) s1;
+	l1 = strlen(s1);
+	while (l1 >= l2) {
+		l1--;
+32f81c84:	e2477001 	sub	r7, r7, #1
+
+	l2 = strlen(s2);
+	if (!l2)
+		return (char *) s1;
+	l1 = strlen(s1);
+	while (l1 >= l2) {
+32f81c88:	e1580007 	cmp	r8, r7
+		l1--;
+		if (!memcmp(s1,s2,l2))
+			return (char *) s1;
+		s1++;
+32f81c8c:	d2855001 	addle	r5, r5, #1
+32f81c90:	dafffff4 	ble	32f81c68 <strstr+0x3c>
+32f81c94:	e3a00000 	mov	r0, #0
+	}
+	return NULL;
+}
+32f81c98:	e8bd41f0 	pop	{r4, r5, r6, r7, r8, lr}
+32f81c9c:	e12fff1e 	bx	lr
+
+32f81ca0 <memchr>:
+ */
+void *memchr(const void *s, int c, size_t n)
+{
+	const unsigned char *p = s;
+	while (n-- != 0) {
+		if ((unsigned char)c == *p++) {
+32f81ca0:	e20110ff 	and	r1, r1, #255	; 0xff
+32f81ca4:	ea000005 	b	32f81cc0 <memchr+0x20>
+32f81ca8:	e4d03001 	ldrb	r3, [r0], #1
+32f81cac:	e2422001 	sub	r2, r2, #1
+32f81cb0:	e1510003 	cmp	r1, r3
+32f81cb4:	1a000001 	bne	32f81cc0 <memchr+0x20>
+			return (void *)(p-1);
+32f81cb8:	e2400001 	sub	r0, r0, #1
+32f81cbc:	e12fff1e 	bx	lr
+ * if @c is not found
+ */
+void *memchr(const void *s, int c, size_t n)
+{
+	const unsigned char *p = s;
+	while (n-- != 0) {
+32f81cc0:	e3520000 	cmp	r2, #0
+32f81cc4:	1afffff7 	bne	32f81ca8 <memchr+0x8>
+32f81cc8:	e3a00000 	mov	r0, #0
+		if ((unsigned char)c == *p++) {
+			return (void *)(p-1);
+		}
+	}
+	return NULL;
+}
+32f81ccc:	e12fff1e 	bx	lr
