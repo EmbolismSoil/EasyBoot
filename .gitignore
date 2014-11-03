@@ -2,3 +2,10 @@
 *.[oa]
 *.test
 *.out
+*.txt
+*.doc
+*.docx
+*.pdf
+*.swp
+doc/
+test/
