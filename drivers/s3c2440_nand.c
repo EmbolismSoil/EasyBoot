@@ -84,10 +84,11 @@ static unsigned char nand_data(void)
 
 static int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 {
-        unsigned int *buf = (unsigned int *)argbuf;
+        unsigned char *buf = (unsigned char *)argbuf;
 	int col = addr % 2048;
 	int i = 0;
 		
+ 	PUT_STR("read....");
 	/* 1. 选中 */
 	nand_select();
 
@@ -109,20 +110,19 @@ static int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 		for (; (col < 2048) && (i < len); col++)
 		{
 			buf[i] = nand_data();
-			PUT_STR("0x");
-			PUT_HEX(buf[i]);
-			PUT_STR(" ");
 			i++;
 			addr++;
 		}
 		
+                PUT_HEX(addr);
+                PUT_STR("\n\r");
+		
 		col = 0;
 	}
-
-        
+	
 	/* 7. 取消选中 */		
 	nand_deselect();
 }
 
-d_ops nand_ops = {.open = nand_open,.write = nand_read};
+d_ops nand_ops = {.open = nand_open,.read = nand_read};
 DRIVER_EXPORT(NAND, NAND, NULL, &nand_ops, ((void *)0) );
