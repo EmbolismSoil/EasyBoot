@@ -49,19 +49,6 @@
 	MEM_REG_BASE[12] = 0x00000030;    
  }
  
- void clock_init()
- {
- 
-    CLK_REG_BASE [CLKDIVN]  = 0x03;            // FCLK:HCLK:PCLK=1:2:4, HDIVN=1,PDIVN=1
- //  CLK_REG_BASE [LOCKTMIE] = 0xffffffff; 
-
-	__asm__(
-    "mrc    p15, 0, r1, c1, c0, 0\n"        
-    "orr    r1, r1, #0xc0000000\n"        
-    "mcr    p15, 0, r1, c1, c0, 0\n"        
-    );
-     CLK_REG_BASE[MPLLCON] = MPLL_400MHZ;  
- }
  
 static int is_boot_nor()
 {

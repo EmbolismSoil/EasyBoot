@@ -24,7 +24,7 @@
 #include <linux/stddef.h>
 #include <advstr.h>
 #include <driver.h>
-
+#include <string.h>
 
 
 static board_t board_pool[MAX_BOARD];
@@ -35,7 +35,7 @@ static board_t board_pool[MAX_BOARD];
 */
 static char *default_show(void *atr,void *r_buf,int len)
 {
-   DEBUG_CHECK(!r_buf, NULL);
+   //DEBUG_CHECK(!r_buf, NULL);
     r_buf = (void *)(((attribute *)atr)->info);
 	return (char *)r_buf;
 }
@@ -47,13 +47,19 @@ static char *default_show(void *atr,void *r_buf,int len)
  */
 board_t *board_req(char *type)
 {
-    DEBUG_CHECK(!type, NULL);
+    //DEBUG_CHECK(!type, NULL);
     char cnt;
+    char cnt1;
+    char cnt2;
     for (cnt = 0; cnt < MAX_BOARD && 
 	board_pool[cnt].type != NULL; cnt++)
-	if (!strcmp(board_pool[cnt].type, type))
+	if (!strncmp(board_pool[cnt].type, type, strlen(type))){
+	    PUT_STR("get board! : ");
+	    PUT_STR(board_pool[cnt].type);
+	    PUT_STR("\n\r");
 	    return &board_pool[cnt];
-
+	}
+    
     board_pool[cnt].type = type;
     board_pool[cnt].atr.show = default_show;
     
@@ -61,6 +67,17 @@ board_t *board_req(char *type)
     INIT_LIST_HEAD(&board_pool[cnt].RAM_list);
     INIT_LIST_HEAD(&board_pool[cnt].NOR_list);
     INIT_LIST_HEAD(&board_pool[cnt].NAND_list);
+
+    for (cnt2 = 0; cnt2 < MAX_DEV; cnt2++)
+	board_pool[cnt].open[cnt2] = NULL;
+
+    PUT_STR("get new board : ");
+    PUT_STR(type);
+    PUT_STR("\n\r");
+
+    for (cnt1 = cnt + 1; cnt1 < MAX_BOARD; cnt1++){
+	board_pool[cnt1].type = "forbid!! do not use it before register";
+    }
 
     return &board_pool[cnt];
 }
@@ -73,37 +90,38 @@ board_t *board_req(char *type)
 */
 static int add_device(board_t *board,  device_t *device)
 {
-	DEBUG_CHECK(!board || !device, -1);
+	//DEBUG_CHECK(!board || !device, -1);
 	device_t *pos;
     switch (device->class){
     case CPU :  
       foreach_class(pos, board, CPU)
-        if (!strcmp(pos->type, device->type))
+        if (!strncmp(pos->type, device->type, strlen(device->type)))
 	    return -1;
       list_add(&device->list, &board->CPU_list);
       break;
 	
     case RAM :  
       foreach_class(pos, board, RAM)
-        if (!strcmp(pos->type, device->type))
+        if (!strncmp(pos->type, device->type, strlen(device->type)))
 	    return -1;
       list_add(&device->list, &board->RAM_list);
       break;
 
     case NOR :  
       foreach_class(pos, board, NOR)
-        if(!strcmp(pos->type, device->type))
+        if(!strncmp(pos->type, device->type, strlen(device->type)))
             return -1;
       list_add(&device->list, &board->NOR_list);
       break;
 	
     case NAND : 
       foreach_class(pos, board, NAND)
-	if (!strcmp(pos->type, device->type))
+	if (!strncmp(pos->type, device->type, strlen(device->type)))
 	    return -1;
       list_add(&device->list, &board->NAND_list);
       break;
     }
+	board->devs++;
 	return 0;
 }
 
@@ -118,39 +136,44 @@ static int add_device(board_t *board,  device_t *device)
  int register_device(board_t *board,class_t class,char driver_type[],
 				 char device_type[])
  {
+    PUT_STR("register ");
+    PUT_STR(device_type);
+    PUT_STR("...\n\r");
+
     device_t *devp;
     
 	for (devp = &__driver_start; devp != &__driver_end; devp++) {
-		if (!strcmp(devp->drv, driver_type)){
+		if (!strncmp(devp->drv, driver_type,strlen(driver_type))){
 			devp->type = device_type;
 			devp->class = class;
 		    if (!add_device(board, devp)){
+			PUT_STR("succeed!\n\r");
 		    	return 0;
 		    }else{
+			PUT_STR("failed!\n\r");
 		    	return -1;
 		    }
 		}
 	}
+
  }
  
 #define split_path(__path,__board,__class,__device) do{\
   str_split(__path,__board,'/',1,2); \
   str_split(__path,__class,'/',2,3);\
-  strdel_head(__path,__board,'/',3);}while(0)
+  str_split(__path,__device,'/',3,4);}while(0)
 
-#define FIND_DEVICE(__nb, __nd, __device_path, __class) \
+#define FIND_DEVICE(__pos, __nb, __nd, __device_path, __class) \
 do{\
-       foreach_class(pos, &board_pool[__nb], __class) \
-         if (!strcmp(pos->type, __device_path) && pos->class == __class){ \
-           board_pool[__nb].open[__nd] = pos; \
-           pos->ops->open(&board_pool[__nb],pos); \
+       foreach_class(__pos, &board_pool[__nb], __class) \
+         if (!strncmp(__pos->type, __device_path, strlen(__device_path)) && __pos->class == __class){ \
+           board_pool[__nb].open[__nd] = __pos; \
+           __pos->ops->open(&board_pool[__nb],__pos);\
         } \
 }while(0)
 
 #define BOARD_MASK 8
 #define GET_FD(__nb,__nd) (((__nb) << BOARD_MASK) | (__nd & 0x00ff))
-
-
 /*
 * @device_open 
 */
@@ -159,35 +182,37 @@ int device_open(char *path)
     int cnt;
     int nb = -1;
     int nd = -1;
-
-    device_t  *pos;
-    char board[20] , class[20], device[20];
+    char board[10] , class[10], device[10];
     split_path(path,board,class,device);
-   
-    for (cnt = 0; cnt < MAX_BOARD; cnt++){
-       if (!strcmp(board_pool[cnt].type, board))
+
+    for(cnt = 0; cnt < MAX_BOARD; cnt++ )
+       if (!strncmp(board_pool[cnt].type, board, strlen(board))){
 	   nb = cnt;
     }
     if (nb < 0) return -1;
 
-    for (cnt = 0; cnt < MAX_DEV; cnt++){
-       if (!strcmp(board_pool[nb].open[cnt]->type, device))
-		return GET_FD(nb,nd);
-       if (!board_pool[nb].open[cnt]->type)
+    for (cnt = 0; board_pool[nb].devs && cnt < board_pool[nb].devs; cnt++){
+       if (!strncmp(board_pool[nb].open[cnt]->type, device, strlen(device))){
+            PUT_STR("this device have been opened. num of device: ");
+            PUT_DEC(cnt);
+	    return GET_FD(nb,cnt);
+	}
+       if (!board_pool[nb].open[cnt])
 		nd = cnt;
-    }
-   
-  if (strcmp(class,"CPU")){  
-     FIND_DEVICE(nb, nd, device, CPU);
+    }  
+
+  device_t *pos;
+  if (!strncmp(class,"CPU",3)){
+     FIND_DEVICE(pos,nb, nd, device, CPU);
      return GET_FD(nb,nd);
-  }else if (strcmp(class, "RAM")){
-     FIND_DEVICE(nb, nd, device, RAM);
+  }else if (strncmp(class, "RAM",3)){
+     FIND_DEVICE(pos,nb, nd, device, RAM);
      return GET_FD(nb,nd);
-  }else if (strcmp(class, "NOR")){
-     FIND_DEVICE(nb, nd, device, NOR);
+  }else if (strncmp(class, "NOR",3)){
+     FIND_DEVICE(pos,nb, nd, device, NOR);
      return GET_FD(nb,nd);
-  }else if (strcmp(class, "NAND")){
-     FIND_DEVICE(nb, nd, device, NAND); 
+  }else if (strncmp(class, "NAND",3)){
+     FIND_DEVICE(pos, nb, nd, device, NAND); 
      return GET_FD(nb,nd);
   }else{
      return -1;

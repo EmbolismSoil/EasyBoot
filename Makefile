@@ -77,6 +77,7 @@ all:		$(ALL)
 
 EasyBoot.bin:	EasyBoot
 		$(OBJCOPY) ${OBJCFLAGS} -O binary $< $@
+		cp $@ /srv/
 
 EasyBoot: $(OBJS) $(LIBS) $(LDSCRIPT)
 		#UNDEF_SYM_CMD=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/\(__Easy_Boot_cmd\)/-u\1/p'|sort|uniq`;
@@ -93,5 +94,6 @@ $(LIBS):
 .PHONY:clean
 clean:
 #	'find /home/lee/project/EasyBoot/ -type f -name "*.o" -o -name "*.a"';
-	rm -f $(shell find /home/lee/project/EasyBoot/ -type f -name "*.o" -o -name "*.a" -o -name "*.bin")
+	rm -f $(shell find /home/lee/project/EasyBoot/ -type f -name \
+		"*.o" -o -name "*.a" -o -name "*.bin" -o -name "*.map")
 	rm -f EasyBoot

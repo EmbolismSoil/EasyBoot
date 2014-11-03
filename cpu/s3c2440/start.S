@@ -90,17 +90,20 @@ reset:
     ldr	    r0,=WTREG_BASE
     mov	    r1,#0
     str	    r1,[r0]
-//    bl	    disable_wdg
-	
-         // set the cpu to SVC32 mode
-//    mrs     r0, cpsr
-//    bic     r0, r0, #0x1f
-//    orr     r0, r0, #0xd3
-//    msr     cpsr, r0
-        
+    
+    ldr    r0, =0x4c000014
+    mov    r1, #0x05;			  // FCLK:HCLK:PCLK=1:4:8
+    str    r1, [r0]
+    mrc	   p15, 0, r1, c1, c0, 0		/* 读出控制寄存器 */ 
+    orr	   r1, r1, #0xc0000000			/* 设置为“asynchronous bus mode” */
+
+    mcr	   p15, 0, r1, c1, c0, 0		/* 写入控制寄存器 */
+    ldr    r0, =0x4c000004
+    ldr    r1, =MPLL_400MHZ
+    str    r1, [r0]
+    
     ldr	   sp,SVC_STACK_START
     bl 	   setup_ram
-    bl     clock_init
     
     adr    r0,_start
     ldr    r1,START

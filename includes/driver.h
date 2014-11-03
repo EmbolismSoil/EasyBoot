@@ -65,6 +65,7 @@ typedef struct{
     struct list_head  NAND_list;
     device_t     *open[MAX_DEV];
     attribute atr;
+    int devs;
     void *	pri;
 }board_t;
 
