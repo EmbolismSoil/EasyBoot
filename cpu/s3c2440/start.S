@@ -117,7 +117,7 @@ reset:
     ldr    r2,_bss_start
     sub    r2,r2,r1
     cmp	   r0,r1
-    bl     copy2ram
+    blne   copy2ram
 
   
     bl     clear_bss
