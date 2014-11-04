@@ -120,7 +120,7 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
                     PUT_STR("# ---- ");
 		    PUT_DEC(count);
 		    PUT_STR("%");
-		    if (count > 30 * flag){
+		    if (count >= 30 * flag){
 			PUT_STR("\n\r");
 			flag++;
 		    }
