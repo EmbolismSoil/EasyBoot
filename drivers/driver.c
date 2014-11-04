@@ -190,13 +190,13 @@ int device_open(char *path)
   if (!strncmp(class,"CPU",3)){
      FIND_DEVICE(pos,nb, nd, device, CPU);
      return GET_FD(nb,nd);
-  }else if (strncmp(class, "RAM",3)){
+  }else if (!strncmp(class, "RAM",3)){
      FIND_DEVICE(pos,nb, nd, device, RAM);
      return GET_FD(nb,nd);
-  }else if (strncmp(class, "NOR",3)){
+  }else if (!strncmp(class, "NOR",3)){
      FIND_DEVICE(pos,nb, nd, device, NOR);
      return GET_FD(nb,nd);
-  }else if (strncmp(class, "NAND",3)){
+  }else if (!strncmp(class, "NAND",3)){
      FIND_DEVICE(pos, nb, nd, device, NAND); 
      return GET_FD(nb,nd);
   }else{

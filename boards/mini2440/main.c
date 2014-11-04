@@ -17,10 +17,9 @@ int user_main()
   if (!ret) fd_led = device_open("/mini2440/CPU/LED");
   
   
-  register_device(mini2440,CPU,"NAND","NAND");
-  int fd_nand = device_open("/mini2440/CPU/NAND/");
+  register_device(mini2440,NAND,"NAND","NAND");
+  int fd_nand = device_open("/mini2440/NAND/NAND/");
 
-  PUT_DEC(fd_nand);
   unsigned char *kernel = (unsigned char *)0x30008000;
   device_read(fd_nand,0x200000,kernel,0x300000);
 
