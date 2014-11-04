@@ -102,16 +102,8 @@ reset:
     str    r1, [r0]
     
     ldr	   sp,SVC_STACK_START
-    ldr r0, =MEM_CTL_BASE
-
-    adr r1, sdram_config    
-    add r3, r0, #(13*4)
-1:
-    ldr r2, [r1], #4
-    str r2, [r0], #4
-    cmp r0, r3
-    bne 1b
-    
+    bl	   setup_ram   
+ 
     adr	   r0,_start
     ldr    r1,START
     ldr    r2,_bss_start
@@ -265,19 +257,4 @@ fiq:
 	irq_save_user_regs
 	bl	do_fiq
 	irq_restore_user_regs
-
-sdram_config:
-	.long 0x22011110	 //BWSCON
-	.long 0x00000700	 //BANKCON0
-	.long 0x00000700	 //BANKCON1
-	.long 0x00000700	 //BANKCON2
-	.long 0x00000700	 //BANKCON3  
-	.long 0x00000700	 //BANKCON4
-	.long 0x00000700	 //BANKCON5
-	.long 0x00018005	 //BANKCON6
-	.long 0x00018005	 //BANKCON7
-	.long 0x008C04F4	 // REFRESH
-	.long 0x000000B1	 //BANKSIZE
-	.long 0x00000030	 //MRSRB6
-	.long 0x00000030	 //MRSRB7
 
