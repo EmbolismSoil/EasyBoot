@@ -15,7 +15,7 @@ int user_main()
   if(!ret) fd_tty = device_open("/mini2440/CPU/TTY");       
 
   register_device(mini2440,NAND,"NAND","NAND");
-  int fd_nand = device_open("/mini2440/NAND/NAND/");
+  fd_nand = device_open("/mini2440/NAND/NAND/");
 
   unsigned char *kernel = (unsigned char *)0x30008000;
   device_read(fd_nand,0x200000,kernel,0x300000);
