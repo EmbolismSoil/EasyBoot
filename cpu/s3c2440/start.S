@@ -121,11 +121,7 @@ reset:
 
   
     bl     clear_bss
-    ldr    pc,=main
-main:
-    bl	   user_main
-    adr	   r0,_start
-    bl	   puthex
+    ldr    pc,=user_main
 
 @
 @ IRQ stack frame.
