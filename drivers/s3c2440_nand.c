@@ -87,8 +87,9 @@ static int nand_read(unsigned int addr, void *argbuf, unsigned int len)
         unsigned char *buf = (unsigned char *)argbuf;
 	int col = addr % 2048;
 	int i = 0;
-		
- 	PUT_STR("read....");
+	unsigned int count = 0;
+	int flag = 1;	
+ 	PUT_STR("reading nand....\n\r");
 	/* 1. 选中 */
 	nand_select();
 
@@ -114,12 +115,24 @@ static int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 			addr++;
 		}
 		
-                PUT_HEX(addr);
-                PUT_STR("\n\r");
-		
+		if (addr > count*(len/100) && addr <= len){
+		    PUT_STR("\b\b\b\b\b\b");
+                    PUT_STR("#");
+		    PUT_DEC(count);
+		    PUT_STR("%");
+		    if (count > 30 * flag){
+			PUT_STR("\n\r");
+			flag++;
+		    }
+		    count ++;
+		}
 		col = 0;
 	}
-	
+	PUT_STR("\b\b\b\b\b\b");
+        PUT_STR("#");
+	PUT_DEC(100);
+	PUT_STR("%");
+	PUT_STR("\n\rOK!");
 	/* 7. 取消选中 */		
 	nand_deselect();
 }
