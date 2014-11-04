@@ -20,6 +20,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  * MA 02111-1307 USA
  */
+#include <linux/stddef.h>
 #define MEM_REG_BASE  ((volatile unsigned long *)0x48000000)
 #define CLK_REG_BASE  ((volatile unsigned long *)0x4c000000)
 /*clock registers*/
@@ -53,12 +54,15 @@
 static int is_boot_nor()
 {
 	#define TEST (*(volatile int *)0)
+	int tmp = TEST;
 	TEST = 0xabcdef;
-	
-	if (TEST == 0xabcdef)
+	if (TEST == 0xabcdef){
+		TEST = tmp;
 		return 0;
-	else
+	 }else{
+		TEST = tmp;
 		return 1;
+	 }
 }
 
 void clear_bss(void)
@@ -70,11 +74,18 @@ void clear_bss(void)
                 *p = 0;
 }
 
-void copy2ram(char *src, char *dest, unsigned long len)
+extern int nand_open(void*,void*);
+extern int nand_read(unsigned int,void *,unsigned int);
+void copy2ram(char *src, char *dest, unsigned int len)
 {
     unsigned long cnt;
-    for (cnt = 0; cnt < len; cnt++){
-        dest[cnt] = src[cnt];
+    if (is_boot_nor()){
+        for (cnt = 0; cnt < len; cnt++){
+            dest[cnt] = src[cnt];
+        }
+    }else{
+	nand_open(NULL,NULL);
+	nand_read(0,dest,len);
     }
 }
 

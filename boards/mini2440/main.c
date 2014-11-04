@@ -2,7 +2,7 @@
 #include <debug.h>
 
 typedef void (*start_boot)();
-start_boot s3c2440_boot = (start_boot*)0x30008000;
+start_boot s3c2440_boot = (start_boot)0x30008000;
 int user_main()
 {
   int fd_tty;
@@ -22,7 +22,7 @@ int user_main()
 
   unsigned char *kernel = (unsigned char *)0x30008000;
   device_read(fd_nand,0x200000,kernel,0x300000);
-
+  PUT_STR("ADD NAND BOOT AND CHANGE ARM_BOOOT\n\r");
   device_write(fd_tty,0,"read kernel...finish\n\r",0);
    s3c2440_boot();
   return;

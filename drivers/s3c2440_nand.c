@@ -25,7 +25,7 @@
 #define TXD0READY   (1<<2)
 
 
-static int nand_open(void* unuse0, void *unuse1)
+int nand_open(void* unuse0, void *unuse1)
 {
 #define TACLS   0
 #define TWRPH0  1
@@ -82,7 +82,7 @@ static unsigned char nand_data(void)
 	return NFDATA;
 }
 
-static int nand_read(unsigned int addr, void *argbuf, unsigned int len)
+int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 {
         unsigned char *buf = (unsigned char *)argbuf;
 	int col = addr % 2048;
@@ -116,8 +116,8 @@ static int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 		}
 		
 		if (addr > count*(len/100) && addr <= len){
-		    PUT_STR("\b\b\b\b\b\b");
-                    PUT_STR("#");
+		    PUT_STR("\b\b\b\b\b\b\b\b\b\b\b\b");
+                    PUT_STR("# ---- ");
 		    PUT_DEC(count);
 		    PUT_STR("%");
 		    if (count > 30 * flag){
@@ -128,8 +128,8 @@ static int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 		}
 		col = 0;
 	}
-	PUT_STR("\b\b\b\b\b\b");
-        PUT_STR("#");
+	PUT_STR("\b\b\b\b\b\b\b\b\b\b\b\b");
+        PUT_STR("# ---- ");
 	PUT_DEC(100);
 	PUT_STR("%");
 	PUT_STR("\n\rOK!");

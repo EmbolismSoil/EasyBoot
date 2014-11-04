@@ -89,7 +89,8 @@ reset:
     bic     r0, r0, #0x1f
     orr     r0, r0, #0xd3
     msr     cpsr, r0
-    
+   
+    bl	   uart_open 
     ldr    r0, =0x4c000014
     mov    r1, #0x05;			
     str    r1, [r0]
