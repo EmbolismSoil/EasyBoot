@@ -1,12 +1,15 @@
+
 LIB     = libdrivers.a
-SOBJS   = 
-COBJS   = driver.o leds.o uart.o s3c2440_nand.o
+SOBJS   = $(filter %.S,$(shell ls))
+COBJS   = $(filter %.c,$(shell ls))
+
 
 SRCS    := $(SOBJS:.o=.S) $(COBJS:.o=.c)
-OBJS:=$(COBJS) $(SOBJS)
+OBJS:=$(COBJS:%.c=%.o) $(SOBJS:%.S=%.o)
 
 all:    $(LIB)
 $(LIB): $(OBJS)
+	echo $(COBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
 #$(SOBJS):%.o:%.S
 #	$(CC) $(CFLAGS) -c $<
