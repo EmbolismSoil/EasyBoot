@@ -93,6 +93,13 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 	int flag = 1;
 	int strlen = 100;
 
+
+	int nand_boot;
+	if (addr == 0)
+	   nand_boot = 1;
+	else 
+	   nand_boot = 0;
+
 	/* 1. 选中 */
 	nand_select();
 
@@ -118,6 +125,7 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 			addr++;
 		}
 		
+		if (!nand_boot)		
 		if (addr > count*(len/100) && addr <= len){
 		    PUT_STR("\b\b\b\b\b\b\b\b\b\b\b\b");
                     PUT_STR("| ---- ");
@@ -131,11 +139,14 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 		}
 		col = 0;
 	}
+
+	if(!nand_boot){
 	PUT_STR("\b\b\b\b\b\b\b\b\b\b\b\b");
         PUT_STR("| ---- ");
 	PUT_DEC(100);
 	PUT_STR("%");
 	PUT_STR("\n\rOK!");
+	}
 	/* 7. 取消选中 */		
 	nand_deselect();
 }
