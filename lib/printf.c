@@ -23,12 +23,18 @@
 /*cmd_boot.c*/
 //extern int do_reset (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
 #endif
-
 typedef struct{
     char buffer[CFG_PBSIZE];
     unsigned int pos;
 }printbuffer_t;
+
+
 static printbuffer_t printbuffer;
+
+int raise()
+{
+   return 0;
+}
 
 unsigned long simple_strtoul(const char *cp,char **endp,unsigned int base)
 {
@@ -121,6 +127,7 @@ static int skip_atoi(const char **s)
 	__res; \
 })
 
+
 #ifdef CFG_64BIT_VSPRINTF
 static char * number(char * str, long long num, int base, int size, int precision ,int type)
 #else
@@ -190,6 +197,7 @@ static char * number(char * str, long num, int base, int size, int precision ,in
 		*str++ = ' ';
 	return str;
 }
+
 
 /* Forward decl. needed for IP address printing stuff... */
 int sprintf(char * buf, const char *fmt, ...);
@@ -378,6 +386,7 @@ int sprintf(char * buf, const char *fmt, ...)
 	return i;
 }
 
+#if 0
 void panic(const char *fmt, ...)
 {
 	va_list	args;
@@ -392,12 +401,13 @@ void panic(const char *fmt, ...)
 	do_reset (NULL, 0, 0, NULL);
 #endif
 }
-
+#endif
 
 void printf (const char *fmt, ...)
 {
         va_list args;
 	int ret;
+	static int tty_fd = -1;
 
         uint i;
 
@@ -407,13 +417,26 @@ void printf (const char *fmt, ...)
          * anything we ever want to print.
          */
         i = vsprintf (&printbuffer.buffer[printbuffer.pos], fmt, args);
-	printbuffer.pos += i;
-
         va_end (args);
 
+        printbuffer.pos += i;
         /* Print the string */
 	board_t *cur = cur_board();
 	if (!cur) return;
-        device_write(cur->ID << BOARD_MASK | 0,0,printbuffer.buffer,0);
+	
+	char path[100];
+        int cnt = 0;
+
+	if (tty_fd == -1){ 
+	  for (cnt = 0; cnt < strlen(cur->type) + 1; cnt ++)
+	      path[cnt + 1] = cur->type[cnt];
+
+	  path[0] = '/';
+	  strcat(path,"/CPU/TTY/");
+	  ret = device_open(path);
+	  if ( -1 == ret) return;
+	  tty_fd = ret;
+	}
+  
+        device_write(tty_fd,0,printbuffer.buffer,0);
 }
- 
