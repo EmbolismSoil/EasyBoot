@@ -26,6 +26,10 @@
 
 #define MAX_DEV 25
 #define MAX_BOARD 10
+#define BOARD_USE 1
+#define BOARD_UNUSE -1
+#define BOARD_MASK 8
+
 
 typedef enum{CPU,RAM,NOR,NAND}class_t;
 typedef struct __device device_t;
@@ -66,6 +70,8 @@ typedef struct{
     device_t     *open[MAX_DEV];
     attribute atr;
     int devs;
+    int flag;
+    int ID;
     void *	pri;
 }board_t;
 
