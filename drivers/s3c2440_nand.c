@@ -92,7 +92,7 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 	unsigned int count = 0;
 	int flag = 1;
 	int strlen = 100;
-	
+
 	/* 1. 选中 */
 	nand_select();
 
@@ -120,7 +120,7 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 		
 		if (addr > count*(len/100) && addr <= len){
 		    PUT_STR("\b\b\b\b\b\b\b\b\b\b\b\b");
-                    PUT_STR("# ---- ");
+                    PUT_STR("| ---- ");
 		    PUT_DEC(count);
 		    PUT_STR("%");
 		    if (count >= 30 * flag){
@@ -132,7 +132,7 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 		col = 0;
 	}
 	PUT_STR("\b\b\b\b\b\b\b\b\b\b\b\b");
-        PUT_STR("# ---- ");
+        PUT_STR("| ---- ");
 	PUT_DEC(100);
 	PUT_STR("%");
 	PUT_STR("\n\rOK!");
