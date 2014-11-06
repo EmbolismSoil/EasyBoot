@@ -23,13 +23,8 @@
 /*cmd_boot.c*/
 //extern int do_reset (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
 #endif
-typedef struct{
-    char buffer[CFG_PBSIZE];
-    unsigned int pos;
-}printbuffer_t;
 
-
-static printbuffer_t printbuffer;
+static char  __attribute__((section (".start_data"))) printbuffer[CFG_PBSIZE];
 
 int raise()
 {
@@ -416,10 +411,9 @@ void printf (const char *fmt, ...)
         /* For this to work, printbuffer must be larger than
          * anything we ever want to print.
          */
-        i = vsprintf (&printbuffer.buffer[printbuffer.pos], fmt, args);
+        i = vsprintf (printbuffer, fmt, args);
         va_end (args);
 
-        printbuffer.pos += i;
         /* Print the string */
 	board_t *cur = cur_board();
 	if (!cur) return;
@@ -437,6 +431,8 @@ void printf (const char *fmt, ...)
 	  if ( -1 == ret) return;
 	  tty_fd = ret;
 	}
-  
-        device_write(tty_fd,0,printbuffer.buffer,0);
+	if (tty_fd != -1 && cur ){ 
+          device_write(tty_fd,0,printbuffer,0);
+	}
 }
+
