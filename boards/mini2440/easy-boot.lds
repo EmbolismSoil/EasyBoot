@@ -11,6 +11,14 @@ SECTIONS
   *(.text)
 }
 . = ALIGN(4);
+__start_data_start = .;
+.start_data :
+{
+   *(.start_data)
+}
+__start_data_end = .;
+
+. = ALIGN(4);
 .rodata : { *(.rodata) }                        
 . = ALIGN(4);
 .data : { *(.data) }                              

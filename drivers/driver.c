@@ -59,7 +59,9 @@ board_t *board_req(char *type)
     
     board_pool[cnt].type = type;
     board_pool[cnt].atr.show = default_show;
-    
+    board_pool[cnt].flag = BOARD_USE;
+    board_pool[cnt].ID = cnt;  
+  
     INIT_LIST_HEAD(&board_pool[cnt].CPU_list);
     INIT_LIST_HEAD(&board_pool[cnt].RAM_list);
     INIT_LIST_HEAD(&board_pool[cnt].NOR_list);
@@ -159,7 +161,6 @@ do{\
         } \
 }while(0)
 
-#define BOARD_MASK 8
 #define GET_FD(__nb,__nd) (((__nb) << BOARD_MASK) | (__nd & 0x00ff))
 /*
 * @device_open 
@@ -248,3 +249,20 @@ int device_ioctl(board_t *board, int fd, int cmd, int arg)
     int nd = fd & 0x00ff;
     return board_pool[nb].open[nd]->ops->ioctl(board,cmd,arg);
 }
+
+/*
+ *@ cur_board
+ *  get the board we use currently
+ **/
+
+ board_t *cur_board()
+ {
+   int cnt = 0;
+   
+   for (cnt = 0; cnt < MAX_BOARD; cnt++){
+       if (BOARD_USE == board_pool[cnt].flag)
+           return &board_pool[cnt];
+   }
+
+   return NULL;
+ }

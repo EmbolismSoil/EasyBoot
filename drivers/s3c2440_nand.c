@@ -1,5 +1,7 @@
 #include <debug.h>
 #include <driver.h>
+#include <printf.h>
+
 /* NAND FLASH控制器 */
 #define NFCONF (*((volatile unsigned long *)0x4E000000))
 #define NFCONT (*((volatile unsigned long *)0x4E000004))
@@ -88,8 +90,9 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 	int col = addr % 2048;
 	int i = 0;
 	unsigned int count = 0;
-	int flag = 1;	
- 	PUT_STR("reading nand....\n\r");
+	int flag = 1;
+	int strlen = 100;
+	
 	/* 1. 选中 */
 	nand_select();
 

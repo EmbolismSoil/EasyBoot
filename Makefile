@@ -5,6 +5,7 @@ export  TOPDIR SRCTREE
 
 OBJCFLAGS=--gap-fill=0xff 
 CFLAGS=-I $(TOPDIR)/includes -g -O1
+
 export OBJCFLAGS CFLAGS
 
 ARCH=arm
@@ -65,6 +66,8 @@ LIBS = lib/libcommon.a
 LIBS += drivers/libdrivers.a
 LIBS += boards/$(BOARD)/lib$(BOARD).a
 LIBS := $(addprefix $(SRCTREE)/,$(LIBS))
+LLIBS =  -lgcc -L /home/Brooks/x-tools/arm-lee-linux-gnueabi/lib/gcc/arm-lee-linux-gnueabi/4.3.4/
+
 .PHONY : $(LIBS)
 
 
@@ -79,11 +82,11 @@ EasyBoot.bin:	EasyBoot
 		$(OBJCOPY) ${OBJCFLAGS} -O binary $< $@
 		cp $@ /srv/
 
-EasyBoot: $(OBJS) $(LIBS) $(LDSCRIPT)
+EasyBoot: $(OBJS) $(LIBS) $(LDSCRIPT) 
 		#UNDEF_SYM_CMD=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/\(__Easy_Boot_cmd\)/-u\1/p'|sort|uniq`;
 		UNDEF_SYM_DRV=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/.*\(__easy_boot_driver.*\)/-u\1/p'|sort|uniq`;\
 		$(LD) $(LDFLAGS) $$UNDEF_SYM_DRV $(OBJS) \
-			--start-group $(LIBS) --end-group -o $@
+			--start-group $(LIBS) --end-group $(LLIBS) -o $@
 
 $(OBJS):
 		$(MAKE) -C cpu/$(CPU)
