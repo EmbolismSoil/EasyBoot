@@ -1,4 +1,3 @@
-
  
 LIB     = libcommon.a
 SOBJS   = $(filter %.S,$(shell ls))

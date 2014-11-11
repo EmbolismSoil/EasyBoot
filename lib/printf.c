@@ -24,7 +24,6 @@
 //extern int do_reset (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
 #endif
 
-static char  __attribute__((section (".start_data"))) printbuffer[CFG_PBSIZE];
 
 int raise()
 {
@@ -403,6 +402,8 @@ void printf (const char *fmt, ...)
         va_list args;
 	int ret;
 	static int tty_fd = -1;
+	 char  printbuffer[CFG_PBSIZE];
+
 
         uint i;
 

@@ -24,13 +24,15 @@ int user_main()
   register_device(mini2440,NAND,"NAND","NAND");
   fd_nand = device_open("/mini2440/NAND/NAND/");
 
-  printf("\n\rcopying kernel from nand to RAM....\n\r");
+  printf("\n\r\n\r\n\rcopying kernel from nand to RAM....\n\r");
   unsigned char *kernel = (unsigned char *)0x30008000;
   device_read(fd_nand,0x200000,kernel,0x300000);
 
   printf("\n\rread 0x%x size from nand flash to address : 0x%x... Ok\n\r",
 		0x300000, kernel);
   printf("\n\rbooting....\n\rfrom : EasyBoot\n\r");
+
+
   
   delay(2000000);
   s3c2440_boot(193);
@@ -38,6 +40,9 @@ int user_main()
   while(1);
   return;
 }
+
+
+
 
 
 
