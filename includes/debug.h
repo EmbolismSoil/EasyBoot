@@ -18,8 +18,6 @@ extern void putdec(int val);
 
 #define DEBUG_CHECK(__condiction,ret)\
 	if ((__condiction)){\
-	 PUT_STR("error!!!!:");\
-	 DEBUG_PUT();\
 	 return (ret);}
 
 #endif

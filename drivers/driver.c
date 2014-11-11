@@ -35,7 +35,7 @@ static board_t board_pool[MAX_BOARD];
 */
 static char *default_show(void *atr,void *r_buf,int len)
 {
-   //DEBUG_CHECK(!r_buf, NULL);
+   DEBUG_CHECK(!r_buf, NULL);
     r_buf = (void *)(((attribute *)atr)->info);
 	return (char *)r_buf;
 }
@@ -47,7 +47,7 @@ static char *default_show(void *atr,void *r_buf,int len)
  */
 board_t *board_req(char *type)
 {
-    //DEBUG_CHECK(!type, NULL);
+    DEBUG_CHECK(!type, NULL);
     char cnt;
     char cnt1;
     char cnt2;
@@ -85,7 +85,7 @@ board_t *board_req(char *type)
 */
 static int add_device(board_t *board,  device_t *device)
 {
-	//DEBUG_CHECK(!board || !device, -1);
+    DEBUG_CHECK(!board || !device, -1);
 	device_t *pos;
     switch (device->class){
     case CPU :  
