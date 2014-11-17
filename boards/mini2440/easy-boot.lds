@@ -27,7 +27,12 @@ __start_data_end = .;
 . = .;                                                        
 __driver_start = .;                          
 .easy_boot_driver : { *(.easy_boot_driver) }             
-__driver_end = .;                     
+__driver_end = .;
+. = ALIGN(4);
+
+__cmd_start = .;
+.easy_boot_cmd : { *(.easy_boot_cmd)}                     
+__cmd_end = .;
 __img_end = .;
  
 . = ALIGN(32);                                 
