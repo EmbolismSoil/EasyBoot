@@ -255,7 +255,7 @@ int device_ioctl(board_t *board, int fd, int cmd, int arg)
  *  get the board we use currently
  **/
 
- board_t *cur_board()
+ board_t *cur_board(void)
  {
    int cnt = 0;
    

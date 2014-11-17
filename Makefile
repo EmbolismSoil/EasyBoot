@@ -5,8 +5,8 @@ export  TOPDIR SRCTREE
 
 OBJCFLAGS=--gap-fill=0xff 
 CFLAGS=-I $(TOPDIR)/includes -g -O1
-
-export OBJCFLAGS CFLAGS
+ARFLAGS= cr
+export OBJCFLAGS CFLAGS ARFLAGS
 
 ARCH=arm
 CPU=s3c2440

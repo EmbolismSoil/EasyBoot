@@ -1,9 +1,7 @@
 #include <driver.h>
 #include <debug.h>
 #include <printf.h>
-
-typedef void (*start_boot)();
-start_boot s3c2440_boot = (start_boot)0x30008000;
+#include <boot.h>
 
 void delay(int x)
 {
@@ -24,20 +22,22 @@ int user_main()
   register_device(mini2440,NAND,"NAND","NAND");
   fd_nand = device_open("/mini2440/NAND/NAND/");
 
-  printf("\n\r\n\r\n\rcopying kernel from nand to RAM....\n\r");
+  char *cmd_line = "init=/linuxrc console=ttySAC0 root=/dev/nfs rw nfsroot=192.168.1.50:/rootfs ip=192.168.1.10:192.168.1.50:192.168.1.1:255.255.255.0:lee:eth0:off";
+  printf("\n\r\n\r\n\rsetup cmd_line: %s",cmd_line);
+
+  setup_tag(cmd_line);
+
+  printf("copying kernel from nand to RAM....\n\r");
   unsigned char *kernel = (unsigned char *)0x30008000;
   device_read(fd_nand,0x200000,kernel,0x300000);
 
   printf("\n\rread 0x%x size from nand flash to address : 0x%x... Ok\n\r",
 		0x300000, kernel);
   printf("\n\rbooting....\n\rfrom : EasyBoot\n\r");
-
-
   
   delay(2000000);
-  s3c2440_boot(193);
+  s3c2440_boot(0,193,0x30000100);
   printf("ERROR : boot faile....\n");
-  while(1);
   return;
 }
 
