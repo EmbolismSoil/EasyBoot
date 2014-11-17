@@ -119,5 +119,5 @@ void putdec(int val)
 }
 d_ops uart_ops = {.open = uart_open,.write = uart_write};
 
-DRIVER_EXPORT(UART, CPU, NULL, &uart_ops, ((void *)0) );
+DRIVER_EXPORT(UART, NULL, &uart_ops, ((void *)0) );
 

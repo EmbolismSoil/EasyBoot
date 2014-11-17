@@ -39,4 +39,4 @@ static int  write_led(unsigned int addr ,void *buf, unsigned int len)
 }
 d_ops led_ops = {.open = open,.write = write_led};
 
-DRIVER_EXPORT(LED, CPU, NULL, &led_ops, ((void *)0) );
+DRIVER_EXPORT(LED, NULL, &led_ops, NULL );

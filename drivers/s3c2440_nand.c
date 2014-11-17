@@ -152,4 +152,4 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 }
 
 d_ops nand_ops = {.open = nand_open,.read = nand_read};
-DRIVER_EXPORT(NAND, NAND, NULL, &nand_ops, ((void *)0) );
+DRIVER_EXPORT(NAND, NULL, &nand_ops, ((void *)0) );

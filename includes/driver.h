@@ -84,11 +84,11 @@ extern int device_close(board_t *board, int fd);
 extern int device_ioctl(board_t *board, int fd, int cmd, int arg);
 
 #define IN_SECTION_DEVICE  __attribute__ ((unused,section (".easy_boot_driver")))
-#define DRIVER_EXPORT(__type, __class, __atr, __ops, __pri ) \
+#define DRIVER_EXPORT(__type, __atr, __ops, __pri ) \
 	device_t __easy_boot_driver_##__type   IN_SECTION_DEVICE = { \
 		.drv = #__type, \
 		.atr = __atr,  \
 		.ops = __ops, \
-		._pri = NULL,\
+		._pri = __pri,\
 	}
 #endif
