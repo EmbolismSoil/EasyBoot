@@ -65,7 +65,7 @@ enum s3c24x0_uarts_nr {
 #define S3C2440_SDI_BASE		0x5A000000
 
 /* include common stuff */
-#include <asm/arch/s3c24x0.h>
+#include <asm/arch-s3c24x0/s3c24x0.h>
 
 static inline struct s3c24x0_memctl *s3c24x0_get_base_memctl(void)
 {

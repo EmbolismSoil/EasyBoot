@@ -71,11 +71,12 @@ LLIBS = -l gcc -L /home/Brooks/x-tools/arm-lee-linux-gnueabi/lib/gcc/arm-lee-lin
 export LLIBS
 .PHONY : $(LIBS)
 
-
+CONFIG := $(TOPDIR)/include/config.h
+export CONFIG
 #########################################################################
 #########################################################################
 
-ALL = EasyBoot EasyBoot.bin
+ALL = $(CONFIG) EasyBoot EasyBoot.bin
 
 all:		$(ALL)
 
@@ -83,11 +84,14 @@ EasyBoot.bin:	EasyBoot
 		$(OBJCOPY) ${OBJCFLAGS} -O binary $< $@
 		cp $@ /srv/
 
-EasyBoot: $(OBJS) $(LIBS) $(LDSCRIPT) 
+EasyBoot: $(OBJS) $(LIBS) $(LDSCRIPT)
 		#UNDEF_SYM_CMD=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/\(__Easy_Boot_cmd\)/-u\1/p'|sort|uniq`;
 		UNDEF_SYM_DRV=`$(OBJDUMP) -x $(LIBS) |sed  -n -e 's/.*\(__easy_boot_driver.*\)/-u\1/p'|sort|uniq`;\
 		$(LD) $(LDFLAGS) $$UNDEF_SYM_DRV $(OBJS) \
 			--start-group $(LIBS) --end-group  $(LLIBS) -o $@
+
+$(CONFIG):
+		 ln -s $(TOPDIR)/includes/configs/$(BOARD).h $(TOPDIR)/includes/config.h
 
 $(OBJS):
 		$(MAKE) -C cpu/$(CPU)
@@ -101,3 +105,4 @@ clean:
 	rm -f $(shell find /home/lee/project/EasyBoot/ -type f -name \
 		"*.o" -o -name "*.a" -o -name "*.bin" -o -name "*.map")
 	rm -f EasyBoot
+	rm -rf $(TOPDIR)/includes/config.h

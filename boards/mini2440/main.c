@@ -2,6 +2,7 @@
 #include <debug.h>
 #include <printf.h>
 #include <boot.h>
+#include <types.h>
 
 void delay(int x)
 {
@@ -34,7 +35,6 @@ int user_main()
   printf("\n\rread 0x%x size from nand flash to address : 0x%x... Ok\n\r",
 		0x300000, kernel);
   printf("\n\rbooting....\n\rfrom : EasyBoot\n\r");
-  
   delay(2000000);
   s3c2440_boot(0,193,0x30000100);
   printf("ERROR : boot faile....\n");

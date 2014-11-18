@@ -28,8 +28,10 @@
  * common stuff for SAMSUNG S3C24X0 SoC
  ************************************************/
 
+
 #ifndef __S3C24X0_H__
 #define __S3C24X0_H__
+#include <types.h>
 
 /* Memory controller (see manual chapter 5) */
 struct s3c24x0_memctl {

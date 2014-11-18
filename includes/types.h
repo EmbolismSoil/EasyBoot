@@ -1,5 +1,5 @@
-#ifndef __ASM_ARM_TYPES_H
-#define __ASM_ARM_TYPES_H
+#ifndef __TYPES_H
+#define __TYPES_H
 
 typedef unsigned short umode_t;
 
@@ -17,15 +17,7 @@ typedef unsigned short __u16;
 typedef __signed__ int __s32;
 typedef unsigned int __u32;
 
-#if defined(__GNUC__)
-__extension__ typedef __signed__ long long __s64;
-__extension__ typedef unsigned long long __u64;
-#endif
 
-/*
- * These aren't exported outside the kernel to avoid name space clashes
- */
-#ifdef __KERNEL__
 
 typedef signed char s8;
 typedef unsigned char u8;
@@ -39,15 +31,5 @@ typedef unsigned int u32;
 typedef signed long long s64;
 typedef unsigned long long u64;
 
-#define BITS_PER_LONG 32
-
-/* Dma addresses are 32-bits wide.  */
-
-typedef u32 dma_addr_t;
-
-typedef unsigned long phys_addr_t;
-typedef unsigned long phys_size_t;
-
-#endif /* __KERNEL__ */
 
 #endif
