@@ -30,6 +30,7 @@ typedef struct{
 }header;
 
 typedef struct _manager{
+   /*memory sizes which the manager keep*/
     u32 start;
     u32 end;
     
@@ -40,7 +41,11 @@ typedef struct _manager{
     struct list_head free_list;
     struct list_head alloc_list; 	 	
 }manager;
- 
+/*
+ * @function : this function can find out the block
+ * which can fit the requested sizes whit 10 bytes header.
+ * The block size should be four byte aligned.
+ */
 static void *mem_find(manager* mm,u32 size)
 {
 	DEBUG_CHECK((!mm || !size),NULL);
@@ -53,7 +58,7 @@ static void *mem_find(manager* mm,u32 size)
 	header *pos;
     header *new;
 	void *ret;
-	
+	/**/
 	list_for_each_entry(pos, &mm->free_list, list)
         if ((pos->flag & 0xffffffc) >= size){
 		   ret = (void*)(pos->start + sizeof(header));
@@ -73,16 +78,10 @@ static void *mem_find(manager* mm,u32 size)
 		        list_add_tail(&new->list, &mm->free_list);
 
 
-#if 0
-
+#if DEBUG
            printf("the new addr is : 0x%x\n\r",(u32)new);
            printf("the new start is : 0x%x\n\r",(u32)new->start);
            printf("the new flag is : 0x%x\n\r",(u32)new->flag);
-
-//        header *debug_pos;
-//        list_for_each_entry(debug_pos, &mm->free_list, list){
-//                printf("new pos addr : 0x%x\n\r",(u32)debug_pos);
-//        }
 #endif
 	
 		

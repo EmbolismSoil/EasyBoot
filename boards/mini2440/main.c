@@ -34,13 +34,10 @@ int user_main()
   void *base = heap_start();
   void *end = heap_end();
 
-  printf("\n\r\n\rheap base : 0x%x\n\r",(u32)base);
-  printf("\n\r\n\rheap end : 0x%x \n\r",(u32)end);
 
   int  cnt;
   int *ptr;
-  int *ptr1;
-  for (cnt = 0;cnt < 10;cnt++){
+  for (cnt = 0;cnt < 1000;cnt++){
        ptr = (int *)malloc(sizeof(int));
        free(ptr);
        printf("malloc ptr : 0x%x\n\r",(u32)ptr);
