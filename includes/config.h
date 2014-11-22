@@ -1,1 +1,0 @@
-/home/lee/project/EasyBoot/includes/configs/mini2440.h
