@@ -46,6 +46,7 @@ int disable_interrupts (void)
 
 void bad_mode (void)
 {
+   printf("error :  in bad mode!!!!\n\r");
    return;
 }
 

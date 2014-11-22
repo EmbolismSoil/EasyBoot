@@ -39,12 +39,11 @@ int user_main()
 
   int  cnt;
   int *ptr;
+  int *ptr1;
   for (cnt = 0;cnt < 10;cnt++){
        ptr = (int *)malloc(sizeof(int));
-       if (ptr) *ptr = 0xbee + cnt;
-      printf("malloc addr : 0x%x\n\r",(u32)ptr);
-      printf("read from *ptr : 0x%x\n\r",*ptr);
-
+       free(ptr);
+       printf("malloc ptr : 0x%x\n\r",(u32)ptr);
   }
   printf("copying kernel from nand to RAM....\n\r");
   unsigned char *kernel = (unsigned char *)0x30008000;
