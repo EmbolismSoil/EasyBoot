@@ -56,29 +56,29 @@ static void *mem_find(manager* mm,u32 size)
 	
 	list_for_each_entry(pos, &mm->free_list, list)
         if ((pos->flag & 0xffffffc) >= size){
-		 ret = (void*)(pos->start + sizeof(header));
+		   ret = (void*)(pos->start + sizeof(header));
 #ifdef DEBUG
-	printf(" .... find block\n\r");
-	printf("pos flag is : 0x%x\n\r",pos->flag);
-	printf("pos start is : 0x%x\n\r",pos->start);
-	printf("size of header is : 0x%x\n\r",sizeof(header));
-	printf("ret is : 0x%x\n\r",(u32)ret);
+		   printf(" .... find block\n\r");
+		   printf("pos flag is : 0x%x\n\r",pos->flag);
+		   printf("pos start is : 0x%x\n\r",pos->start);
+		   printf("size of header is : 0x%x\n\r",sizeof(header));
+		   printf("ret is : 0x%x\n\r",(u32)ret);
 #endif
    
-    		new = (header *)(pos->start + size);
-    		new->start = pos->start + size;
-    		new->flag = (pos->flag & 0xfffffffc) - size;
+    	   new = (header *)(pos->start + size);
+    	   new->start = pos->start + size;
+    	   new->flag = (pos->flag & 0xfffffffc) - size;
     		
-    		pos->flag = (size | 1);
-    		list_move_tail(&pos->list,&mm->alloc_list);
-		    list_add_tail(&new->list, &mm->free_list);
+    	   pos->flag = (size | 1);
+    	   list_move_tail(&pos->list,&mm->alloc_list);
+		   list_add_tail(&new->list, &mm->free_list);
 
 
 #ifdef DEBUG
 
-        printf("the new addr is : 0x%x\n\r",(u32)new);
-        printf("the new start is : 0x%x\n\r",(u32)new->start);
-        printf("the new flag is : 0x%x\n\r",(u32)new->flag);
+           printf("the new addr is : 0x%x\n\r",(u32)new);
+           printf("the new start is : 0x%x\n\r",(u32)new->start);
+           printf("the new flag is : 0x%x\n\r",(u32)new->flag);
 
 //        header *debug_pos;
 //        list_for_each_entry(debug_pos, &mm->free_list, list){
@@ -87,8 +87,8 @@ static void *mem_find(manager* mm,u32 size)
 #endif
 	
 		
-			return ret;
-    	}
+		   return ret;
+       }
     return NULL;
 } 
  
