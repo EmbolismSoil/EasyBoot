@@ -323,6 +323,26 @@ static inline void list_splice_tail_init(struct list_head *list,
 	}
 }
 
+
+
+/**
+ * list_insert - insert an new list item before the pos
+ * list_insert_tail - insert an new list item after the pos
+ */
+
+#define list_insert(list,pos) do{\
+            (list)->prev = (pos)->prev;\
+            (pos)->prev->next = list;\
+            (list)->next = pos;\
+            (pos)->prev = list;}while(0)
+
+#define list_insert_tail(list,pos) do{\
+             (list)->prev = pos;\
+             (list)->next = (pos)->next;\
+              (pos)->next->prev = list;\
+              (pos)->next = list;}while(0)
+
+
 /**
  * list_entry - get the struct for this entry
  * @ptr:	the &struct list_head pointer.

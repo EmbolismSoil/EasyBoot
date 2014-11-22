@@ -122,7 +122,34 @@ static void* mem_alloc(manager* mm, u32 size)
 
 static int mem_free(manager *mm,void *ptr)
 {
-	return 0;
+	DEBUG_CHECK(!ptr,-1);
+#ifdef DEBUG
+	printf("into function : ");
+	printf(__func__);
+#endif
+
+	header *pos_alloc;
+	header *pos_free;
+	header *tmp;
+	
+	list_for_each_entry(pos_alloc, &mm->alloc_list, list)
+		if ((u32)ptr >= pos_alloc->start && 
+				(u32)ptr <= pos_alloc->end){
+			break;
+		}
+		
+	list_for_each_entry(free_alloc, &mm->free_list, list)
+		if (pos_alloc->start > pos_free->start){
+			tmp = list_entry(pos_free->list.prev, 
+							typeof(*pos_free), list)
+			if (pos_alloc->start < tmp->start){
+				list_insert(&pos_alloc->list,&pos_free->list);
+				return 0;
+			}
+		}	
+	
+			
+	return -1;
 }
 
 static int mem_omb(manager* mm)
@@ -131,6 +158,7 @@ static int mem_omb(manager* mm)
 }
 extern void _start(void);
 extern u32 __stack;
+
 #define HEAP_BASE ((u32)&__stack + STACK_SIZE + KEEP_SIZE)
 static manager heap_manager = {
 	.start =  HEAP_BASE + (HEAP_BASE % 4),
