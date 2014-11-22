@@ -34,6 +34,8 @@
  *       --------------------------     0x30000000
  */
 
+#include <config.h>
+
 #define MPLL_400MHZ     ((0x5c<<12)|(0x01<<4)|(0x01))
 #define WTREG_BASE	0x53000000
 #define SDRAM_BASE	0x30000000
@@ -61,18 +63,18 @@ _fiq:                   .word fiq
 
 .globl SVC_STACK_START
 SVC_STACK_START:
-	.word __stack + 0x35c00/*215KB*/
+	.word __stack + SVC_STACK_SIZE/*215KB*/
 
 .globl IRQ_STACK_START
 IRQ_STACK_START:
-        .word SVC_STACK_START + 0x4000/*4KB*/
+        .word SVC_STACK_START + IRQ_STACK_SIZE/*4KB*/
 
 .globl FIQ_STACK_START
 FIQ_STACK_START:
-        .word IRQ_STACK_START + 0x4000/*4KB*/
+        .word IRQ_STACK_START + FIQ_STACK_SIZE/*4KB*/
 .globl BAD_STACK_START
 BAD_STACK_START:
-	.word FIQ_STACK_START + 0x4000/*4KB*/
+	.word FIQ_STACK_START + BAD_STACK_SIZE/*4KB*/
 .globl START
 START:
 	.word _start

@@ -25,7 +25,7 @@
 #include <advstr.h>
 #include <driver.h>
 #include <string.h>
-
+#include <config.h>
 
 static board_t board_pool[MAX_BOARD];
 
@@ -131,6 +131,7 @@ static int add_device(board_t *board,  device_t *device)
  int register_device(board_t *board,class_t class,char driver_type[],
 				 char device_type[])
  {
+ 	 //DEBUG_CHECK(!board || !driver_type || !device_type, NULL);
     device_t *devp;
     
 	for (devp = &__driver_start; devp != &__driver_end; devp++) {
@@ -167,6 +168,7 @@ do{\
 */
 int device_open(char *path)
 {
+	DEBUG_CHECK(!path, -1);
     int cnt;
     int nb = -1;
     int nd = -1;
@@ -211,8 +213,12 @@ int device_open(char *path)
 * @device_read 
 */
 
+extern void _start(void);
+extern unsigned long __bss_end;
 int device_read(int fd, unsigned int addr, void *buf ,unsigned int len)
 {
+	//DEBUG_CHECK(buf >= _start && 
+	//		buf <= &__bss_end + STACK_SIZE, -1);
     int nb = (fd >>  BOARD_MASK) & 0x00ff;
     int nd = fd & 0x00ff;
     return board_pool[nb].open[nd]->ops->read(addr, buf, len);

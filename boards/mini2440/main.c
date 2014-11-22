@@ -3,6 +3,8 @@
 #include <printf.h>
 #include <boot.h>
 #include <types.h>
+#include <FIFO.h>
+#include <mm.h>
 
 void delay(int x)
 {
@@ -24,10 +26,26 @@ int user_main()
   fd_nand = device_open("/mini2440/NAND/NAND/");
 
   char *cmd_line = "init=/linuxrc console=ttySAC0 root=/dev/nfs rw nfsroot=192.168.1.50:/rootfs ip=192.168.1.10:192.168.1.50:192.168.1.1:255.255.255.0:lee:eth0:off";
-  printf("\n\r\n\r\n\rsetup cmd_line: %s",cmd_line);
+  printf("\n\r\n\r\n\rsetup cmd_line: %s\n\r",cmd_line);
 
   setup_tag(cmd_line);
 
+  heap_init();
+  void *base = heap_start();
+  void *end = heap_end();
+
+  printf("\n\r\n\rheap base : 0x%x\n\r",(u32)base);
+  printf("\n\r\n\rheap end : 0x%x \n\r",(u32)end);
+
+  int  cnt;
+  int *ptr;
+  for (cnt = 0;cnt < 10;cnt++){
+       ptr = (int *)malloc(sizeof(int));
+       if (ptr) *ptr = 0xbee + cnt;
+      printf("malloc addr : 0x%x\n\r",(u32)ptr);
+      printf("read from *ptr : 0x%x\n\r",*ptr);
+
+  }
   printf("copying kernel from nand to RAM....\n\r");
   unsigned char *kernel = (unsigned char *)0x30008000;
   device_read(fd_nand,0x200000,kernel,0x300000);

@@ -7,7 +7,7 @@ SRCS    := $(SOBJS:.o=.S) $(COBJS:.o=.c)
 OBJS:=$(COBJS) $(SOBJS)
 
 all:    $(LIB)
-$(LIB): $(OBJS)
+$(LIB): $(COBJS) $(SOBJS)
 	$(AR) $(ARFLAGS) $@ $(OBJS)
-#$(SOBJS):%.o:%.S
-#	$(CC) $(CFLAGS) -c $<
+$(SOBJS):%.o:%.S
+	$(CC) $(CFLAGS) -c $<
