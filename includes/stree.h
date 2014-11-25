@@ -3,6 +3,8 @@
 
 #define IS_ROOT -2
 
+#include <linux/stddef.h>
+        
 typedef enum{gt,lt,eq}node_logic;
 
 typedef struct __stree_node{
@@ -43,7 +45,18 @@ static inline int is_node_rh(stree_node *root,stree_node *node)
 	return root->rh == node;
 }
 
+#define container_of(ptr, type, member) ({                      \
+        const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+        (type *)( (char *)__mptr - offsetof(type,member) );})
+        
 #define stree_node_entry(ptr, type, member) \
 	container_of(ptr, type, member)
-
+	
+static inline void INIT_STREE_NODE(stree_node *node) \
+{
+	node->parent = NULL;
+	node->lh = NULL;
+	node->rh = NULL;
+}
+	
 #endif

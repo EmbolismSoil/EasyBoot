@@ -27,41 +27,33 @@ stree_search(stree_node *root, const node_cmp *key_cmp)
    return NULL;   	
 }
 
-static stree_node **
-stree_modifiled_search(stree_node *root, const node_cmp *key_cmp)
-{
-    DEBUG_CHECK(!root || !key_cmp, NULL);
-	
-   stree_node *tmp;
-   while (root){
-       switch (key_cmp->cmp(root,key_cmp->key)){
-       	case gt :
-       		if (!root->rh)
-       			return &(root->rh);
-       		root = root->rh;
-       		break;
-       	case lt :
-       		if (!root->lh)
-       			return &(root->lh);
-       		root = root->lh;
-       	case eq :
-       		return NULL;
-       }
-   }
-   return NULL;   	
-}
-
 int stree_add(stree_node *node,stree_node *root,const node_cmp *key_cmp)
 {
     DEBUG_CHECK(!root || !key_cmp, -1);
-	stree_node**  tmp = stree_modifiled_search(root,key_cmp);
-	if (tmp){
-		*tmp = node;
-	}else return -1;
 	
-	return 0;
+   while (1){
+       switch (key_cmp->cmp(root,key_cmp->key)){
+       	case gt :
+       		if (!root->rh){
+       		    root->rh = node;
+       		    node->parent = root;
+       		    return 0;	
+       		}
+       		root = root->rh;
+       		break;
+       	case lt :
+       		if (!root->lh){
+       			root->lh = node;
+       			node->parent = root;
+       			return 0;
+       		}
+       		root = root->lh;
+       		break;
+       	case eq :
+       		return -1;
+       }
+   }  	
 }
-
 
 int stree_del(stree_node *node)
 {
