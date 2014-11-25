@@ -39,8 +39,12 @@ typedef struct _manager{
     int (*omb)(struct _manager* mm);
     
     struct list_head free_list;
-    struct list_head alloc_list; 	 	
+    struct list_head alloc_list;
+    
+    struct list_head free_tree;
+    struct list_head alloc_tree; 	 	
 }manager;
+
 /*
  * @function : this function can find out the block
  * which can fit the requested sizes whit 10 bytes header.
