@@ -30,7 +30,7 @@ int user_main()
 
   setup_tag(cmd_line);
 
-  heap_init();
+  heap_init(list_t);
   void *base = heap_start();
   void *end = heap_end();
 
