@@ -1,5 +1,5 @@
 #include <linux/list.h>
-#include <search_stree.h>
+#include <stree.h>
 #include <debug.h>
 /*这是类似与内核链表的通用数据结构，我并不强制这个查找树存放的是什么内容，用户仅仅需要将其放入自己的结构中即可组成自己的查找树，用户需要作的事情就是，定义一个判断节点的函数，然后将stree_node加入自己的结构中即可*/
 
