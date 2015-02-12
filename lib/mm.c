@@ -117,6 +117,8 @@ static void* mem_alloc(manager* mm, u32 size)
     	return ret;	
 }
 
+
+
 static int mem_free(manager *mm,void *ptr)
 {
 	DEBUG_CHECK(!ptr,-1);
@@ -195,12 +197,13 @@ static int mem_omb(manager* mm)
 {
 	return 0;
 }
-extern void _start(void);
-extern u32 __stack;
 
-#define HEAP_BASE ((u32)&__stack + STACK_SIZE + KEEP_SIZE)
+//extern void _start(void);
+extern  u32 __stack;
+#define HEAP_BASE ((u32)(&__stack) + STACK_SIZE + KEEP_SIZE)
+
 static manager heap_manager = {
-	.start =  HEAP_BASE + (HEAP_BASE % 4),
+//	.start =  (u32)(HEAP_BASE + (HEAP_BASE % 4)),
 	.end = MEM_BASE + MEM_SIZE - KEEP_SIZE,
 	.alloc = mem_alloc,
 	.free = mem_free,
@@ -221,16 +224,17 @@ static int _heap_init(manager *mm)
     return 0;
 }
 
-int heap_init()
+int heap_init(void)
 {
+    heap_manager.start = (HEAP_BASE + (HEAP_BASE % 4)); 
     return _heap_init(&heap_manager);
 }
 
-void *heap_start()
+void *heap_start(void)
 {
 	return (void*)heap_manager.start;
 }
-void *heap_end()
+void *heap_end(void)
 {
 	return (void*)heap_manager.end;
 }

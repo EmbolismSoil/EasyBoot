@@ -4,7 +4,7 @@ export  TOPDIR SRCTREE
 
 
 OBJCFLAGS=--gap-fill=0xff 
-CFLAGS=-I $(TOPDIR)/includes -g -O1
+CFLAGS=-I $(TOPDIR)/includes -g -O1 -Wall#-fno-stack-protector
 ARFLAGS= cr
 export OBJCFLAGS CFLAGS ARFLAGS
 
@@ -14,7 +14,7 @@ BOARD=mini2440
 export	ARCH CPU BOARD
 
 LDSCRIPT:=$(TOPDIR)/boards/$(BOARD)/easy-boot.lds
-LDFLAGS=-Bstatic -T $(LDSCRIPT)
+LDFLAGS=-Bstatic -T $(LDSCRIPT) -N
 export LDSCRIPT LDFLAGS
 
 ifeq ($(ARCH),ppc)
@@ -66,7 +66,7 @@ LIBS = lib/libcommon.a
 LIBS += drivers/libdrivers.a
 LIBS += boards/$(BOARD)/lib$(BOARD).a
 LIBS := $(addprefix $(SRCTREE)/,$(LIBS))
-LLIBS = -l gcc -L /home/Brooks/x-tools/arm-lee-linux-gnueabi/lib/gcc/arm-lee-linux-gnueabi/4.3.4/
+LLIBS = -l gcc -L /usr/lib/gcc-cross/arm-linux-gnueabi/4.7.3
 
 export LLIBS
 .PHONY : $(LIBS)
@@ -101,8 +101,8 @@ $(LIBS):
 
 .PHONY:clean
 clean:
-#	'find /home/lee/project/EasyBoot/ -type f -name "*.o" -o -name "*.a"';
-	rm -f $(shell find /home/lee/project/EasyBoot/ -type f -name \
+#	'find /home/lee/EasyBoot/ -type f -name "*.o" -o -name "*.a"';
+	rm -f $(shell find /home/lee/EasyBoot/ -type f -name \
 		"*.o" -o -name "*.a" -o -name "*.bin" -o -name "*.map")
 	rm -f EasyBoot
 	rm -rf $(TOPDIR)/includes/config.h
