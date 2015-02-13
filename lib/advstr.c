@@ -23,7 +23,7 @@
 char *strdel_tail(const char *str, char buf[],int chr, int n)
 {
    //DEBUG_CHECK(!str && !buf && !n, NULL);
-   int len = strlen(str);
+   //int len = strlen(str);
    char *dest;
 
    dest = strnchr(str,chr,n);

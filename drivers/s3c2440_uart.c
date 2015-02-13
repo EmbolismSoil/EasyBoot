@@ -40,11 +40,14 @@
 #define UART_CLK        PCLK        //  UART0µÄÊ±ÖÓÔ´ÉèÎªPCLK
 #define UART_BAUD_RATE  115200      // ²¨ÌØÂÊ
 #define UART_BRD        ((UART_CLK  / (UART_BAUD_RATE * 16)) - 1)
+
+#if 0
 static void  wait(volatile unsigned long dly)
 {
         for(; dly > 0; dly--);
 }
 
+#endif
 
 
 int uart_open(void *arg1, void *arg2)
@@ -57,6 +60,8 @@ int uart_open(void *arg1, void *arg2)
     UFCON0  = 0x00;     // ²»Ê¹ÓÃFIFO
     UMCON0  = 0x00;     // ²»Ê¹ÓÃÁ÷¿Ø
     UBRDIV0 = UART_BRD; // ²¨ÌØÂÊÎª115200
+
+    return 0;
 }
 
 /*
@@ -81,7 +86,8 @@ int uart_write(unsigned int addr ,void *buf, unsigned int len)
                 putc(str[i]);
                 i++;
         }
-                                                                        
+        
+    return 0;                                                                
 }
 
 void puthex(unsigned int val)
@@ -117,6 +123,7 @@ void putdec(int val)
      putc('0' + dec2);
      putc('0' + dec1);
 }
+
 d_ops uart_ops = {.open = uart_open,.write = uart_write};
 
 DRIVER_EXPORT(UART, NULL, &uart_ops, ((void *)0) );

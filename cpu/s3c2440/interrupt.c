@@ -1,6 +1,8 @@
 
 #define CONFIG_USE_IRQ
 #ifdef CONFIG_USE_IRQ
+#include <printf.h>
+
 /* enable IRQ interrupts */
 struct pt_regs {
         long uregs[18];

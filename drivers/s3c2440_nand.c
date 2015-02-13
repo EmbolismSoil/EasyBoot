@@ -53,6 +53,7 @@ int nand_open(void* unuse0, void *unuse1)
 	/* 使能NAND Flash控制器, 初始化ECC, 禁止片选 */
 	NFCONT = (1<<4)|(1<<1)|(1<<0);	
 #endif
+    return 0;
 }
 
 static void nand_select(void)
@@ -154,7 +155,7 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 	int i = 0;
 	unsigned int count = 0;
 	int flag = 1;
-	int strlen = 100;
+	//int strlen = 100;
 
 
 	int nand_boot;
@@ -212,6 +213,8 @@ int nand_read(unsigned int addr, void *argbuf, unsigned int len)
 	}
 	/* 7. 取消选中 */		
 	nand_deselect();
+
+        return 0;
 }
 
 d_ops nand_ops = {.open = nand_open,.read = nand_read};

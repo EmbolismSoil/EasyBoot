@@ -48,9 +48,9 @@ static char *default_show(void *atr,void *r_buf,int len)
 board_t *board_req(char *type)
 {
     DEBUG_CHECK(!type, NULL);
-    char cnt;
-    char cnt1;
-    char cnt2;
+    unsigned char cnt;
+    unsigned char cnt1;
+    unsigned char cnt2;
     for (cnt = 0; cnt < MAX_BOARD && 
 	board_pool[cnt].type != NULL; cnt++)
 	if (!strncmp(board_pool[cnt].type, type, strlen(type))){
@@ -145,6 +145,8 @@ static int add_device(board_t *board,  device_t *device)
 		    }
 		}
 	}
+  
+     return -1;
 
  }
  

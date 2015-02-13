@@ -17,7 +17,7 @@ typedef struct{
 *@define the operation of the FIFO queue
 */
 #define DECLARE_FIFO(__name,__fsize) \
-	unsigned char __FIFO_array_##__name[__fsize];\
+	unsigned char __FIFO_array_##__name##__fsize[__fsize];\
 FIFO __name = {\
   .fifo_base = __FIFO_array_##__name,\
   .fifo_top = __FIFO_array_##__name + __fsize,\

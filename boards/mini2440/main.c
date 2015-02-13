@@ -12,6 +12,7 @@ void delay(int x)
    while(t--)
     for (; x > 0; x--);
 }
+
 int user_main()
 {
   int fd_tty;
@@ -31,15 +32,12 @@ int user_main()
   setup_tag(cmd_line);
 
   heap_init();
-  void *base = heap_start();
-  void *end = heap_end();
-
 
   int  cnt;
   int *ptr;
   for (cnt = 0;cnt < 1000;cnt++){
        ptr = (int *)malloc(sizeof(int));
-       free(ptr);
+       free((void*)ptr);
        printf("malloc ptr : 0x%x\n\r",(u32)ptr);
   }
   printf("copying kernel from nand to RAM....\n\r");
@@ -52,7 +50,8 @@ int user_main()
   delay(2000000);
   s3c2440_boot(0,193,0x30000100);
   printf("ERROR : boot faile....\n");
-  return;
+
+  return 0;
 }
 
 

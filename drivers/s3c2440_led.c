@@ -36,6 +36,7 @@ static int open(void *unuse, void *unuse2)
 static int  write_led(unsigned int addr ,void *buf, unsigned int len)
 {
     PUT_STR((char*)buf);
+    return 0;
 }
 d_ops led_ops = {.open = open,.write = write_led};
 

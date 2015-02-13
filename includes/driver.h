@@ -54,7 +54,7 @@ struct __device{
     char *drv;/*这个设备使用的驱动名称*/
     class_t class;
     d_ops  *ops;
-    attribute atr;
+    attribute *atr;
     struct list_head list;
     int _flag;
     void  *_pri;
@@ -82,12 +82,15 @@ extern int device_read(int fd, unsigned int addr, void *buf ,unsigned int len);
 extern int device_write(int fd, unsigned int addr,void *buf ,unsigned int len);
 extern int device_close(board_t *board, int fd);
 extern int device_ioctl(board_t *board, int fd, int cmd, int arg);
+extern board_t *cur_board(void);
+
 
 #define IN_SECTION_DEVICE  __attribute__ ((unused,section (".easy_boot_driver")))
+
 #define DRIVER_EXPORT(__type, __atr, __ops, __pri ) \
-	device_t __easy_boot_driver_##__type   IN_SECTION_DEVICE = { \
+	device_t __easy_boot_driver_##__type  IN_SECTION_DEVICE = { \
 		.drv = #__type, \
-		.atr = __atr,  \
+		.atr = (__atr),\
 		.ops = __ops, \
 		._pri = __pri,\
 	}
