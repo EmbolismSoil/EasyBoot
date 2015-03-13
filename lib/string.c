@@ -70,7 +70,6 @@ char * ___strtok;
  * @dest: Where to copy the string to
  * @src: Where to copy the string from
  */
-
 char * strcpy(char * dest,const char *src)
 {
 	char *tmp = dest;
@@ -79,7 +78,6 @@ char * strcpy(char * dest,const char *src)
 		/* nothing */;
 	return tmp;
 }
-
 #endif
 
 #ifndef __HAVE_ARCH_STRNCPY
